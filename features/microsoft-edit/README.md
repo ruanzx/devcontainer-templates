@@ -14,8 +14,8 @@ Installs [Microsoft Edit](https://github.com/microsoft/edit), a fast, simple tex
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
+| Option    | Type   | Default | Description                          |
+| --------- | ------ | ------- | ------------------------------------ |
 | `version` | string | `1.2.0` | Version of Microsoft Edit to install |
 
 ## Example

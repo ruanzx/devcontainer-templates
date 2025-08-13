@@ -94,6 +94,10 @@ EOF
             export _CONTAINER_USER=vscode
             export _REMOTE_USER=vscode
             
+            # Create the expected directory structure and copy utils
+            mkdir -p ../../common
+            cp /tmp/common/utils.sh ../../common/
+            
             # Run the install script
             chmod +x install.sh
             bash install.sh

@@ -14,8 +14,8 @@ Installs [Skaffold](https://skaffold.dev/), easy and repeatable Kubernetes devel
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
+| Option    | Type   | Default  | Description                    |
+| --------- | ------ | -------- | ------------------------------ |
 | `version` | string | `2.16.1` | Version of Skaffold to install |
 
 ## Example

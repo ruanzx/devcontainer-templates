@@ -14,8 +14,8 @@ Installs [Gitleaks](https://github.com/gitleaks/gitleaks), a tool to detect and 
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
+| Option    | Type   | Default  | Description                    |
+| --------- | ------ | -------- | ------------------------------ |
 | `version` | string | `8.21.1` | Version of Gitleaks to install |
 
 ## Example

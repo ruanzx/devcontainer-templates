@@ -14,8 +14,8 @@ Installs [K9s](https://k9scli.io/), a Kubernetes CLI to manage your clusters in 
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
+| Option    | Type   | Default  | Description               |
+| --------- | ------ | -------- | ------------------------- |
 | `version` | string | `0.32.7` | Version of K9s to install |
 
 ## Example

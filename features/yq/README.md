@@ -14,8 +14,8 @@ Installs [yq](https://mikefarah.gitbook.io/yq/), a lightweight and portable comm
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
+| Option    | Type   | Default  | Description              |
+| --------- | ------ | -------- | ------------------------ |
 | `version` | string | `4.44.3` | Version of yq to install |
 
 ## Example

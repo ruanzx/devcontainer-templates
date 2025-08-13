@@ -1,0 +1,21 @@
+{
+  "name": "Development Environment with All Features",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/ruanzx/devcontainer-features:microsoft-edit": {},
+    "ghcr.io/ruanzx/devcontainer-features:k9s": {},
+    "ghcr.io/ruanzx/devcontainer-features:skaffold": {},
+    "ghcr.io/ruanzx/devcontainer-features:yq": {},
+    "ghcr.io/ruanzx/devcontainer-features:gitleaks": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "redhat.vscode-yaml"
+      ]
+    }
+  },
+  "postCreateCommand": "echo 'DevContainer with all features ready!'",
+  "remoteUser": "vscode"
+}
