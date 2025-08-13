@@ -20,7 +20,7 @@ source "$ROOT_DIR/common/utils.sh"
 
 # Configuration
 BUILD_DIR="$ROOT_DIR/build"
-FEATURES_NAMESPACE="${FEATURES_NAMESPACE:-ruanzx/devcontainer-features}"
+FEATURES_NAMESPACE="${FEATURES_NAMESPACE:-ruanzx/features}"
 GITHUB_REGISTRY="${GITHUB_REGISTRY:-ghcr.io}"
 GITHUB_USERNAME="${GITHUB_USERNAME:-ruanzx}"
 MAKE_PUBLIC="${MAKE_PUBLIC:-false}"
@@ -100,16 +100,16 @@ publish_feature() {
     local tool_version
     tool_version=$(jq -r '.options.version.default // .version' "$feature_path/devcontainer-feature.json")
     
-    # Use devcontainer CLI to publish each feature to the collection namespace
-    # This publishes the feature to ghcr.io/ruanzx/devcontainer-features/<feature_name>
-    devcontainer features publish -r "$GITHUB_REGISTRY" -n "$FEATURES_NAMESPACE" "$feature_path"
+    # Use devcontainer CLI to publish all features under the "features" namespace
+    # This publishes the feature to ghcr.io/ruanzx/features/<feature_name>
+    devcontainer features publish -r "$GITHUB_REGISTRY" -n "$GITHUB_USERNAME/features" "$feature_path"
     
     if [[ $? -eq 0 ]]; then
-        log_success "Successfully published feature: $feature_name at $GITHUB_REGISTRY/$FEATURES_NAMESPACE/$feature_name:$tool_version"
+        log_success "Successfully published feature: $feature_name at $GITHUB_REGISTRY/$GITHUB_USERNAME/features/$feature_name:$tool_version"
         
         # Make package public if requested
         if [[ "$make_public" == "true" ]]; then
-            make_package_public "$FEATURES_NAMESPACE/$feature_name"
+            make_package_public "$feature_name"
         fi
         
         return 0
@@ -126,10 +126,10 @@ main() {
     check_prerequisites
     setup_authentication
     
-    # Find all built features
+    # Find all built features (must contain devcontainer-feature.json)
     local features=()
     for feature_path in "$BUILD_DIR"/*; do
-        if [[ -d "$feature_path" ]]; then
+        if [[ -d "$feature_path" && -f "$feature_path/devcontainer-feature.json" ]]; then
             features+=("$feature_path")
         fi
     done
@@ -159,7 +159,7 @@ main() {
     # Report results
     if [[ ${#failed_features[@]} -eq 0 ]]; then
         log_success "All features published successfully!"
-        log_info "Features are now available at: $GITHUB_REGISTRY/$FEATURES_NAMESPACE/"
+        log_info "Features are now available at: $GITHUB_REGISTRY/$GITHUB_USERNAME/features/"
         log_info ""
         if [[ "$MAKE_PUBLIC" == "true" ]]; then
             log_info "Note: Packages are published as private by default."
@@ -175,7 +175,7 @@ main() {
             feature_name=$(basename "$feature_path")
             local tool_version
             tool_version=$(jq -r '.options.version.default // .version' "$feature_path/devcontainer-feature.json")
-            log_info "    \"$GITHUB_REGISTRY/$FEATURES_NAMESPACE/$feature_name:$tool_version\": {}"
+            log_info "    \"$GITHUB_REGISTRY/$GITHUB_USERNAME/features/$feature_name:$tool_version\": {}"
         done
         log_info "  }"
         log_info "}"
@@ -195,7 +195,7 @@ usage() {
     echo "  GITHUB_TOKEN          GitHub personal access token (required)"
     echo "  GITHUB_USERNAME       GitHub username (default: ruanzx)"
     echo "  GITHUB_REGISTRY       Registry URL (default: ghcr.io)"
-    echo "  FEATURES_NAMESPACE    Feature namespace (default: ruanzx/devcontainer-features)"
+    echo "  FEATURES_NAMESPACE    Feature namespace (default: ruanzx/features)"
     echo "  MAKE_PUBLIC           Make packages public after publishing (default: false)"
     echo ""
     echo "Options:"

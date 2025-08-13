@@ -33,14 +33,14 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
 {
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
-    "ghcr.io/ruanzx/devcontainer-features/devcontainers-cli:0.80.0": {},
-    "ghcr.io/ruanzx/devcontainer-features/kubectl:1.31.0": {},
-    "ghcr.io/ruanzx/devcontainer-features/helm:3.16.1": {},
-    "ghcr.io/ruanzx/devcontainer-features/k9s:0.32.7": {},
-    "ghcr.io/ruanzx/devcontainer-features/yq:4.44.3": {},
-    "ghcr.io/ruanzx/devcontainer-features/microsoft-edit:1.2.0": {},
-    "ghcr.io/ruanzx/devcontainer-features/skaffold:2.16.1": {},
-    "ghcr.io/ruanzx/devcontainer-features/gitleaks:8.21.1": {}
+    "ghcr.io/ruanzx/features/devcontainers-cli:0.80.0": {},
+    "ghcr.io/ruanzx/features/kubectl:1.31.0": {},
+    "ghcr.io/ruanzx/features/helm:3.16.1": {},
+    "ghcr.io/ruanzx/features/k9s:0.32.7": {},
+    "ghcr.io/ruanzx/features/yq:4.44.3": {},
+    "ghcr.io/ruanzx/features/microsoft-edit:1.2.0": {},
+    "ghcr.io/ruanzx/features/skaffold:2.16.1": {},
+    "ghcr.io/ruanzx/features/gitleaks:8.21.1": {}
   }
 }
 ```
@@ -49,14 +49,14 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
 
 Each feature is independently versioned and tagged by the tool version it installs. Features are available as:
 
-- `ghcr.io/ruanzx/devcontainer-features/<feature-name>:<tool-version>`
-- `ghcr.io/ruanzx/devcontainer-features/<feature-name>:latest` (latest version)
+- `ghcr.io/ruanzx/features/<feature-name>:<tool-version>`
+- `ghcr.io/ruanzx/features/<feature-name>:latest` (latest version)
 
 Example:
 ```json
 {
   "features": {
-    "ghcr.io/ruanzx/devcontainer-features/kubectl:1.31.0": {}
+    "ghcr.io/ruanzx/features/kubectl:1.31.0": {}
   }
 }
 ```
@@ -70,7 +70,7 @@ The **DevContainers CLI** feature provides the official CLI tool for working wit
 ```json
 {
   "features": {
-    "ghcr.io/ruanzx/devcontainer-features/devcontainers-cli:0.80.0": {
+    "ghcr.io/ruanzx/features/devcontainers-cli:0.80.0": {
       "version": "0.80.0",
       "nodeVersion": "lts"
     }
@@ -216,7 +216,7 @@ GITHUB_USERNAME=ruanzx
 GITHUB_REGISTRY=ghcr.io
 
 # Features Configuration
-FEATURES_NAMESPACE=ruanzx/devcontainer-features
+FEATURES_NAMESPACE=ruanzx/features
 
 # Package Visibility (set to true to get guidance for making packages public)
 MAKE_PUBLIC=false
