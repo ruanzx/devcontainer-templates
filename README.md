@@ -117,10 +117,15 @@ Publish features to GitHub Container Registry:
 ./scripts/publish.sh
 ```
 
+Options:
+- `./scripts/publish.sh --public` - Publish with guidance to make packages public
+- `./scripts/publish.sh --private` - Publish as private (default)
+
 This will:
 - Authenticate with GitHub Container Registry
 - Build and push individual features with tool version tags
 - Tag each feature as `<feature>:<tool-version>` and `<feature>:latest`
+- Provide guidance for making packages public (when using `--public`)
 
 ## Project Structure
 
@@ -156,6 +161,9 @@ GITHUB_REGISTRY=ghcr.io
 
 # Features Configuration
 FEATURES_NAMESPACE=ruanzx/devcontainer-features
+
+# Package Visibility (set to true to get guidance for making packages public)
+MAKE_PUBLIC=false
 
 # Build Configuration
 BUILD_LOG_LEVEL=info
