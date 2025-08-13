@@ -23,7 +23,6 @@ BUILD_DIR="$ROOT_DIR/build"
 FEATURES_NAMESPACE="${FEATURES_NAMESPACE:-ruanzx/devcontainer-features}"
 GITHUB_REGISTRY="${GITHUB_REGISTRY:-ghcr.io}"
 GITHUB_USERNAME="${GITHUB_USERNAME:-ruanzx}"
-FEATURES_VERSION="${FEATURES_VERSION:-1.0.0}"
 
 # Validate required environment variables
 if [[ -z "$GITHUB_TOKEN" ]]; then
@@ -80,30 +79,14 @@ publish_feature() {
     
     log_info "Publishing feature: $feature_name"
     
+    # Get the tool version from the feature configuration
+    local tool_version=$(jq -r '.options.version.default // .version' "$feature_path/devcontainer-feature.json")
+    
     # Create a temporary directory for the feature package
     local temp_dir=$(mktemp -d)
-    local feature_package_dir="$temp_dir/features/$feature_name"
     
-    # Create the feature package structure
-    mkdir -p "$feature_package_dir"
-    
-    # Copy feature files to package directory
-    cp -r "$feature_path"/* "$feature_package_dir/"
-    
-    # Create the collection manifest
-    local collection_file="$temp_dir/devcontainer-collection.json"
-    cat > "$collection_file" << EOF
-{
-    "features": [
-        {
-            "id": "$feature_name",
-            "version": "$FEATURES_VERSION",
-            "name": "$(jq -r '.name' "$feature_path/devcontainer-feature.json")",
-            "description": "$(jq -r '.description' "$feature_path/devcontainer-feature.json")"
-        }
-    ]
-}
-EOF
+    # Copy feature files to temp directory (root level for single feature repo)
+    cp -r "$feature_path"/* "$temp_dir/"
     
     # Create Dockerfile for packaging
     local dockerfile="$temp_dir/Dockerfile"
@@ -112,91 +95,23 @@ FROM scratch
 COPY . /
 EOF
     
-    # Build and tag the image
-    local image_tag="$GITHUB_REGISTRY/$FEATURES_NAMESPACE:$feature_name"
-    local image_tag_versioned="$GITHUB_REGISTRY/$FEATURES_NAMESPACE:$feature_name-$FEATURES_VERSION"
+    # Build and tag the image with tool version
+    local image_base="$GITHUB_REGISTRY/$FEATURES_NAMESPACE/$feature_name"
+    local image_tag_latest="$image_base:latest"
+    local image_tag_versioned="$image_base:$tool_version"
     
-    log_info "Building feature image: $image_tag"
-    docker build -t "$image_tag" -t "$image_tag_versioned" "$temp_dir"
+    log_info "Building feature image: $image_tag_latest (version: $tool_version)"
+    docker build -t "$image_tag_latest" -t "$image_tag_versioned" "$temp_dir"
     
     # Push the image
-    log_info "Pushing feature image: $image_tag"
-    docker push "$image_tag"
+    log_info "Pushing feature image: $image_tag_latest"
+    docker push "$image_tag_latest"
     docker push "$image_tag_versioned"
     
     # Cleanup
     rm -rf "$temp_dir"
     
-    log_success "Successfully published feature: $feature_name"
-}
-
-# Function to publish all features as a collection
-publish_collection() {
-    log_info "Publishing feature collection"
-    
-    # Create a temporary directory for the collection
-    local temp_dir=$(mktemp -d)
-    local features_dir="$temp_dir/features"
-    
-    mkdir -p "$features_dir"
-    
-    # Copy all built features
-    for feature_path in "$BUILD_DIR"/*; do
-        if [[ -d "$feature_path" ]]; then
-            local feature_name=$(basename "$feature_path")
-            cp -r "$feature_path" "$features_dir/$feature_name"
-        fi
-    done
-    
-    # Create collection manifest
-    local collection_file="$temp_dir/devcontainer-collection.json"
-    echo '{"features": [' > "$collection_file"
-    
-    local first=true
-    for feature_path in "$BUILD_DIR"/*; do
-        if [[ -d "$feature_path" ]]; then
-            local feature_name=$(basename "$feature_path")
-            local feature_json="$feature_path/devcontainer-feature.json"
-            
-            if [[ "$first" != true ]]; then
-                echo ',' >> "$collection_file"
-            fi
-            first=false
-            
-            echo -n '{' >> "$collection_file"
-            echo -n "\"id\": \"$feature_name\"," >> "$collection_file"
-            echo -n "\"version\": \"$FEATURES_VERSION\"," >> "$collection_file"
-            echo -n "\"name\": $(jq -r '.name' "$feature_json" | jq -R .)," >> "$collection_file"
-            echo -n "\"description\": $(jq -r '.description' "$feature_json" | jq -R .)" >> "$collection_file"
-            echo -n '}' >> "$collection_file"
-        fi
-    done
-    
-    echo ']}' >> "$collection_file"
-    
-    # Create Dockerfile for collection packaging
-    local dockerfile="$temp_dir/Dockerfile"
-    cat > "$dockerfile" << 'EOF'
-FROM scratch
-COPY . /
-EOF
-    
-    # Build and tag the collection image
-    local collection_tag="$GITHUB_REGISTRY/$FEATURES_NAMESPACE:latest"
-    local collection_tag_versioned="$GITHUB_REGISTRY/$FEATURES_NAMESPACE:$FEATURES_VERSION"
-    
-    log_info "Building collection image: $collection_tag"
-    docker build -t "$collection_tag" -t "$collection_tag_versioned" "$temp_dir"
-    
-    # Push the collection
-    log_info "Pushing collection image: $collection_tag"
-    docker push "$collection_tag"
-    docker push "$collection_tag_versioned"
-    
-    # Cleanup
-    rm -rf "$temp_dir"
-    
-    log_success "Successfully published feature collection"
+    log_success "Successfully published feature: $feature_name at $image_base:$tool_version"
 }
 
 # Main publish process
@@ -235,19 +150,18 @@ main() {
         fi
     done
     
-    # Publish collection if all individual features succeeded
+    # Report results
     if [[ ${#failed_features[@]} -eq 0 ]]; then
-        publish_collection
-        
         log_success "All features published successfully!"
-        log_info "Features are now available at: $GITHUB_REGISTRY/$FEATURES_NAMESPACE"
+        log_info "Features are now available at: $GITHUB_REGISTRY/$FEATURES_NAMESPACE/"
         log_info ""
         log_info "To use these features in a devcontainer.json:"
         log_info "{"
         log_info "  \"features\": {"
         for feature_path in "${features[@]}"; do
             local feature_name=$(basename "$feature_path")
-            log_info "    \"$GITHUB_REGISTRY/$FEATURES_NAMESPACE:$feature_name\": {}"
+            local tool_version=$(jq -r '.options.version.default // .version' "$feature_path/devcontainer-feature.json")
+            log_info "    \"$GITHUB_REGISTRY/$FEATURES_NAMESPACE/$feature_name:$tool_version\": {}"
         done
         log_info "  }"
         log_info "}"

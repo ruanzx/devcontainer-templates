@@ -7,7 +7,7 @@ Installs [kubectl](https://kubernetes.io/docs/reference/kubectl/), the Kubernete
 ```json
 {
   "features": {
-    "ghcr.io/ruanzx/devcontainer-features:kubectl": {}
+    "ghcr.io/ruanzx/devcontainer-features/kubectl:1.31.0": {}
   }
 }
 ```
@@ -23,9 +23,17 @@ Installs [kubectl](https://kubernetes.io/docs/reference/kubectl/), the Kubernete
 ```json
 {
   "features": {
-    "ghcr.io/ruanzx/devcontainer-features:kubectl": {
-      "version": "1.31.0"
-    }
+    "ghcr.io/ruanzx/devcontainer-features/kubectl:1.31.0": {}
+  }
+}
+```
+
+Or use the latest version:
+
+```json
+{
+  "features": {
+    "ghcr.io/ruanzx/devcontainer-features/kubectl:latest": {}
   }
 }
 ```

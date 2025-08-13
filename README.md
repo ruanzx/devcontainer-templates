@@ -30,31 +30,31 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
 
 ```json
 {
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
-    "ghcr.io/ruanzx/devcontainer-features:kubectl": {},
-    "ghcr.io/ruanzx/devcontainer-features:helm": {},
-    "ghcr.io/ruanzx/devcontainer-features:k9s": {},
-    "ghcr.io/ruanzx/devcontainer-features:yq": {
-      "version": "4.44.3"
-    },
-    "ghcr.io/ruanzx/devcontainer-features:microsoft-edit": {},
-    "ghcr.io/ruanzx/devcontainer-features:skaffold": {},
-    "ghcr.io/ruanzx/devcontainer-features:gitleaks": {}
+    "ghcr.io/ruanzx/devcontainer-features/kubectl:1.31.0": {},
+    "ghcr.io/ruanzx/devcontainer-features/helm:3.16.1": {},
+    "ghcr.io/ruanzx/devcontainer-features/k9s:0.32.7": {},
+    "ghcr.io/ruanzx/devcontainer-features/yq:4.44.3": {},
+    "ghcr.io/ruanzx/devcontainer-features/microsoft-edit:1.2.0": {},
+    "ghcr.io/ruanzx/devcontainer-features/skaffold:2.16.1": {},
+    "ghcr.io/ruanzx/devcontainer-features/gitleaks:8.21.1": {}
   }
 }
 ```
 
-### Feature Options
+### Feature Versioning
 
-Each feature supports version configuration:
+Each feature is independently versioned and tagged by the tool version it installs. Features are available as:
 
+- `ghcr.io/ruanzx/devcontainer-features/<feature-name>:<tool-version>`
+- `ghcr.io/ruanzx/devcontainer-features/<feature-name>:latest` (latest version)
+
+Example:
 ```json
 {
   "features": {
-    "ghcr.io/ruanzx/devcontainer-features:kubectl": {
-      "version": "1.31.0"
-    }
+    "ghcr.io/ruanzx/devcontainer-features/kubectl:1.31.0": {}
   }
 }
 ```
@@ -119,9 +119,8 @@ Publish features to GitHub Container Registry:
 
 This will:
 - Authenticate with GitHub Container Registry
-- Build and push individual feature images
-- Create a collection manifest
-- Tag with both latest and version-specific tags
+- Build and push individual features with tool version tags
+- Tag each feature as `<feature>:<tool-version>` and `<feature>:latest`
 
 ## Project Structure
 
@@ -157,7 +156,6 @@ GITHUB_REGISTRY=ghcr.io
 
 # Features Configuration
 FEATURES_NAMESPACE=ruanzx/devcontainer-features
-FEATURES_VERSION=1.0.0
 
 # Build Configuration
 BUILD_LOG_LEVEL=info

@@ -1,6 +1,6 @@
 {
     "id": "gitleaks",
-    "version": "1.0.0",
+    "version": "8.21.1",
     "name": "Gitleaks",
     "description": "Detect and prevent secrets in your git repos",
     "documentationURL": "https://github.com/gitleaks/gitleaks",

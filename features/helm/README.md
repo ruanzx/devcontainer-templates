@@ -7,7 +7,7 @@ Installs [Helm](https://helm.sh/), the package manager for Kubernetes that helps
 ```json
 {
   "features": {
-    "ghcr.io/ruanzx/devcontainer-features:helm": {}
+    "ghcr.io/ruanzx/devcontainer-features/helm:3.16.1": {}
   }
 }
 ```
@@ -23,9 +23,17 @@ Installs [Helm](https://helm.sh/), the package manager for Kubernetes that helps
 ```json
 {
   "features": {
-    "ghcr.io/ruanzx/devcontainer-features:helm": {
-      "version": "3.16.1"
-    }
+    "ghcr.io/ruanzx/devcontainer-features/helm:3.16.1": {}
+  }
+}
+```
+
+Or use the latest version:
+
+```json
+{
+  "features": {
+    "ghcr.io/ruanzx/devcontainer-features/helm:latest": {}
   }
 }
 ```

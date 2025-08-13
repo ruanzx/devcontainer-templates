@@ -1,6 +1,6 @@
 {
     "id": "skaffold",
-    "version": "1.0.0",
+    "version": "2.16.1",
     "name": "Skaffold",
     "description": "Easy and Repeatable Kubernetes Development",
     "documentationURL": "https://skaffold.dev/",

@@ -1,6 +1,6 @@
 {
     "id": "yq",
-    "version": "1.0.0",
+    "version": "4.44.3",
     "name": "yq",
     "description": "A lightweight and portable command-line YAML, JSON and XML processor",
     "documentationURL": "https://mikefarah.gitbook.io/yq/",

@@ -21,9 +21,8 @@ source "$ROOT_DIR/common/utils.sh"
 # Configuration
 FEATURES_DIR="$ROOT_DIR/features"
 BUILD_DIR="$ROOT_DIR/build"
-FEATURES_VERSION="${FEATURES_VERSION:-1.0.0}"
 
-log_info "Building DevContainer Features v${FEATURES_VERSION}"
+log_info "Building DevContainer Features"
 
 # Create build directory
 mkdir -p "$BUILD_DIR"
@@ -82,11 +81,6 @@ build_feature() {
             cp "$file" "$feature_build_dir/"
         fi
     done
-    
-    # Update version in devcontainer-feature.json
-    local temp_json=$(mktemp)
-    jq --arg version "$FEATURES_VERSION" '.version = $version' "$feature_build_dir/devcontainer-feature.json" > "$temp_json"
-    mv "$temp_json" "$feature_build_dir/devcontainer-feature.json"
     
     log_success "Built feature: $feature_name"
 }

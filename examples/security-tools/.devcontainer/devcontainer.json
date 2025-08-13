@@ -1,17 +1,11 @@
 {
   "name": "Security Development Environment",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
     "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/ruanzx/devcontainer-features:gitleaks": {
-      "version": "8.21.1"
-    },
-    "ghcr.io/ruanzx/devcontainer-features:yq": {
-      "version": "4.44.3"
-    },
-    "ghcr.io/ruanzx/devcontainer-features:microsoft-edit": {
-      "version": "1.2.0"
-    }
+    "ghcr.io/ruanzx/devcontainer-features/gitleaks:8.21.1": {},
+    "ghcr.io/ruanzx/devcontainer-features/yq:4.44.3": {},
+    "ghcr.io/ruanzx/devcontainer-features/microsoft-edit:1.2.0": {}
   },
   "customizations": {
     "vscode": {
