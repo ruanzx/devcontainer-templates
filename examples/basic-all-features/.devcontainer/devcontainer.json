@@ -6,7 +6,7 @@
     "ghcr.io/ruanzx/features/gitleaks:8.21.1": {},
     "ghcr.io/ruanzx/features/helm:3.16.1": {},
     "ghcr.io/ruanzx/features/k9s:0.32.7": {},
-    "ghcr.io/ruanzx/features/kubectl:1.31.0": {},
+    "ghcr.io/ruanzx/features/kubectl:1.31.1": {},
     "ghcr.io/ruanzx/features/microsoft-edit:1.2.0": {},
     "ghcr.io/ruanzx/features/skaffold:2.16.1": {},
     "ghcr.io/ruanzx/features/yq:4.44.3": {}

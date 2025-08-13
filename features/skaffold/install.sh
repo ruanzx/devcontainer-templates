@@ -7,7 +7,16 @@ set -e
 
 # Source common utilities
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${SCRIPT_DIR}/../../common/utils.sh"
+
+# Try to source utils.sh from multiple locations
+if [[ -f "${SCRIPT_DIR}/utils.sh" ]]; then
+    source "${SCRIPT_DIR}/utils.sh"
+elif [[ -f "${SCRIPT_DIR}/../../common/utils.sh" ]]; then
+    source "${SCRIPT_DIR}/../../common/utils.sh"
+else
+    echo "Error: Could not find utils.sh"
+    exit 1
+fi
 
 # Parse options
 VERSION="${VERSION:-"2.16.1"}"

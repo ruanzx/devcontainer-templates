@@ -87,8 +87,12 @@ build_feature() {
     # Create common directory structure and copy utils.sh for features that need it
     if grep -q "common/utils.sh" "$feature_path/install.sh" 2>/dev/null; then
         log_info "Feature $feature_name requires common utilities, copying utils.sh"
-        mkdir -p "$BUILD_DIR/common"
-        cp "$ROOT_DIR/common/utils.sh" "$BUILD_DIR/common/"
+        # Copy utils.sh directly into the feature directory
+        cp "$ROOT_DIR/common/utils.sh" "$feature_build_dir/"
+        
+        # Also create the expected directory structure for backward compatibility
+        mkdir -p "$feature_build_dir/../common"
+        cp "$ROOT_DIR/common/utils.sh" "$feature_build_dir/../common/" 2>/dev/null || true
     fi
     
     log_success "Built feature: $feature_name"
