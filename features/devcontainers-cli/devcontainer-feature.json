@@ -1,0 +1,32 @@
+{
+    "id": "devcontainers-cli",
+    "version": "0.80.0",
+    "name": "DevContainers CLI",
+    "description": "A reference implementation for the DevContainers specification",
+    "documentationURL": "https://github.com/devcontainers/cli",
+    "licenseURL": "https://github.com/devcontainers/cli/blob/main/LICENSE.txt",
+    "keywords": [
+        "devcontainers",
+        "devcontainer",
+        "cli",
+        "development",
+        "containers",
+        "vscode",
+        "codespaces"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "description": "Version of DevContainers CLI to install",
+            "default": "0.80.0"
+        },
+        "nodeVersion": {
+            "type": "string",
+            "description": "Node.js version to install (LTS by default)",
+            "default": "lts"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

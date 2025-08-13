@@ -1,13 +1,14 @@
 # DevContainer Features Collection
 
-A collection of high-quality DevContainer Features for enhancing development environments with popular tools and utilities.
+A collection of 8 high-quality DevContainer Features for enhancing development environments with popular tools and utilities.
 
-## Features
+## 📦 Available Features
 
 This repository provides the following DevContainer Features:
 
 ### 🛠️ Development Tools
 
+- **[DevContainers CLI](features/devcontainers-cli/)** - Official CLI for working with Development Containers
 - **[Microsoft Edit](features/microsoft-edit/)** - A fast, simple text editor that uses standard command line conventions
 - **[yq](features/yq/)** - A lightweight and portable command-line YAML, JSON and XML processor
 
@@ -32,6 +33,7 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
 {
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
+    "ghcr.io/ruanzx/devcontainer-features/devcontainers-cli:0.80.0": {},
     "ghcr.io/ruanzx/devcontainer-features/kubectl:1.31.0": {},
     "ghcr.io/ruanzx/devcontainer-features/helm:3.16.1": {},
     "ghcr.io/ruanzx/devcontainer-features/k9s:0.32.7": {},
@@ -57,6 +59,44 @@ Example:
     "ghcr.io/ruanzx/devcontainer-features/kubectl:1.31.0": {}
   }
 }
+```
+
+## Highlighted Features
+
+### 🚀 DevContainers CLI
+
+The **DevContainers CLI** feature provides the official CLI tool for working with Development Containers:
+
+```json
+{
+  "features": {
+    "ghcr.io/ruanzx/devcontainer-features/devcontainers-cli:0.80.0": {
+      "version": "0.80.0",
+      "nodeVersion": "lts"
+    }
+  }
+}
+```
+
+**Key Benefits:**
+- **Complete DevContainer Management**: Build, run, and manage dev containers from the command line
+- **Node.js LTS Included**: Automatically installs Node.js LTS if not present
+- **Global CLI Access**: Available as `devcontainer` command throughout your environment
+- **CI/CD Integration**: Perfect for automated builds and testing pipelines
+
+**Common Commands:**
+```bash
+# Build a dev container
+devcontainer build .
+
+# Start a dev container
+devcontainer up .
+
+# Execute commands in a running container
+devcontainer exec bash
+
+# Get feature info
+devcontainer features info
 ```
 
 ## Development
@@ -127,6 +167,20 @@ This will:
 - Tag each feature as `<feature>:<tool-version>` and `<feature>:latest`
 - Provide guidance for making packages public (when using `--public`)
 
+### Manage Packages
+
+Clean up GitHub Container Registry packages:
+
+```bash
+# Delete all packages (use with caution!)
+./scripts/delete-packages.sh
+
+# Delete specific feature packages
+./scripts/delete-packages.sh kubectl helm
+```
+
+**⚠️ Warning**: Package deletion is irreversible. Use with caution, especially in production environments.
+
 ## Project Structure
 
 ```
@@ -136,6 +190,7 @@ This will:
 ├── common/                  # Shared utilities
 │   └── utils.sh            # Common bash functions
 ├── features/               # Feature definitions
+│   ├── devcontainers-cli/
 │   ├── gitleaks/
 │   ├── helm/
 │   ├── k9s/
@@ -145,6 +200,7 @@ This will:
 │   └── yq/
 └── scripts/                # Build and deployment scripts
     ├── build.sh            # Build all features
+    ├── delete-packages.sh  # Delete GitHub packages
     ├── publish.sh          # Publish to registry
     └── test.sh             # Test all features
 ```
@@ -236,6 +292,12 @@ Each feature must include:
    - Check Docker is running
    - Verify feature syntax with `./scripts/test.sh syntax`
    - Test individual features manually
+   - For devcontainers-cli: Ensure network access for Node.js download
+
+4. **Node.js installation issues (devcontainers-cli):**
+   - Check internet connectivity for downloading Node.js binaries
+   - Verify sufficient disk space for Node.js installation
+   - Try running with `nodeVersion: "20"` explicitly set
 
 ### Debugging
 
