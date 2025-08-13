@@ -156,12 +156,6 @@ main() {
         fi
     done
     
-    # Make collection package public if requested
-    if [[ "$MAKE_PUBLIC" == "true" ]]; then
-        log_info "Making collection package public"
-        make_package_public "$FEATURES_NAMESPACE"
-    fi
-    
     # Report results
     if [[ ${#failed_features[@]} -eq 0 ]]; then
         log_success "All features published successfully!"
@@ -202,7 +196,6 @@ usage() {
     echo "  GITHUB_USERNAME       GitHub username (default: ruanzx)"
     echo "  GITHUB_REGISTRY       Registry URL (default: ghcr.io)"
     echo "  FEATURES_NAMESPACE    Feature namespace (default: ruanzx/devcontainer-features)"
-    echo "  FEATURES_VERSION      Features version (default: 1.0.0)"
     echo "  MAKE_PUBLIC           Make packages public after publishing (default: false)"
     echo ""
     echo "Options:"

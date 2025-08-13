@@ -39,15 +39,18 @@ delete_package() {
     
     # Delete the package using GitHub API
     local response
-    response=$(GH_TOKEN="$GITHUB_TOKEN" gh api --method DELETE "/user/packages/container/$encoded_name" 2>&1) || {
+    response=$(GH_TOKEN="$GITHUB_TOKEN" gh api --method DELETE "/user/packages/container/$encoded_name" 2>&1) 
+    local api_result=$?
+    
+    if [[ $api_result -ne 0 ]]; then
         if echo "$response" | grep -q "delete:packages"; then
             log_error "GitHub token missing required permissions!"
             log_error "Your GitHub token needs 'delete:packages' and 'read:packages' scopes."
             log_error "Please update your token at: https://github.com/settings/tokens"
             log_error "Required scopes: write:packages, read:packages, delete:packages"
             log_error "Cannot continue without proper permissions."
-            return 1
-        elif echo "$response" | grep -q "Package not found"; then
+            exit 1  # Exit completely on permission errors
+        elif echo "$response" | grep -q "Package not found\|Not Found"; then
             log_warning "Package not found (may have been deleted already): $package_name"
             return 0
         else
@@ -55,7 +58,7 @@ delete_package() {
             log_error "Response: $response"
             return 1
         fi
-    }
+    fi
     
     log_success "Successfully deleted package: $package_name"
     return 0
@@ -129,7 +132,7 @@ main() {
     # Count total packages
     while IFS= read -r package_name; do
         if [[ -n "$package_name" ]]; then
-            ((total_packages++))
+            total_packages=$((total_packages + 1))
         fi
     done <<< "$packages"
     
@@ -137,13 +140,16 @@ main() {
     
     while IFS= read -r package_name; do
         if [[ -n "$package_name" ]]; then
-            log_info "Processing package $((deleted_count + ${#failed_packages[@]} + 1)) of $total_packages"
+            current_package=$((deleted_count + ${#failed_packages[@]} + 1))
+            log_info "Processing package $current_package of $total_packages"
             if delete_package "$package_name"; then
-                ((deleted_count++))
-                log_info "Progress: $deleted_count deleted, ${#failed_packages[@]} failed, $((total_packages - deleted_count - ${#failed_packages[@]})) remaining"
+                deleted_count=$((deleted_count + 1))
+                remaining=$((total_packages - deleted_count - ${#failed_packages[@]}))
+                log_info "Progress: $deleted_count deleted, ${#failed_packages[@]} failed, $remaining remaining"
             else
                 failed_packages+=("$package_name")
-                log_info "Progress: $deleted_count deleted, ${#failed_packages[@]} failed, $((total_packages - deleted_count - ${#failed_packages[@]})) remaining"
+                remaining=$((total_packages - deleted_count - ${#failed_packages[@]}))
+                log_info "Progress: $deleted_count deleted, ${#failed_packages[@]} failed, $remaining remaining"
             fi
         fi
     done <<< "$packages"
