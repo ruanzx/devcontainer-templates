@@ -1,0 +1,9 @@
+{
+  "name": "Test Published Features",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "features": {
+    "ghcr.io/ruanzx/devcontainer-features/kubectl:1.31.0": {},
+    "ghcr.io/ruanzx/devcontainer-features/yq:4.44.3": {}
+  },
+  "postCreateCommand": "kubectl version --client && yq --version"
+}

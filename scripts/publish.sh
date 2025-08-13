@@ -42,8 +42,8 @@ log_info "Publishing DevContainer Features to $GITHUB_REGISTRY/$FEATURES_NAMESPA
 check_prerequisites() {
     log_info "Checking prerequisites"
     
-    # Check if docker is available
-    ensure_command "docker"
+    # Check if devcontainer CLI is available
+    ensure_command "devcontainer"
     
     # Check if jq is available
     ensure_command "jq"
@@ -58,60 +58,43 @@ check_prerequisites() {
     log_success "Prerequisites check passed"
 }
 
-# Function to login to GitHub Container Registry
-ghcr_login() {
-    log_info "Logging into GitHub Container Registry"
+# Function to setup authentication
+setup_authentication() {
+    log_info "Setting up authentication for $GITHUB_REGISTRY"
     
-    echo "$GITHUB_TOKEN" | docker login "$GITHUB_REGISTRY" -u "$GITHUB_USERNAME" --password-stdin
-    
-    if [[ $? -eq 0 ]]; then
-        log_success "Successfully logged into $GITHUB_REGISTRY"
-    else
-        log_error "Failed to login to $GITHUB_REGISTRY"
+    # The devcontainer CLI will use the GITHUB_TOKEN environment variable automatically
+    # for authentication with ghcr.io
+    if [[ -z "$GITHUB_TOKEN" ]]; then
+        log_error "GITHUB_TOKEN environment variable is required"
+        log_info "Please set your GitHub token in the .env file"
         exit 1
     fi
+    
+    log_success "Authentication configured"
 }
 
 # Function to create and push a feature
 publish_feature() {
     local feature_path="$1"
-    local feature_name=$(basename "$feature_path")
-    
+    local feature_name
+    feature_name=$(basename "$feature_path")
     log_info "Publishing feature: $feature_name"
     
     # Get the tool version from the feature configuration
-    local tool_version=$(jq -r '.options.version.default // .version' "$feature_path/devcontainer-feature.json")
+    local tool_version
+    tool_version=$(jq -r '.options.version.default // .version' "$feature_path/devcontainer-feature.json")
     
-    # Create a temporary directory for the feature package
-    local temp_dir=$(mktemp -d)
+    # Use devcontainer CLI to publish each feature as its own repository
+    # This publishes the feature to ghcr.io/ruanzx/devcontainer-features/<feature_name>
+    devcontainer features publish -r "$GITHUB_REGISTRY" -n "$FEATURES_NAMESPACE/$feature_name" "$feature_path"
     
-    # Copy feature files to temp directory (root level for single feature repo)
-    cp -r "$feature_path"/* "$temp_dir/"
-    
-    # Create Dockerfile for packaging
-    local dockerfile="$temp_dir/Dockerfile"
-    cat > "$dockerfile" << 'EOF'
-FROM scratch
-COPY . /
-EOF
-    
-    # Build and tag the image with tool version
-    local image_base="$GITHUB_REGISTRY/$FEATURES_NAMESPACE/$feature_name"
-    local image_tag_latest="$image_base:latest"
-    local image_tag_versioned="$image_base:$tool_version"
-    
-    log_info "Building feature image: $image_tag_latest (version: $tool_version)"
-    docker build -t "$image_tag_latest" -t "$image_tag_versioned" "$temp_dir"
-    
-    # Push the image
-    log_info "Pushing feature image: $image_tag_latest"
-    docker push "$image_tag_latest"
-    docker push "$image_tag_versioned"
-    
-    # Cleanup
-    rm -rf "$temp_dir"
-    
-    log_success "Successfully published feature: $feature_name at $image_base:$tool_version"
+    if [[ $? -eq 0 ]]; then
+        log_success "Successfully published feature: $feature_name at $GITHUB_REGISTRY/$FEATURES_NAMESPACE/$feature_name:$tool_version"
+        return 0
+    else
+        log_error "Failed to publish feature: $feature_name"
+        return 1
+    fi
 }
 
 # Main publish process
@@ -119,7 +102,7 @@ main() {
     log_info "Starting publish process"
     
     check_prerequisites
-    ghcr_login
+    setup_authentication
     
     # Find all built features
     local features=()
@@ -140,7 +123,8 @@ main() {
     # Publish individual features
     local failed_features=()
     for feature_path in "${features[@]}"; do
-        local feature_name=$(basename "$feature_path")
+        local feature_name
+        feature_name=$(basename "$feature_path")
         
         if publish_feature "$feature_path"; then
             log_success "Successfully published $feature_name"
@@ -159,8 +143,10 @@ main() {
         log_info "{"
         log_info "  \"features\": {"
         for feature_path in "${features[@]}"; do
-            local feature_name=$(basename "$feature_path")
-            local tool_version=$(jq -r '.options.version.default // .version' "$feature_path/devcontainer-feature.json")
+            local feature_name
+            feature_name=$(basename "$feature_path")
+            local tool_version
+            tool_version=$(jq -r '.options.version.default // .version' "$feature_path/devcontainer-feature.json")
             log_info "    \"$GITHUB_REGISTRY/$FEATURES_NAMESPACE/$feature_name:$tool_version\": {}"
         done
         log_info "  }"

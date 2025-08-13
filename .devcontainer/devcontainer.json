@@ -1,19 +1,19 @@
 {
-  "name": "DevContainer Features Development",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
-  },
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "ms-vscode.vscode-json",
-        "timonwong.shellcheck",
-        "foxundermoon.shell-format"
-      ]
-    }
-  },
-  "postCreateCommand": "chmod +x scripts/*.sh features/*/install.sh common/utils.sh devcontainer-features.sh",
-  "remoteUser": "vscode"
+	"name": "DevContainer Features Development",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+	"features": {
+		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/devcontainers/features/github-cli:1": {}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.vscode-json",
+				"timonwong.shellcheck",
+				"foxundermoon.shell-format"
+			]
+		}
+	},
+	"postCreateCommand": "chmod +x scripts/*.sh features/*/install.sh common/utils.sh devcontainer-features.sh",
+	"remoteUser": "vscode"
 }

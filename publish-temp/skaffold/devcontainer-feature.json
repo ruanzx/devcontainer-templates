@@ -1,0 +1,26 @@
+{
+    "id": "skaffold",
+    "version": "2.16.1",
+    "name": "Skaffold",
+    "description": "Easy and Repeatable Kubernetes Development",
+    "documentationURL": "https://skaffold.dev/",
+    "licenseURL": "https://github.com/GoogleContainerTools/skaffold/blob/main/LICENSE",
+    "keywords": [
+        "kubernetes",
+        "development",
+        "deployment",
+        "google",
+        "devops",
+        "ci-cd"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "description": "Version of Skaffold to install",
+            "default": "2.16.1"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

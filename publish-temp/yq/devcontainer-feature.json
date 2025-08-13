@@ -1,0 +1,26 @@
+{
+    "id": "yq",
+    "version": "4.44.3",
+    "name": "yq",
+    "description": "A lightweight and portable command-line YAML, JSON and XML processor",
+    "documentationURL": "https://mikefarah.gitbook.io/yq/",
+    "licenseURL": "https://github.com/mikefarah/yq/blob/master/LICENSE",
+    "keywords": [
+        "yaml",
+        "json",
+        "xml",
+        "parser",
+        "processor",
+        "command-line"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "description": "Version of yq to install",
+            "default": "4.44.3"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
