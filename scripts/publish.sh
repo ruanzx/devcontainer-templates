@@ -84,9 +84,9 @@ publish_feature() {
     local tool_version
     tool_version=$(jq -r '.options.version.default // .version' "$feature_path/devcontainer-feature.json")
     
-    # Use devcontainer CLI to publish each feature as its own repository
+    # Use devcontainer CLI to publish each feature to the collection namespace
     # This publishes the feature to ghcr.io/ruanzx/devcontainer-features/<feature_name>
-    devcontainer features publish -r "$GITHUB_REGISTRY" -n "$FEATURES_NAMESPACE/$feature_name" "$feature_path"
+    devcontainer features publish -r "$GITHUB_REGISTRY" -n "$FEATURES_NAMESPACE" "$feature_path"
     
     if [[ $? -eq 0 ]]; then
         log_success "Successfully published feature: $feature_name at $GITHUB_REGISTRY/$FEATURES_NAMESPACE/$feature_name:$tool_version"
