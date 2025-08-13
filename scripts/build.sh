@@ -30,7 +30,8 @@ mkdir -p "$BUILD_DIR"
 # Function to validate feature structure
 validate_feature() {
     local feature_path="$1"
-    local feature_name=$(basename "$feature_path")
+    local feature_name
+    feature_name=$(basename "$feature_path")
     
     log_info "Validating feature: $feature_name"
     
@@ -63,7 +64,8 @@ validate_feature() {
 # Function to build a single feature
 build_feature() {
     local feature_path="$1"
-    local feature_name=$(basename "$feature_path")
+    local feature_name
+    feature_name=$(basename "$feature_path")
     local feature_build_dir="$BUILD_DIR/$feature_name"
     
     log_info "Building feature: $feature_name"
@@ -81,6 +83,13 @@ build_feature() {
             cp "$file" "$feature_build_dir/"
         fi
     done
+    
+    # Create common directory structure and copy utils.sh for features that need it
+    if grep -q "common/utils.sh" "$feature_path/install.sh" 2>/dev/null; then
+        log_info "Feature $feature_name requires common utilities, copying utils.sh"
+        mkdir -p "$BUILD_DIR/common"
+        cp "$ROOT_DIR/common/utils.sh" "$BUILD_DIR/common/"
+    fi
     
     log_success "Built feature: $feature_name"
 }
@@ -118,7 +127,8 @@ main() {
     # Validate and build each feature
     local failed_features=()
     for feature_path in "${features[@]}"; do
-        local feature_name=$(basename "$feature_path")
+        local feature_name
+        feature_name=$(basename "$feature_path")
         
         if validate_feature "$feature_path"; then
             if build_feature "$feature_path"; then

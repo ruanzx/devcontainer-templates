@@ -20,5 +20,5 @@
     }
   },
   "postCreateCommand": "echo 'DevContainer with all features ready!'",
-  //"remoteUser": "vscode"
+  "remoteUser": "root"
 }

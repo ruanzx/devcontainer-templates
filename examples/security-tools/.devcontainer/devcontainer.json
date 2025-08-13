@@ -16,5 +16,5 @@
     }
   },
   "postCreateCommand": "gitleaks detect --verbose || echo 'Gitleaks scan complete'",
-  //"remoteUser": "vscode"
+  "remoteUser": "root"
 }
