@@ -3,6 +3,8 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "features": {
     "ghcr.io/ruanzx/devcontainer-features:microsoft-edit": {},
+    "ghcr.io/ruanzx/devcontainer-features:kubectl": {},
+    "ghcr.io/ruanzx/devcontainer-features:helm": {},
     "ghcr.io/ruanzx/devcontainer-features:k9s": {},
     "ghcr.io/ruanzx/devcontainer-features:skaffold": {},
     "ghcr.io/ruanzx/devcontainer-features:yq": {},

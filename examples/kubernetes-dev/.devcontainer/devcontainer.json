@@ -1,0 +1,34 @@
+{
+  "name": "Kubernetes Development Environment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/ruanzx/devcontainer-features:kubectl": {
+      "version": "1.31.0"
+    },
+    "ghcr.io/ruanzx/devcontainer-features:helm": {
+      "version": "3.16.1"
+    },
+    "ghcr.io/ruanzx/devcontainer-features:k9s": {
+      "version": "0.32.7"
+    },
+    "ghcr.io/ruanzx/devcontainer-features:skaffold": {
+      "version": "2.16.1"
+    },
+    "ghcr.io/ruanzx/devcontainer-features:yq": {
+      "version": "4.44.3"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "redhat.vscode-yaml",
+        "ms-vscode.vscode-docker"
+      ]
+    }
+  },
+  "forwardPorts": [8080, 3000],
+  "postCreateCommand": "echo 'Kubernetes development environment ready!'",
+  "remoteUser": "vscode"
+}

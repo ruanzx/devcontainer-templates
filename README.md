@@ -13,6 +13,8 @@ This repository provides the following DevContainer Features:
 
 ### ☸️ Kubernetes & DevOps
 
+- **[kubectl](features/kubectl/)** - The Kubernetes command-line tool
+- **[Helm](features/helm/)** - The package manager for Kubernetes
 - **[K9s](features/k9s/)** - Kubernetes CLI to manage your clusters in style
 - **[Skaffold](features/skaffold/)** - Easy and repeatable Kubernetes development
 
@@ -30,6 +32,8 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
 {
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "features": {
+    "ghcr.io/ruanzx/devcontainer-features:kubectl": {},
+    "ghcr.io/ruanzx/devcontainer-features:helm": {},
     "ghcr.io/ruanzx/devcontainer-features:k9s": {},
     "ghcr.io/ruanzx/devcontainer-features:yq": {
       "version": "4.44.3"
@@ -48,8 +52,8 @@ Each feature supports version configuration:
 ```json
 {
   "features": {
-    "ghcr.io/ruanzx/devcontainer-features:k9s": {
-      "version": "0.32.7"
+    "ghcr.io/ruanzx/devcontainer-features:kubectl": {
+      "version": "1.31.0"
     }
   }
 }
@@ -129,7 +133,9 @@ This will:
 │   └── utils.sh            # Common bash functions
 ├── features/               # Feature definitions
 │   ├── gitleaks/
+│   ├── helm/
 │   ├── k9s/
+│   ├── kubectl/
 │   ├── microsoft-edit/
 │   ├── skaffold/
 │   └── yq/
