@@ -2,14 +2,14 @@
   "name": "Development Environment with All Features",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
-    "ghcr.io/ruanzx/devcontainer-features/devcontainers-cli:0.80.0": {},
-    "ghcr.io/ruanzx/devcontainer-features/gitleaks:8.21.1": {},
-    "ghcr.io/ruanzx/devcontainer-features/helm:3.16.1": {},
-    "ghcr.io/ruanzx/devcontainer-features/k9s:0.32.7": {},
-    "ghcr.io/ruanzx/devcontainer-features/kubectl:1.31.0": {},
-    "ghcr.io/ruanzx/devcontainer-features/microsoft-edit:1.2.0": {},
-    "ghcr.io/ruanzx/devcontainer-features/skaffold:2.16.1": {},
-    "ghcr.io/ruanzx/devcontainer-features/yq:4.44.3": {}
+    "ghcr.io/ruanzx/features/devcontainers-cli:0.80.0": {},
+    "ghcr.io/ruanzx/features/gitleaks:8.21.1": {},
+    "ghcr.io/ruanzx/features/helm:3.16.1": {},
+    "ghcr.io/ruanzx/features/k9s:0.32.7": {},
+    "ghcr.io/ruanzx/features/kubectl:1.31.0": {},
+    "ghcr.io/ruanzx/features/microsoft-edit:1.2.0": {},
+    "ghcr.io/ruanzx/features/skaffold:2.16.1": {},
+    "ghcr.io/ruanzx/features/yq:4.44.3": {}
   },
   "customizations": {
     "vscode": {
@@ -20,5 +20,5 @@
     }
   },
   "postCreateCommand": "echo 'DevContainer with all features ready!'",
-  "remoteUser": "vscode"
+  //"remoteUser": "vscode"
 }
