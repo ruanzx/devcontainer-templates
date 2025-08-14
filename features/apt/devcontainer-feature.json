@@ -1,0 +1,32 @@
+{
+    "name": "APT Package Manager",
+    "id": "apt",
+    "version": "1.0.0",
+    "description": "Install packages using APT package manager on Debian-like systems",
+    "documentationURL": "https://wiki.debian.org/Apt",
+    "options": {
+        "packages": {
+            "type": "string",
+            "default": "",
+            "description": "Comma-separated list of package names to install (e.g., 'curl,git,vim,htop')"
+        },
+        "cleanCache": {
+            "type": "boolean",
+            "default": true,
+            "description": "Remove APT cache after package installation to reduce image size"
+        },
+        "updatePackageList": {
+            "type": "boolean",
+            "default": true,
+            "description": "Update package list before installing packages"
+        },
+        "upgradePackages": {
+            "type": "boolean",
+            "default": false,
+            "description": "Upgrade existing packages before installing new ones"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
