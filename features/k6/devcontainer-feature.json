@@ -1,0 +1,23 @@
+{
+  "id": "k6",
+  "version": "0.54.0",
+  "name": "k6 Load Testing Tool",
+  "description": "Install k6, a modern load testing tool for developers and testers",
+  "documentationURL": "https://k6.io/docs/",
+  "licenseURL": "https://github.com/grafana/k6/blob/master/LICENSE.md",
+  "keywords": [
+    "k6",
+    "load-testing",
+    "performance",
+    "testing",
+    "grafana",
+    "javascript"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Version of k6 to install. Use 'latest' for the most recent version or specify a version like 'v0.54.0'"
+    }
+  }
+}
