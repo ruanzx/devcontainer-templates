@@ -1,11 +1,12 @@
 # k6 Load Testing Tool
 
-Installs k6, a modern load testing tool for developers and testers.
+Installs k6, a modern load testing tool for developers and testers. This feature includes Node.js integration for JavaScript ecosystem compatibility.
 
 ## Example Usage
 
 ```json
 "features": {
+    "ghcr.io/devcontainers/features/node:1": {},
     "ghcr.io/ruanzx/features/k6:latest": {}
 }
 ```
@@ -16,28 +17,48 @@ Installs k6, a modern load testing tool for developers and testers.
 |-----|-----|-----|-----|
 | version | Version of k6 to install. Use 'latest' for the most recent version or specify a version like 'v0.54.0' | string | latest |
 
+## Dependencies
+
+This feature automatically installs after:
+- **Node.js**: Required for JavaScript ecosystem compatibility and npm package management
+
 ## Description
 
-k6 is a modern load testing tool, developed by Grafana Labs, that allows developers and testers to write performance tests in JavaScript. It's designed to test the performance of APIs, microservices, and websites.
+k6 is a modern load testing tool, developed by Grafana Labs, that allows developers and testers to write performance tests in JavaScript. It's designed to test the performance of APIs, microservices, and websites with a focus on developer experience.
 
 ## Usage Examples
 
-### Default Installation (Latest Version)
+### Default Installation with Node.js (Recommended)
 ```json
-"ghcr.io/ruanzx/features/k6:latest": {}
-```
-
-### Specific Version
-```json
-"ghcr.io/ruanzx/features/k6:latest": {
-    "version": "v0.54.0"
+"features": {
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/ruanzx/features/k6:latest": {}
 }
 ```
 
-### Version Without 'v' Prefix
+### Specific Version with Node.js LTS
 ```json
-"ghcr.io/ruanzx/features/k6:latest": {
-    "version": "0.54.0"
+"features": {
+    "ghcr.io/devcontainers/features/node:1": {
+        "nodeGypDependencies": true,
+        "version": "lts"
+    },
+    "ghcr.io/ruanzx/features/k6:latest": {
+        "version": "v0.54.0"
+    }
+}
+```
+
+### Complete Development Setup
+```json
+"features": {
+    "ghcr.io/devcontainers/features/node:1": {
+        "version": "lts"
+    },
+    "ghcr.io/ruanzx/features/k6:latest": {},
+    "ghcr.io/ruanzx/features/apt:latest": {
+        "packages": "curl,jq"
+    }
 }
 ```
 
@@ -47,20 +68,29 @@ k6 is a free, developer-centric load testing tool built for making performance t
 
 ### Key Features
 
-- **JavaScript ES6+**: Write tests in modern JavaScript
+- **JavaScript ES6+**: Write tests in modern JavaScript with full Node.js ecosystem support
 - **Performance Testing**: Load, stress, spike, and volume testing
 - **CI/CD Integration**: Built for automation and CI/CD pipelines
 - **Cloud & On-premise**: Run tests locally or in the cloud
 - **Rich Metrics**: Built-in metrics and custom metrics support
 - **Multiple Protocols**: HTTP/1.1, HTTP/2, WebSockets, gRPC
 
+### Node.js Integration Benefits
+
+With Node.js installed as a dependency, you can:
+- **Use npm packages**: Install and use JavaScript libraries for test utilities
+- **Modular test code**: Organize tests using ES6 modules and npm packages
+- **Data generation**: Use faker.js, moment.js, or other npm packages for test data
+- **Test management**: Use package.json scripts for test automation
+- **Development tools**: Access to the full JavaScript development ecosystem
+
 ### Common Use Cases
 
-- **Load testing**: Test how your system performs under expected load
-- **Stress testing**: Find the breaking point of your system
-- **Spike testing**: Test how your system handles sudden traffic spikes
-- **Volume testing**: Test with large amounts of data
-- **Endurance testing**: Test system stability over extended periods
+- **API load testing**: Test REST APIs and GraphQL endpoints
+- **Website performance**: Test page load times and user interactions
+- **Microservices testing**: Test service-to-service communication under load
+- **CI/CD integration**: Automated performance testing in pipelines
+- **Capacity planning**: Determine system limits and scaling requirements
 
 ## Getting Started
 

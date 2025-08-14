@@ -2,8 +2,13 @@
   "name": "Performance Testing Environment",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
     "ghcr.io/ruanzx/features/k6:latest": {},
-    "ghcr.io/devcontainers/features/node:latest": {}
+    "ghcr.io/ruanzx/features/apt:latest": {
+      "packages": "curl,jq,tree"
+    }
   },
   "customizations": {
     "vscode": {
@@ -11,10 +16,11 @@
         "ms-vscode.vscode-json",
         "redhat.vscode-yaml",
         "ms-vscode.theme-tomorrowkit",
-        "grafana.vscode-jsonnet"
+        "grafana.vscode-jsonnet",
+        "ms-vscode.vscode-typescript-next"
       ]
     }
   },
-  "postCreateCommand": "k6 version && echo 'Performance testing environment ready!'",
+  "postCreateCommand": "echo 'Performance testing environment ready!' && echo 'Available tools:' && echo '  - k6 for load testing' && echo '  - Node.js LTS with npm' && echo '  - curl, jq, tree utilities' && k6 version && node --version && npm --version",
   "remoteUser": "root"
 }

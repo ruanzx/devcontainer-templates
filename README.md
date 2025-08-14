@@ -1,6 +1,6 @@
 # DevContainer Features Collection
 
-A collection of 16 high-quality DevContainer Features for enhancing development environments with popular tools and utilities.
+A collection of 17 high-quality DevContainer Features for enhancing development environments with popular tools and utilities.
 
 ## 📦 Available Features
 
@@ -21,9 +21,24 @@ This repository provides the following DevContainer Features:
 - **[K9s](features/k9s/)** - Kubernetes CLI to manage your clusters in style
 - **[Skaffold](features/skaffold/)** - Easy and repeatable Kubernetes development
 
+### 🧪 Testing & Performance
+
+- **[k6](features/k6/)** - Modern load testing tool with Node.js integration for performance testing
+- **[Trivy](features/trivy/)** - Vulnerability scanner for containers, file systems, and Git repositories
+
 ### 🔒 Security
 
 - **[Gitleaks](features/gitleaks/)** - Detect and prevent secrets in your git repos
+
+### ☁️ Cloud & Infrastructure
+
+- **[AWS SAM CLI](features/aws-sam-cli/)** - AWS Serverless Application Model CLI for building and deploying serverless applications
+- **[Terraform Docs](features/terraform-docs/)** - Generate documentation from Terraform modules in various output formats
+- **[Terraformer](features/terraformer/)** - CLI tool to generate terraform files from existing infrastructure
+
+### 💻 Development Platforms
+
+- **[.NET Tools](features/dotnet-tools/)** - Essential .NET development tools including dotnet CLI and development certificates
 
 ## Quick Start
 
@@ -45,8 +60,12 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
     "ghcr.io/ruanzx/features/yq:4.44.3": {},
     "ghcr.io/ruanzx/features/microsoft-edit:1.2.0": {},
     "ghcr.io/ruanzx/features/ngrok:latest": {},
+    "ghcr.io/ruanzx/features/k6:latest": {},
     "ghcr.io/ruanzx/features/skaffold:2.16.1": {},
-    "ghcr.io/ruanzx/features/gitleaks:8.21.1": {}
+    "ghcr.io/ruanzx/features/gitleaks:8.21.1": {},
+    "ghcr.io/ruanzx/features/trivy:latest": {},
+    "ghcr.io/ruanzx/features/aws-sam-cli:latest": {},
+    "ghcr.io/ruanzx/features/dotnet-tools:latest": {}
   }
 }
 ```

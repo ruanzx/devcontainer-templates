@@ -19,5 +19,8 @@
       "default": "latest",
       "description": "Version of k6 to install. Use 'latest' for the most recent version or specify a version like 'v0.54.0'"
     }
-  }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/node:1"
+  ]
 }
