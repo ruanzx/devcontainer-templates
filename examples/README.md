@@ -4,6 +4,9 @@ This directory contains example devcontainer configurations demonstrating how to
 
 ## Examples
 
+### [APT Package Management](apt-packages/)
+Demonstrates how to install custom system packages using the APT package manager.
+
 ### [Basic All Features](basic-all-features/)
 Demonstrates how to use all available features in a single devcontainer.
 
@@ -14,7 +17,7 @@ Complete .NET development environment with Entity Framework, code formatting, an
 Performance testing environment with k6 for load testing and performance analysis.
 
 ### [Terraform Development](terraform-dev/)
-Terraform development environment with terraform-docs for generating module documentation.
+Terraform development environment with terraform-docs for generating module documentation and additional utility packages.
 
 ### [Infrastructure Import](infrastructure-import/)
 Infrastructure import environment with Terraformer for bringing existing cloud resources under Terraform management.
@@ -48,6 +51,7 @@ You can customize any example by:
 
 ## Available Features
 
+- `ghcr.io/ruanzx/features/apt` - Install system packages using APT package manager on Debian-like systems
 - `ghcr.io/ruanzx/features/aws-sam-cli` - AWS Serverless Application Model CLI for building and deploying serverless applications
 - `ghcr.io/ruanzx/features/devcontainers-cli` - DevContainers CLI tools
 - `ghcr.io/ruanzx/features/dotnet-tools` - .NET Global Tools (Entity Framework, formatters, etc.)

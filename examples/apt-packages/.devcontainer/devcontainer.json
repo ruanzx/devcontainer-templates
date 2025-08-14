@@ -1,0 +1,21 @@
+{
+  "name": "APT Package Management Example",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/ruanzx/features/apt:latest": {
+      "packages": "htop,tree,curl,wget,vim,git,jq,unzip,zip,nano",
+      "cleanCache": true,
+      "updatePackageList": true,
+      "upgradePackages": false
+    }
+  },
+  "postCreateCommand": "echo 'Container ready with custom packages!' && echo 'Installed packages:' && dpkg -l | grep -E 'htop|tree|curl|wget|vim|git|jq|unzip|zip|nano' | awk '{print \"  - \" $2 \" (\" $3 \")\"}'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-json"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}

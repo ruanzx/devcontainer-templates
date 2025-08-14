@@ -7,9 +7,14 @@
     },
     "ghcr.io/ruanzx/features/terraformer:latest": {
       "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/apt:latest": {
+      "packages": "tree,jq,curl,unzip,zip",
+      "cleanCache": true,
+      "updatePackageList": true
     }
   },
-  "postCreateCommand": "echo 'Terraform development container ready! terraform-docs installed and available.'",
+  "postCreateCommand": "echo 'Terraform development container ready!' && echo 'Available tools:' && echo '  - terraform-docs (documentation generator)' && echo '  - terraformer (import existing infrastructure)' && echo '  - Additional packages: tree, jq, curl, unzip, zip'",
   "customizations": {
     "vscode": {
       "extensions": [
