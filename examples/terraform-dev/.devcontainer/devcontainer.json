@@ -2,7 +2,10 @@
   "name": "Terraform Development",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
   "features": {
-    "ghcr.io/theronburr/devcontainer-templates/terraform-docs:latest": {
+    "ghcr.io/ruanzx/features/terraform-docs:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/terraformer:latest": {
       "version": "latest"
     }
   },
