@@ -2,7 +2,11 @@
   "name": "Development Environment with All Features",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
+    "ghcr.io/devcontainers/features/dotnet:latest": {},
     "ghcr.io/ruanzx/features/devcontainers-cli:latest": {},
+    "ghcr.io/ruanzx/features/dotnet-tools:latest": {
+      "tools": "dotnet-ef@latest,dotnet-format@latest,dotnet-outdated-tool@latest"
+    },
     "ghcr.io/ruanzx/features/gitleaks:latest": {},
     "ghcr.io/ruanzx/features/helm:latest": {},
     "ghcr.io/ruanzx/features/k9s:latest": {},

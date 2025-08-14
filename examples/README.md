@@ -7,6 +7,9 @@ This directory contains example devcontainer configurations demonstrating how to
 ### [Basic All Features](basic-all-features/)
 Demonstrates how to use all available features in a single devcontainer.
 
+### [.NET Development](dotnet-dev/)
+Complete .NET development environment with Entity Framework, code formatting, and analysis tools.
+
 ### [Kubernetes Development](kubernetes-dev/)
 Complete Kubernetes development environment with K9s, Skaffold, and related tools.
 
@@ -30,12 +33,14 @@ You can customize any example by:
 
 ## Available Features
 
-- `ghcr.io/ruanzx/devcontainer-features:microsoft-edit`
-- `ghcr.io/ruanzx/devcontainer-features:kubectl`
-- `ghcr.io/ruanzx/devcontainer-features:helm`
-- `ghcr.io/ruanzx/devcontainer-features:k9s`
-- `ghcr.io/ruanzx/devcontainer-features:skaffold`
-- `ghcr.io/ruanzx/devcontainer-features:yq`
-- `ghcr.io/ruanzx/devcontainer-features:gitleaks`
+- `ghcr.io/ruanzx/features/devcontainers-cli` - DevContainers CLI tools
+- `ghcr.io/ruanzx/features/dotnet-tools` - .NET Global Tools (Entity Framework, formatters, etc.)
+- `ghcr.io/ruanzx/features/gitleaks` - Secret detection and prevention
+- `ghcr.io/ruanzx/features/helm` - Kubernetes package manager
+- `ghcr.io/ruanzx/features/k9s` - Kubernetes terminal UI
+- `ghcr.io/ruanzx/features/kubectl` - Kubernetes command-line tool
+- `ghcr.io/ruanzx/features/microsoft-edit` - Microsoft's modern text editor
+- `ghcr.io/ruanzx/features/skaffold` - Kubernetes development workflow tool
+- `ghcr.io/ruanzx/features/yq` - YAML/JSON/XML processor
 
 For more information, see the main [README.md](../README.md).

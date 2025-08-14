@@ -1,0 +1,22 @@
+{
+  "name": ".NET Development Environment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "features": {
+    "ghcr.io/devcontainers/features/dotnet:latest": {},
+    "ghcr.io/ruanzx/features/dotnet-tools:latest": {
+      "tools": "dotnet-ef@latest,dotnet-format@latest,dotnet-outdated-tool@latest,dotnet-sonarscanner@latest"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        "bradlc.vscode-tailwindcss",
+        "formulahendry.dotnet-test-explorer"
+      ]
+    }
+  },
+  "postCreateCommand": "dotnet --version && dotnet tool list --global",
+  "remoteUser": "root"
+}

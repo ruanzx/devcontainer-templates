@@ -1,0 +1,31 @@
+{
+  "id": "dotnet-tools",
+  "version": "1.0.0",
+  "name": ".NET Global Tools",
+  "description": "Install custom .NET global tools from the official .NET tool ecosystem",
+  "documentationURL": "https://docs.microsoft.com/en-us/dotnet/core/tools/global-tools",
+  "licenseURL": "https://github.com/ruanzx/devcontainer-templates/blob/main/LICENSE",
+  "keywords": [
+    "dotnet",
+    "tools",
+    "entity-framework",
+    "ef",
+    "global-tools",
+    "development"
+  ],
+  "options": {
+    "tools": {
+      "type": "string",
+      "default": "dotnet-ef@latest",
+      "description": "Comma-separated list of .NET global tools to install. Format: 'tool@version' or 'tool@latest'. Examples: 'dotnet-ef@latest,dotnet-format@5.1.250250,dotnet-outdated-tool@latest'"
+    },
+    "prerelease": {
+      "type": "boolean",
+      "default": false,
+      "description": "Include prerelease versions when installing tools"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/dotnet"
+  ]
+}
