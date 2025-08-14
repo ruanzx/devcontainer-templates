@@ -24,12 +24,6 @@ Select the version of AWS SAM CLI to install.
 - **Default**: `latest`
 - **Options**: `latest`, `1.126.0`, `1.125.0`, `1.124.0`, `1.123.0`
 
-### `installDocker` (boolean)
-Install Docker (required for local testing and building).
-
-- **Default**: `true`
-- **Description**: Docker is required for SAM local commands and building functions
-
 ## Prerequisites
 
 AWS SAM CLI requires:

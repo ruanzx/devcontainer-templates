@@ -16,11 +16,6 @@
             ],
             "default": "latest",
             "description": "Select version of AWS SAM CLI to install"
-        },
-        "installDocker": {
-            "type": "boolean",
-            "default": true,
-            "description": "Install Docker (required for local testing and building)"
         }
     },
     "installsAfter": [

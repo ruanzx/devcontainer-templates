@@ -13,7 +13,6 @@ fi
 
 # Get options
 VERSION=${VERSION:-"latest"}
-INSTALL_DOCKER=${INSTALLDOCKER:-"true"}
 
 # Function to get latest version from GitHub API
 get_latest_version() {
@@ -86,24 +85,6 @@ echo "Installing prerequisites..."
 apt-get update
 apt-get install -y curl unzip
 
-# Install Docker if requested
-if [ "$INSTALL_DOCKER" = "true" ]; then
-    echo "Installing Docker..."
-    if ! command -v docker >/dev/null 2>&1; then
-        # Install Docker using the official script
-        curl -fsSL https://get.docker.com -o get-docker.sh
-        sh get-docker.sh
-        rm get-docker.sh
-        
-        # Add current user to docker group if not root
-        if [ "$(id -u)" != "0" ]; then
-            usermod -aG docker $USER || true
-        fi
-    else
-        echo "Docker is already installed"
-    fi
-fi
-
 # Construct download URL
 DOWNLOAD_URL="https://github.com/aws/aws-sam-cli/releases/download/v${VERSION}/aws-sam-cli-${OS}-${ARCH}.zip"
 
@@ -146,15 +127,6 @@ if command -v sam >/dev/null 2>&1; then
 else
     echo "❌ AWS SAM CLI installation failed"
     exit 1
-fi
-
-# Check Docker installation if requested
-if [ "$INSTALL_DOCKER" = "true" ]; then
-    if command -v docker >/dev/null 2>&1; then
-        echo "✅ Docker is available for SAM local testing"
-    else
-        echo "⚠️ Docker installation may require a restart to be fully functional"
-    fi
 fi
 
 echo "🎉 AWS SAM CLI is ready to use!"
