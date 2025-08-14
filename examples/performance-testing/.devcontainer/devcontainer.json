@@ -1,0 +1,20 @@
+{
+  "name": "Performance Testing Environment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "features": {
+    "ghcr.io/ruanzx/features/k6:latest": {},
+    "ghcr.io/devcontainers/features/node:latest": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "ms-vscode.theme-tomorrowkit",
+        "grafana.vscode-jsonnet"
+      ]
+    }
+  },
+  "postCreateCommand": "k6 version && echo 'Performance testing environment ready!'",
+  "remoteUser": "root"
+}

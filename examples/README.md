@@ -10,6 +10,9 @@ Demonstrates how to use all available features in a single devcontainer.
 ### [.NET Development](dotnet-dev/)
 Complete .NET development environment with Entity Framework, code formatting, and analysis tools.
 
+### [Performance Testing](performance-testing/)
+Performance testing environment with k6 for load testing and performance analysis.
+
 ### [Kubernetes Development](kubernetes-dev/)
 Complete Kubernetes development environment with K9s, Skaffold, and related tools.
 
@@ -37,6 +40,7 @@ You can customize any example by:
 - `ghcr.io/ruanzx/features/dotnet-tools` - .NET Global Tools (Entity Framework, formatters, etc.)
 - `ghcr.io/ruanzx/features/gitleaks` - Secret detection and prevention
 - `ghcr.io/ruanzx/features/helm` - Kubernetes package manager
+- `ghcr.io/ruanzx/features/k6` - Modern load testing tool
 - `ghcr.io/ruanzx/features/k9s` - Kubernetes terminal UI
 - `ghcr.io/ruanzx/features/kubectl` - Kubernetes command-line tool
 - `ghcr.io/ruanzx/features/microsoft-edit` - Microsoft's modern text editor

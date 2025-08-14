@@ -4,11 +4,10 @@
   "features": {
     "ghcr.io/devcontainers/features/dotnet:latest": {},
     "ghcr.io/ruanzx/features/devcontainers-cli:latest": {},
-    "ghcr.io/ruanzx/features/dotnet-tools:latest": {
-      "tools": "dotnet-ef@latest,dotnet-format@latest,dotnet-outdated-tool@latest"
-    },
+    "ghcr.io/ruanzx/features/dotnet-tools:latest": {},
     "ghcr.io/ruanzx/features/gitleaks:latest": {},
     "ghcr.io/ruanzx/features/helm:latest": {},
+    "ghcr.io/ruanzx/features/k6:latest": {},
     "ghcr.io/ruanzx/features/k9s:latest": {},
     "ghcr.io/ruanzx/features/kubectl:latest": {},
     "ghcr.io/ruanzx/features/microsoft-edit:latest": {},
