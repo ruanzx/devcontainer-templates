@@ -1,0 +1,19 @@
+{
+  "name": "Terraform Development",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/theronburr/devcontainer-templates/terraform-docs:latest": {
+      "version": "latest"
+    }
+  },
+  "postCreateCommand": "echo 'Terraform development container ready! terraform-docs installed and available.'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "hashicorp.terraform",
+        "ms-vscode.vscode-json"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}

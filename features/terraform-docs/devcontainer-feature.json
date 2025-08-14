@@ -1,0 +1,24 @@
+{
+  "id": "terraform-docs",
+  "version": "0.19.0",
+  "name": "terraform-docs",
+  "description": "Generate documentation from Terraform modules in various output formats",
+  "documentationURL": "https://terraform-docs.io/",
+  "licenseURL": "https://github.com/terraform-docs/terraform-docs/blob/master/LICENSE",
+  "keywords": [
+    "terraform",
+    "documentation",
+    "terraform-docs",
+    "infrastructure",
+    "iac",
+    "devops",
+    "automation"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Version of terraform-docs to install. Use 'latest' for the most recent version or specify a version like 'v0.19.0'"
+    }
+  }
+}
