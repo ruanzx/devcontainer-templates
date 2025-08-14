@@ -8,9 +8,9 @@
     "ghcr.io/ruanzx/features/helm:latest": {},
     "ghcr.io/ruanzx/features/k9s:latest": {},
     "ghcr.io/ruanzx/features/kubectl:latest": {},
-    "ghcr.io/ruanzx/features/microsoft-edit:latest": {},
     "ghcr.io/ruanzx/features/skaffold:latest": {},
-    "ghcr.io/ruanzx/features/yq:latest": {}
+    "ghcr.io/ruanzx/features/yq:latest": {},
+    "ghcr.io/ruanzx/features/microsoft-edit:latest": {}
   },
   "customizations": {
     "vscode": {

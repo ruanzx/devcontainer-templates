@@ -5,6 +5,9 @@
 
 set -e
 
+apt-get update \
+  && apt-get install -y wget tar zstd
+
 # Source common utilities
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 

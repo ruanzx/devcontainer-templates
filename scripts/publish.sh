@@ -23,7 +23,7 @@ BUILD_DIR="$ROOT_DIR/build"
 FEATURES_NAMESPACE="${FEATURES_NAMESPACE:-ruanzx/features}"
 GITHUB_REGISTRY="${GITHUB_REGISTRY:-ghcr.io}"
 GITHUB_USERNAME="${GITHUB_USERNAME:-ruanzx}"
-MAKE_PUBLIC="${MAKE_PUBLIC:-false}"
+MAKE_PUBLIC="${MAKE_PUBLIC:-true}"
 
 # Validate required environment variables
 if [[ -z "$GITHUB_TOKEN" ]]; then
@@ -77,15 +77,22 @@ setup_authentication() {
 # Function to make a package public
 make_package_public() {
     local package_name="$1"
-    log_info "Attempting to make package public: $package_name"
+    log_info "Making package public: $package_name"
     
-    # Note: GitHub Packages visibility can only be changed through the GitHub web UI
-    # or may require organization-level permissions that are not available with user tokens
-    log_warning "Making packages public via API is not currently supported"
-    log_info "To make packages public, please visit: https://github.com/users/$GITHUB_USERNAME/packages/container/package/$(basename "$package_name")"
-    log_info "Or if published to an organization: https://github.com/orgs/ORG_NAME/packages/container/package/$(basename "$package_name")"
+    # Use GitHub CLI to make the package public
+    # The package name for container packages in the API is typically prefixed with "features/"
+    local package_path="features%2F$package_name"
     
-    return 0
+    # Try to update package visibility to public
+    if gh api --method PATCH "/user/packages/container/$package_path" \
+        -f visibility=public 2>/dev/null; then
+        log_success "Successfully made package public: $package_name"
+        return 0
+    else
+        log_warning "Failed to make package public via API: $package_name"
+        log_info "You may need to manually set visibility at: https://github.com/users/$GITHUB_USERNAME/packages/container/package/features%2F$package_name"
+        return 1
+    fi
 }
 
 # Function to create and push a feature
@@ -162,10 +169,11 @@ main() {
         log_info "Features are now available at: $GITHUB_REGISTRY/$GITHUB_USERNAME/features/"
         log_info ""
         if [[ "$MAKE_PUBLIC" == "true" ]]; then
-            log_info "Note: Packages are published as private by default."
+            log_info "Packages have been made public automatically."
+        else
+            log_info "Note: Packages are published as private."
             log_info "To make packages public, visit the package settings in GitHub:"
             log_info "https://github.com/$GITHUB_USERNAME?tab=packages"
-            log_info ""
         fi
         log_info "To use these features in a devcontainer.json:"
         log_info "{"
@@ -196,16 +204,16 @@ usage() {
     echo "  GITHUB_USERNAME       GitHub username (default: ruanzx)"
     echo "  GITHUB_REGISTRY       Registry URL (default: ghcr.io)"
     echo "  FEATURES_NAMESPACE    Feature namespace (default: ruanzx/features)"
-    echo "  MAKE_PUBLIC           Make packages public after publishing (default: false)"
+    echo "  MAKE_PUBLIC           Make packages public after publishing (default: true)"
     echo ""
     echo "Options:"
     echo "  -h, --help           Show this help message"
-    echo "  --public             Make packages public after publishing"
-    echo "  --private            Keep packages private (default)"
+    echo "  --public             Make packages public after publishing (default)"
+    echo "  --private            Keep packages private"
     echo ""
     echo "Examples:"
-    echo "  $0                   Publish all features (private)"
-    echo "  $0 --public          Publish all features and make them public"
+    echo "  $0                   Publish all features (public by default)"
+    echo "  $0 --private         Publish all features and keep them private"
     echo ""
 }
 
