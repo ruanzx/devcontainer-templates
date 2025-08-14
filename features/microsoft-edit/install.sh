@@ -50,11 +50,12 @@ log_info "Downloading Microsoft Edit from $EDIT_URL"
 download_file "$EDIT_URL" "$EDIT_ARCHIVE"
 
 # Ensure required tools are available
-ensure_command "unzstd"
+ensure_command "zstd"
+ensure_command "tar"
 
 # Extract archive
 log_info "Extracting Microsoft Edit"
-unzstd "$EDIT_ARCHIVE"
+zstd -d "$EDIT_ARCHIVE"
 tar -xf "edit.tar"
 
 # Install binary

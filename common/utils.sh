@@ -92,7 +92,7 @@ extract_archive() {
             tar -xJf "$archive" -C "$destination"
             ;;
         *.tar.zst)
-            unzstd "$archive" && tar -xf "${archive%.zst}" -C "$destination"
+            zstd -d "$archive" && tar -xf "${archive%.zst}" -C "$destination"
             rm -f "${archive%.zst}"
             ;;
         *.zip)
