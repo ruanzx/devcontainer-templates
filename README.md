@@ -95,9 +95,11 @@ The **DevContainers CLI** feature provides the official CLI tool for working wit
 ```json
 {
   "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
     "ghcr.io/ruanzx/features/devcontainers-cli:0.80.0": {
-      "version": "0.80.0",
-      "nodeVersion": "lts"
+      "version": "0.80.0"
     }
   }
 }
@@ -105,7 +107,7 @@ The **DevContainers CLI** feature provides the official CLI tool for working wit
 
 **Key Benefits:**
 - **Complete DevContainer Management**: Build, run, and manage dev containers from the command line
-- **Node.js LTS Included**: Automatically installs Node.js LTS if not present
+- **Node.js Dependency**: Uses the official Node.js feature for reliable Node.js/npm environment
 - **Global CLI Access**: Available as `devcontainer` command throughout your environment
 - **CI/CD Integration**: Perfect for automated builds and testing pipelines
 

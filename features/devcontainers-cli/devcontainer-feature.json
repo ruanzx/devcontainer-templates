@@ -19,14 +19,10 @@
             "type": "string",
             "description": "Version of DevContainers CLI to install",
             "default": "0.80.0"
-        },
-        "nodeVersion": {
-            "type": "string",
-            "description": "Node.js version to install (LTS by default)",
-            "default": "lts"
         }
     },
     "installsAfter": [
-        "ghcr.io/devcontainers/features/common-utils"
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/devcontainers/features/node:1"
     ]
 }
