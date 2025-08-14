@@ -1,0 +1,23 @@
+{
+    "name": "ngrok",
+    "id": "ngrok",
+    "version": "3.18.4",
+    "description": "ngrok is a tunneling, reverse proxy for developing and understanding networked, HTTP services",
+    "documentationURL": "https://ngrok.com/docs",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": ["latest", "3.18.4", "3.18.3", "3.18.2", "3.18.1"],
+            "default": "latest",
+            "description": "Select version of ngrok to install"
+        },
+        "addToPath": {
+            "type": "boolean",
+            "default": true,
+            "description": "Add ngrok to system PATH"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

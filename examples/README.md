@@ -10,6 +10,9 @@ Demonstrates how to install custom system packages using the APT package manager
 ### [Basic All Features](basic-all-features/)
 Demonstrates how to use all available features in a single devcontainer.
 
+### [Web Development with Tunneling](web-development-tunneling/)
+Modern web development environment with ngrok tunneling for external access, webhooks, and mobile testing.
+
 ### [.NET Development](dotnet-dev/)
 Complete .NET development environment with Entity Framework, code formatting, and analysis tools.
 
@@ -61,6 +64,7 @@ You can customize any example by:
 - `ghcr.io/ruanzx/features/k9s` - Kubernetes terminal UI
 - `ghcr.io/ruanzx/features/kubectl` - Kubernetes command-line tool
 - `ghcr.io/ruanzx/features/microsoft-edit` - Microsoft's modern text editor
+- `ghcr.io/ruanzx/features/ngrok` - Tunneling and reverse proxy for developing networked HTTP services
 - `ghcr.io/ruanzx/features/skaffold` - Kubernetes development workflow tool
 - `ghcr.io/ruanzx/features/terraform-docs` - Generate documentation from Terraform modules
 - `ghcr.io/ruanzx/features/terraformer` - Generate Terraform files from existing infrastructure (reverse Terraform)

@@ -77,6 +77,17 @@ validate_packages() {
 }
 ```
 
+### External Binary Installation (ngrok Pattern)
+For tools distributed via direct download:
+```bash
+# Detect architecture and OS
+ARCH="$(uname -m)" && case "${ARCH}" in x86_64) ARCH="amd64" ;; esac
+OS="$(uname -s)" && case "${OS}" in Linux) OS="linux" ;; esac
+
+# Use download_file() from utils.sh
+download_file "$DOWNLOAD_URL" "$TEMP_DIR/tool.tgz"
+```
+
 ## Integration Points
 
 ### GitHub Container Registry

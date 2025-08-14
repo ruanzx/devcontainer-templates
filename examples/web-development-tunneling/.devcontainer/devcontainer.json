@@ -1,0 +1,41 @@
+{
+  "name": "Web Development with Tunneling",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/node:latest": {
+      "version": "lts"
+    },
+    "ghcr.io/ruanzx/features/ngrok:latest": {
+      "version": "latest",
+      "addToPath": true
+    },
+    "ghcr.io/ruanzx/features/apt:latest": {
+      "packages": "curl,jq,tree",
+      "cleanCache": true
+    }
+  },
+  "postCreateCommand": "echo 'Web development environment ready!' && echo 'Available tools:' && echo '  - Node.js LTS with npm' && echo '  - ngrok for tunneling local servers' && echo '  - Additional utilities: curl, jq, tree' && echo '' && echo 'Quick start:' && echo '  1. npm init -y && npm install express' && echo '  2. Create a simple server and start it' && echo '  3. Use ngrok http <port> to expose it publicly'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-json",
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+  "forwardPorts": [3000, 8080, 4040],
+  "portsAttributes": {
+    "3000": {
+      "label": "Development Server"
+    },
+    "8080": {
+      "label": "Alternative Server"
+    },
+    "4040": {
+      "label": "ngrok Web Interface"
+    }
+  },
+  "remoteUser": "vscode"
+}
