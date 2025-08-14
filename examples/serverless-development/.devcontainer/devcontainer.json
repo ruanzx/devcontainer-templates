@@ -1,0 +1,41 @@
+{
+  "name": "Serverless Development with AWS SAM",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "features": {
+    "ghcr.io/devcontainers/features/aws-cli:latest": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:latest": {},
+    "ghcr.io/ruanzx/features/aws-sam-cli:latest": {
+      "version": "latest",
+      "installDocker": false
+    }
+  },
+  "postCreateCommand": "echo 'Serverless development environment ready! AWS SAM CLI, AWS CLI, and Docker available.'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "amazonwebservices.aws-toolkit-vscode",
+        "ms-python.python",
+        "ms-python.flake8",
+        "ms-python.black-formatter",
+        "redhat.vscode-yaml",
+        "ms-vscode.vscode-json"
+      ]
+    }
+  },
+  "forwardPorts": [3000, 8080, 9000],
+  "portsAttributes": {
+    "3000": {
+      "label": "SAM Local API",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Local Development Server",
+      "onAutoForward": "notify"
+    },
+    "9000": {
+      "label": "Lambda Runtime Interface Emulator",
+      "onAutoForward": "notify"
+    }
+  },
+  "remoteUser": "vscode"
+}

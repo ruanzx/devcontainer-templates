@@ -1,0 +1,30 @@
+{
+    "name": "AWS SAM CLI",
+    "id": "aws-sam-cli",
+    "version": "1.0.0",
+    "description": "AWS Serverless Application Model (SAM) CLI for building and deploying serverless applications",
+    "documentationURL": "https://docs.aws.amazon.com/serverless-application-model/",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": [
+                "latest",
+                "1.126.0",
+                "1.125.0",
+                "1.124.0",
+                "1.123.0"
+            ],
+            "default": "latest",
+            "description": "Select version of AWS SAM CLI to install"
+        },
+        "installDocker": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install Docker (required for local testing and building)"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/devcontainers/features/python"
+    ]
+}

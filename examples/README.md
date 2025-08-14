@@ -19,6 +19,9 @@ Terraform development environment with terraform-docs for generating module docu
 ### [Infrastructure Import](infrastructure-import/)
 Infrastructure import environment with Terraformer for bringing existing cloud resources under Terraform management.
 
+### [Serverless Development](serverless-development/)
+Serverless development environment with AWS SAM CLI for building and deploying serverless applications.
+
 ### [Kubernetes Development](kubernetes-dev/)
 Complete Kubernetes development environment with K9s, Skaffold, and related tools.
 
@@ -42,6 +45,7 @@ You can customize any example by:
 
 ## Available Features
 
+- `ghcr.io/ruanzx/features/aws-sam-cli` - AWS Serverless Application Model CLI for building and deploying serverless applications
 - `ghcr.io/ruanzx/features/devcontainers-cli` - DevContainers CLI tools
 - `ghcr.io/ruanzx/features/dotnet-tools` - .NET Global Tools (Entity Framework, formatters, etc.)
 - `ghcr.io/ruanzx/features/gitleaks` - Secret detection and prevention

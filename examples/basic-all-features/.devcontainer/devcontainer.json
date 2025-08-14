@@ -3,6 +3,7 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
     "ghcr.io/devcontainers/features/dotnet:latest": {},
+    "ghcr.io/ruanzx/features/aws-sam-cli:latest": {},
     "ghcr.io/ruanzx/features/devcontainers-cli:latest": {},
     "ghcr.io/ruanzx/features/dotnet-tools:latest": {},
     "ghcr.io/ruanzx/features/gitleaks:latest": {},
