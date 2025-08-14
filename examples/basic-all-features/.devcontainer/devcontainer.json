@@ -13,6 +13,7 @@
     "ghcr.io/ruanzx/features/microsoft-edit:latest": {},
     "ghcr.io/ruanzx/features/skaffold:latest": {},
     "ghcr.io/ruanzx/features/terraform-docs:latest": {},
+    "ghcr.io/ruanzx/features/terraformer:latest": {},
     "ghcr.io/ruanzx/features/yq:latest": {}
   },
   "customizations": {

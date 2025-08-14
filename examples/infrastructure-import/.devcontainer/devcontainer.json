@@ -1,0 +1,25 @@
+{
+  "name": "Infrastructure Import with Terraformer",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/terraform:latest": {},
+    "ghcr.io/ruanzx/features/terraformer:latest": {
+      "version": "latest",
+      "provider": "all"
+    },
+    "ghcr.io/devcontainers/features/aws-cli:latest": {},
+    "ghcr.io/devcontainers/features/azure-cli:latest": {},
+    "ghcr.io/devcontainers/features/github-cli:latest": {}
+  },
+  "postCreateCommand": "echo 'Infrastructure import environment ready! Terraformer, Terraform, and cloud CLIs installed.'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "hashicorp.terraform",
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}

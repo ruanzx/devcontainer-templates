@@ -16,6 +16,9 @@ Performance testing environment with k6 for load testing and performance analysi
 ### [Terraform Development](terraform-dev/)
 Terraform development environment with terraform-docs for generating module documentation.
 
+### [Infrastructure Import](infrastructure-import/)
+Infrastructure import environment with Terraformer for bringing existing cloud resources under Terraform management.
+
 ### [Kubernetes Development](kubernetes-dev/)
 Complete Kubernetes development environment with K9s, Skaffold, and related tools.
 
@@ -49,6 +52,7 @@ You can customize any example by:
 - `ghcr.io/ruanzx/features/microsoft-edit` - Microsoft's modern text editor
 - `ghcr.io/ruanzx/features/skaffold` - Kubernetes development workflow tool
 - `ghcr.io/ruanzx/features/terraform-docs` - Generate documentation from Terraform modules
+- `ghcr.io/ruanzx/features/terraformer` - Generate Terraform files from existing infrastructure (reverse Terraform)
 - `ghcr.io/ruanzx/features/yq` - YAML/JSON/XML processor
 
 For more information, see the main [README.md](../README.md).

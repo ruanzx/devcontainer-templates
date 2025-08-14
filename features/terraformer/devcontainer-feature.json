@@ -1,0 +1,39 @@
+{
+    "name": "Terraformer",
+    "id": "terraformer",
+    "version": "1.0.0",
+    "description": "CLI tool to generate terraform files from existing infrastructure (reverse Terraform)",
+    "documentationURL": "https://github.com/GoogleCloudPlatform/terraformer",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": [
+                "latest",
+                "0.8.30",
+                "0.8.29",
+                "0.8.28"
+            ],
+            "default": "latest",
+            "description": "Select version of Terraformer to install"
+        },
+        "provider": {
+            "type": "string",
+            "enum": [
+                "all",
+                "aws",
+                "google",
+                "azure",
+                "kubernetes",
+                "github",
+                "alicloud",
+                "digitalocean",
+                "openstack"
+            ],
+            "default": "all",
+            "description": "Select which provider(s) to include in the Terraformer binary"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
