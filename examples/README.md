@@ -22,6 +22,9 @@ Infrastructure import environment with Terraformer for bringing existing cloud r
 ### [Serverless Development](serverless-development/)
 Serverless development environment with AWS SAM CLI for building and deploying serverless applications.
 
+### [Security Scanning](security-scanning/)
+Comprehensive security scanning environment with Trivy and Gitleaks for vulnerability detection and secret scanning.
+
 ### [Kubernetes Development](kubernetes-dev/)
 Complete Kubernetes development environment with K9s, Skaffold, and related tools.
 
@@ -57,6 +60,7 @@ You can customize any example by:
 - `ghcr.io/ruanzx/features/skaffold` - Kubernetes development workflow tool
 - `ghcr.io/ruanzx/features/terraform-docs` - Generate documentation from Terraform modules
 - `ghcr.io/ruanzx/features/terraformer` - Generate Terraform files from existing infrastructure (reverse Terraform)
+- `ghcr.io/ruanzx/features/trivy` - Comprehensive security scanner for vulnerabilities in containers, file systems, and repositories
 - `ghcr.io/ruanzx/features/yq` - YAML/JSON/XML processor
 
 For more information, see the main [README.md](../README.md).

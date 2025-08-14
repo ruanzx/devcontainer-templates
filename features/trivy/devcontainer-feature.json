@@ -1,0 +1,29 @@
+{
+    "name": "Trivy",
+    "id": "trivy",
+    "version": "1.0.0",
+    "description": "A comprehensive security scanner for vulnerabilities in containers, file systems, git repositories, and more",
+    "documentationURL": "https://trivy.dev/",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": [
+                "latest",
+                "0.58.1",
+                "0.58.0",
+                "0.57.1",
+                "0.57.0"
+            ],
+            "default": "latest",
+            "description": "Select version of Trivy to install"
+        },
+        "installDb": {
+            "type": "boolean",
+            "default": true,
+            "description": "Download vulnerability database during installation"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

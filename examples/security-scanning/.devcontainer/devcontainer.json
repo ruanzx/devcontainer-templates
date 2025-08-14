@@ -1,0 +1,29 @@
+{
+  "name": "Security Scanning Environment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:latest": {},
+    "ghcr.io/ruanzx/features/trivy:latest": {
+      "version": "latest",
+      "installDb": true
+    },
+    "ghcr.io/ruanzx/features/gitleaks:latest": {},
+    "ghcr.io/devcontainers/features/github-cli:latest": {}
+  },
+  "postCreateCommand": "echo 'Security scanning environment ready! Trivy, Gitleaks, and Docker available for comprehensive security analysis.'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "ms-python.python",
+        "bradlc.vscode-tailwindcss",
+        "GitHub.vscode-github-actions"
+      ]
+    }
+  },
+  "mounts": [
+    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+  ],
+  "remoteUser": "vscode"
+}
