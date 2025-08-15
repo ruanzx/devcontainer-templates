@@ -67,7 +67,7 @@ You can customize any example by:
 - `ghcr.io/ruanzx/features/k9s` - Kubernetes terminal UI
 - `ghcr.io/ruanzx/features/kubectl` - Kubernetes command-line tool
 - `ghcr.io/ruanzx/features/lazygit` - Simple terminal UI for git commands
-- `ghcr.io/ruanzx/features/microsoft-edit` - Microsoft's modern text editor
+- `ghcr.io/ruanzx/features/edit` - Microsoft's modern text editor
 - `ghcr.io/ruanzx/features/ngrok` - Tunneling and reverse proxy for developing networked HTTP services
 - `ghcr.io/ruanzx/features/skaffold` - Kubernetes development workflow tool
 - `ghcr.io/ruanzx/features/terraform-docs` - Generate documentation from Terraform modules

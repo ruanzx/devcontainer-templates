@@ -23,7 +23,7 @@ Installs [Microsoft Edit](https://github.com/microsoft/edit), a fast, simple tex
 ```json
 {
   "features": {
-    "ghcr.io/ruanzx/devcontainer-features:microsoft-edit": {
+    "ghcr.io/ruanzx/devcontainer-features:edit": {
       "version": "1.2.0"
     }
   }

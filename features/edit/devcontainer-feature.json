@@ -1,7 +1,7 @@
 {
-    "id": "microsoft-edit",
+    "id": "edit",
     "version": "1.2.0",
-    "name": "Microsoft Edit",
+    "name": "Edit",
     "description": "A fast, simple text editor that uses the standard command line conventions on Windows, Linux, and Mac.",
     "documentationURL": "https://github.com/microsoft/edit",
     "licenseURL": "https://github.com/microsoft/edit/blob/main/LICENSE",

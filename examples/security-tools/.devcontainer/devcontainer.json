@@ -5,7 +5,7 @@
     "ghcr.io/devcontainers/features/git:1": {},
     "ghcr.io/ruanzx/features/gitleaks:8.21.1": {},
     "ghcr.io/ruanzx/features/yq:4.44.3": {},
-    "ghcr.io/ruanzx/features/microsoft-edit:1.2.0": {}
+    "ghcr.io/ruanzx/features/edit:1.2.0": {}
   },
   "customizations": {
     "vscode": {

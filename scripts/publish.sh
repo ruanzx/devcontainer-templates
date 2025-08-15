@@ -49,6 +49,9 @@ check_prerequisites() {
     # Check if jq is available
     ensure_command "jq"
     
+    # Check if docker is available
+    ensure_command "docker"
+    
     # Check if build directory exists
     if [[ ! -d "$BUILD_DIR" ]]; then
         log_error "Build directory not found: $BUILD_DIR"
@@ -63,11 +66,21 @@ check_prerequisites() {
 setup_authentication() {
     log_info "Setting up authentication for $GITHUB_REGISTRY"
     
-    # The devcontainer CLI will use the GITHUB_TOKEN environment variable automatically
-    # for authentication with ghcr.io
+    # Check if GITHUB_TOKEN is available
     if [[ -z "$GITHUB_TOKEN" ]]; then
         log_error "GITHUB_TOKEN environment variable is required"
         log_info "Please set your GitHub token in the .env file"
+        exit 1
+    fi
+    
+    # Authenticate Docker with GitHub Container Registry
+    log_info "Authenticating Docker with GitHub Container Registry"
+    echo "$GITHUB_TOKEN" | docker login ghcr.io --username "$GITHUB_USERNAME" --password-stdin
+    
+    if [[ $? -eq 0 ]]; then
+        log_success "Docker authentication successful"
+    else
+        log_error "Docker authentication failed"
         exit 1
     fi
     
