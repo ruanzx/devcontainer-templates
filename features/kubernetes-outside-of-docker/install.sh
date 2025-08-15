@@ -20,24 +20,49 @@ fi
 
 log_info "🔧 Configuring Kubernetes access from dev container..."
 
+# Detect the container user (could be vscode, root, or other)
+if [ -n "$_REMOTE_USER" ]; then
+    CONTAINER_USER="$_REMOTE_USER"
+elif [ -n "$REMOTE_USER" ]; then
+    CONTAINER_USER="$REMOTE_USER"
+elif getent passwd vscode >/dev/null 2>&1; then
+    CONTAINER_USER="vscode"
+elif getent passwd node >/dev/null 2>&1; then
+    CONTAINER_USER="node"
+else
+    CONTAINER_USER="root"
+fi
+
+log_info "📋 Detected container user: $CONTAINER_USER"
+
+# Get user home directory
+if [ "$CONTAINER_USER" = "root" ]; then
+    USER_HOME="/root"
+else
+    USER_HOME="/home/$CONTAINER_USER"
+fi
+
+log_info "📁 User home directory: $USER_HOME"
+
 # Define paths
-KUBE_DIR="/home/vscode/.kube"
-ORIGINAL_KUBECONFIG="$KUBE_DIR/config"
-CONTAINER_KUBECONFIG="$KUBE_DIR/config-container"
+KUBE_DIR="$USER_HOME/.kube"
 
 # Create .kube directory if it doesn't exist
 if [ ! -d "$KUBE_DIR" ]; then
     log_info "📁 Creating .kube directory"
     mkdir -p "$KUBE_DIR"
-    chown -R vscode:vscode "$KUBE_DIR"
+    if [ "$CONTAINER_USER" != "root" ]; then
+        chown -R "$CONTAINER_USER:$CONTAINER_USER" "$KUBE_DIR"
+    fi
 fi
 
 # Create initialization script that will run when container starts
 INIT_SCRIPT="/usr/local/share/kubernetes-init.sh"
 
-log_info "� Creating Kubernetes initialization script"
+log_info "📝 Creating Kubernetes initialization script"
 
-cat > "$INIT_SCRIPT" << 'EOF'
+# Create the initialization script with dynamic user detection
+cat > "$INIT_SCRIPT" << 'INIT_SCRIPT_EOF'
 #!/bin/bash
 
 # Kubernetes initialization script for dev container
@@ -45,12 +70,73 @@ cat > "$INIT_SCRIPT" << 'EOF'
 
 set -e
 
+# Detect the container user (could be vscode, root, or other)
+if [ -n "$_REMOTE_USER" ]; then
+    CONTAINER_USER="$_REMOTE_USER"
+elif [ -n "$REMOTE_USER" ]; then
+    CONTAINER_USER="$REMOTE_USER"
+elif getent passwd vscode >/dev/null 2>&1; then
+    CONTAINER_USER="vscode"
+elif getent passwd node >/dev/null 2>&1; then
+    CONTAINER_USER="node"
+else
+    CONTAINER_USER="root"
+fi
+
+# Get user home directory
+if [ "$CONTAINER_USER" = "root" ]; then
+    USER_HOME="/root"
+else
+    USER_HOME="/home/$CONTAINER_USER"
+fi
+
 # Define paths
-KUBE_DIR="/home/vscode/.kube"
+KUBE_DIR="$USER_HOME/.kube"
+HOST_KUBE_MOUNT="/tmp/host-kube"
 ORIGINAL_KUBECONFIG="$KUBE_DIR/config"
 CONTAINER_KUBECONFIG="$KUBE_DIR/config-container"
 
 echo "🔧 Initializing Kubernetes configuration for dev container..."
+echo "📋 Container user: $CONTAINER_USER"
+echo "📁 Kube directory: $KUBE_DIR"
+echo "📂 Host mount: $HOST_KUBE_MOUNT"
+
+# Create user .kube directory if needed
+if [ ! -d "$KUBE_DIR" ]; then
+    echo "📁 Creating user .kube directory"
+    mkdir -p "$KUBE_DIR"
+    if [ "$CONTAINER_USER" != "root" ]; then
+        chown -R "$CONTAINER_USER:$CONTAINER_USER" "$KUBE_DIR"
+    fi
+fi
+
+# Copy host kubeconfig if available
+if [ -f "$HOST_KUBE_MOUNT/config" ]; then
+    echo "📋 Copying host kubeconfig to user directory"
+    cp "$HOST_KUBE_MOUNT/config" "$ORIGINAL_KUBECONFIG"
+    if [ "$CONTAINER_USER" != "root" ]; then
+        chown "$CONTAINER_USER:$CONTAINER_USER" "$ORIGINAL_KUBECONFIG"
+    fi
+elif [ ! -f "$ORIGINAL_KUBECONFIG" ]; then
+    echo "ℹ️  No kubeconfig found in host mount at $HOST_KUBE_MOUNT/config"
+    echo "   Ensure your host .kube directory is properly mounted"
+    echo "   The feature automatically mounts from \${localEnv:HOME}/.kube to /tmp/host-kube"
+    exit 0
+fi
+
+# Only proceed if we have a kubeconfig to work with
+if [ ! -f "$ORIGINAL_KUBECONFIG" ]; then
+    echo "ℹ️  No kubeconfig available for processing"
+    exit 0
+fi
+
+echo "📁 Found kubeconfig at $ORIGINAL_KUBECONFIG"
+
+# Create backup if it doesn't exist
+if [ ! -f "${ORIGINAL_KUBECONFIG}.backup" ]; then
+    echo "💾 Creating backup of original kubeconfig"
+    cp "$ORIGINAL_KUBECONFIG" "${ORIGINAL_KUBECONFIG}.backup"
+fi
 
 # Function to detect Docker gateway IP
 detect_gateway_ip() {
@@ -92,22 +178,6 @@ is_kind_cluster() {
     fi
 }
 
-# Only proceed if original kubeconfig exists (mounted from host)
-if [ ! -f "$ORIGINAL_KUBECONFIG" ]; then
-    echo "ℹ️  No kubeconfig found at $ORIGINAL_KUBECONFIG"
-    echo "   Mount your .kube directory to access the host Kubernetes cluster"
-    echo "   Example: \"mounts\": [{\"source\": \"\${localEnv:HOME}/.kube\", \"target\": \"/home/vscode/.kube\", \"type\": \"bind\"}]"
-    exit 0
-fi
-
-echo "📁 Found kubeconfig at $ORIGINAL_KUBECONFIG"
-
-# Create backup if it doesn't exist
-if [ ! -f "${ORIGINAL_KUBECONFIG}.backup" ]; then
-    echo "💾 Creating backup of original kubeconfig"
-    cp "$ORIGINAL_KUBECONFIG" "${ORIGINAL_KUBECONFIG}.backup"
-fi
-
 # Detect network configuration
 GATEWAY_IP=$(detect_gateway_ip)
 K8S_PORT=$(detect_k8s_port)
@@ -120,7 +190,7 @@ if is_kind_cluster; then
     echo "🏷️  Detected kind cluster"
     SERVER_URL="https://host.docker.internal:$K8S_PORT"
 else
-    echo "�️  Detected standard Kubernetes cluster"
+    echo "🏷️  Detected standard Kubernetes cluster"
     SERVER_URL="https://$GATEWAY_IP:$K8S_PORT"
 fi
 
@@ -137,53 +207,60 @@ sed -i "s|server: https://127.0.0.1:[0-9]\+|server: $SERVER_URL|g" "$CONTAINER_K
 sed -i "s|server: https://host.docker.internal:[0-9]\+|server: $SERVER_URL|g" "$CONTAINER_KUBECONFIG"
 
 # Set proper ownership
-chown vscode:vscode "$CONTAINER_KUBECONFIG"
+if [ "$CONTAINER_USER" != "root" ]; then
+    chown "$CONTAINER_USER:$CONTAINER_USER" "$CONTAINER_KUBECONFIG"
+fi
 
 # Export KUBECONFIG for the session
 export KUBECONFIG="$CONTAINER_KUBECONFIG"
 
 # Configure kubectl to skip TLS verification for container use
-echo "� Configuring TLS settings..."
-kubectl config set-cluster docker-desktop --insecure-skip-tls-verify=true 2>/dev/null || true
+echo "🔐 Configuring TLS settings..."
+if command -v kubectl >/dev/null 2>&1; then
+    kubectl config set-cluster docker-desktop --insecure-skip-tls-verify=true 2>/dev/null || true
 
-# Get the current context name and configure it
-CURRENT_CONTEXT=$(kubectl config current-context 2>/dev/null || echo "")
-if [ -n "$CURRENT_CONTEXT" ]; then
-    # Get cluster name from context
-    CLUSTER_NAME=$(kubectl config view -o jsonpath="{.contexts[?(@.name=='$CURRENT_CONTEXT')].context.cluster}" 2>/dev/null || echo "")
-    if [ -n "$CLUSTER_NAME" ]; then
-        kubectl config set-cluster "$CLUSTER_NAME" --insecure-skip-tls-verify=true 2>/dev/null || true
+    # Get the current context name and configure it
+    CURRENT_CONTEXT=$(kubectl config current-context 2>/dev/null || echo "")
+    if [ -n "$CURRENT_CONTEXT" ]; then
+        # Get cluster name from context
+        CLUSTER_NAME=$(kubectl config view -o jsonpath="{.contexts[?(@.name=='$CURRENT_CONTEXT')].context.cluster}" 2>/dev/null || echo "")
+        if [ -n "$CLUSTER_NAME" ]; then
+            kubectl config set-cluster "$CLUSTER_NAME" --insecure-skip-tls-verify=true 2>/dev/null || true
+        fi
     fi
-fi
 
-# Test kubectl connection
-echo "🧪 Testing kubectl connection..."
-if timeout 10 kubectl get nodes &>/dev/null; then
-    echo "✅ kubectl is working correctly!"
-    echo ""
-    echo "📊 Cluster information:"
-    kubectl get nodes 2>/dev/null || echo "Could not retrieve node information"
-else
-    echo "❌ kubectl connection failed"
-    echo ""
-    if is_kind_cluster; then
-        echo "⚠️  This appears to be a kind cluster bound to localhost."
-        echo "   For dev container access, consider recreating the cluster with:"
+    # Test kubectl connection
+    echo "🧪 Testing kubectl connection..."
+    if timeout 10 kubectl get nodes &>/dev/null; then
+        echo "✅ kubectl is working correctly!"
         echo ""
-        echo "   kind create cluster --config - <<EOF"
-        echo "   kind: Cluster"
-        echo "   apiVersion: kind.x-k8s.io/v1alpha4"
-        echo "   networking:"
-        echo "     apiServerAddress: \"0.0.0.0\""
-        echo "     apiServerPort: 6443"
-        echo "   EOF"
-        echo ""
+        echo "📊 Cluster information:"
+        kubectl get nodes 2>/dev/null || echo "Could not retrieve node information"
     else
-        echo "💡 Troubleshooting steps:"
-        echo "   - Ensure the Kubernetes cluster is running on the host"
-        echo "   - Check that the .kube directory is properly mounted"
-        echo "   - Verify network connectivity between container and host"
+        echo "❌ kubectl connection failed"
+        echo ""
+        if is_kind_cluster; then
+            echo "⚠️  This appears to be a kind cluster bound to localhost."
+            echo "   For dev container access, consider recreating the cluster with:"
+            echo ""
+            echo "   kind create cluster --config - <<EOF"
+            echo "   kind: Cluster"
+            echo "   apiVersion: kind.x-k8s.io/v1alpha4"
+            echo "   networking:"
+            echo "     apiServerAddress: \"0.0.0.0\""
+            echo "     apiServerPort: 6443"
+            echo "   EOF"
+            echo ""
+        else
+            echo "💡 Troubleshooting steps:"
+            echo "   - Ensure the Kubernetes cluster is running on the host"
+            echo "   - Check that the .kube directory is properly mounted"
+            echo "   - Verify network connectivity between container and host"
+        fi
     fi
+else
+    echo "⚠️  kubectl not found - skipping connection test"
+    echo "   kubectl should be installed by the kubectl feature dependency"
 fi
 
 # Set up environment for shell sessions
@@ -195,26 +272,35 @@ add_to_profile() {
     if [ -f "$profile" ] && ! grep -q "KUBECONFIG.*config-container" "$profile" 2>/dev/null; then
         echo "" >> "$profile"
         echo "# Dev container Kubernetes configuration" >> "$profile"
-        echo "export KUBECONFIG=/home/vscode/.kube/config-container" >> "$profile"
+        echo "export KUBECONFIG=$USER_HOME/.kube/config-container" >> "$profile"
     fi
 }
 
 # Add to various shell profiles
-add_to_profile "/home/vscode/.bashrc"
-add_to_profile "/home/vscode/.zshrc"
-add_to_profile "/home/vscode/.profile"
+add_to_profile "$USER_HOME/.bashrc"
+add_to_profile "$USER_HOME/.zshrc"
+add_to_profile "$USER_HOME/.profile"
+
+# Set proper ownership for all created files
+if [ "$CONTAINER_USER" != "root" ]; then
+    chown -R "$CONTAINER_USER:$CONTAINER_USER" "$KUBE_DIR" 2>/dev/null || true
+    chown "$CONTAINER_USER:$CONTAINER_USER" "$USER_HOME/.bashrc" 2>/dev/null || true
+    chown "$CONTAINER_USER:$CONTAINER_USER" "$USER_HOME/.zshrc" 2>/dev/null || true
+    chown "$CONTAINER_USER:$CONTAINER_USER" "$USER_HOME/.profile" 2>/dev/null || true
+fi
 
 echo ""
 echo "🎉 Kubernetes configuration completed!"
 echo ""
 echo "📋 Configuration summary:"
+echo "  • Container user: $CONTAINER_USER"
 echo "  • Original kubeconfig: $ORIGINAL_KUBECONFIG (unchanged)"
 echo "  • Container kubeconfig: $CONTAINER_KUBECONFIG"
 echo "  • Server URL: $SERVER_URL"
 echo "  • TLS verification: disabled for container use"
 echo ""
 echo "💡 The KUBECONFIG environment variable is set for new shell sessions"
-EOF
+INIT_SCRIPT_EOF
 
 # Make the initialization script executable
 chmod +x "$INIT_SCRIPT"
@@ -223,11 +309,16 @@ chmod +x "$INIT_SCRIPT"
 ln -sf "$INIT_SCRIPT" "/usr/local/share/docker-init.sh"
 
 log_success "✅ Kubernetes configuration feature installed successfully!"
-log_info "📋 Next steps:"
-log_info "  1. Mount your .kube directory in devcontainer.json:"
-log_info "     \"mounts\": [{\"source\": \"\${localEnv:HOME}/.kube\", \"target\": \"/home/vscode/.kube\", \"type\": \"bind\"}]"
-log_info "  2. Rebuild your dev container"
-log_info "  3. The initialization script will run automatically on container start"
+log_info "📋 Configuration details:"
+log_info "  • Container user: $CONTAINER_USER"
+log_info "  • Kube directory: $KUBE_DIR"
+log_info "  • Initialization script: $INIT_SCRIPT"
+log_info ""
+log_info "💡 The feature will automatically:"
+log_info "  1. Mount host .kube directory from \${localEnv:HOME}/.kube to /tmp/host-kube"
+log_info "  2. Copy kubeconfig to user directory during initialization"
+log_info "  3. Configure kubectl for container-to-host connectivity"
+log_info "  4. Run initialization script on container start via entrypoint"
 
 log_info "🔄 Running initialization script now..."
 bash "$INIT_SCRIPT"
