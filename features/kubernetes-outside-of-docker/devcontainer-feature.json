@@ -1,6 +1,6 @@
 {
     "id": "kubernetes-outside-of-docker",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "name": "Kubernetes Outside of Docker",
     "description": "Re-use the host Kubernetes cluster from within a dev container. Configures kubectl to access clusters running on the host machine including Docker Desktop, kind, minikube, and others.",
     "documentationURL": "https://github.com/ruanzx/devcontainer-templates/tree/main/features/kubernetes-outside-of-docker",
@@ -13,6 +13,23 @@
         "cluster",
         "host-access"
     ],
+    "options": {
+        "enableTunnel": {
+            "type": "boolean",
+            "default": true,
+            "description": "Enable network tunnel for container-to-host connectivity"
+        },
+        "enableTLS": {
+            "type": "boolean", 
+            "default": true,
+            "description": "Configure TLS settings for container environment"
+        },
+        "kubeconfigPath": {
+            "type": "string",
+            "default": "",
+            "description": "Custom path for kubeconfig file (defaults to user home .kube/config)"
+        }
+    },
     "customizations": {
         "vscode": {
             "extensions": [

@@ -286,6 +286,10 @@ fi
 # Set up environment for shell sessions
 echo "🔧 Setting up environment for shell sessions..."
 
+# Export KUBECONFIG for current session
+export KUBECONFIG="$CONTAINER_KUBECONFIG"
+echo "🔧 KUBECONFIG set to: $KUBECONFIG"
+
 # Function to add KUBECONFIG to shell profile
 add_to_profile() {
     local profile="$1"
@@ -342,3 +346,56 @@ log_info "  4. Run initialization script on container start via entrypoint"
 
 log_info "🔄 Running initialization script now..."
 bash "$INIT_SCRIPT"
+
+# Set KUBECONFIG environment variable for current session
+if [ "$CONTAINER_USER" = "root" ]; then
+    CONTAINER_KUBECONFIG="/root/.kube/config-container"
+else
+    CONTAINER_KUBECONFIG="/home/$CONTAINER_USER/.kube/config-container"
+fi
+
+if [ -f "$CONTAINER_KUBECONFIG" ]; then
+    export KUBECONFIG="$CONTAINER_KUBECONFIG"
+    log_success "🔧 KUBECONFIG set to: $KUBECONFIG"
+    
+    # Create a global environment file that can be sourced
+    mkdir -p /etc/environment.d
+    echo "export KUBECONFIG=\"$CONTAINER_KUBECONFIG\"" > /etc/environment.d/99-kubernetes.conf
+    echo "export KUBECONFIG=\"$CONTAINER_KUBECONFIG\"" >> /etc/environment
+fi
+
+# Create a kubectl wrapper to ensure config is loaded
+cat > /usr/local/bin/kubectl-wrapper << 'KUBECTL_WRAPPER_EOF'
+#!/bin/bash
+# Ensure Kubernetes configuration is loaded before running kubectl
+
+# Detect user and set KUBECONFIG if not already set
+if [ -z "$KUBECONFIG" ]; then
+    if [ "$USER" = "root" ] || [ "$(id -u)" = "0" ]; then
+        export KUBECONFIG="/root/.kube/config-container"
+    elif [ -n "$HOME" ]; then
+        export KUBECONFIG="$HOME/.kube/config-container"
+    else
+        export KUBECONFIG="/home/vscode/.kube/config-container"
+    fi
+fi
+
+# Run the initialization script if config doesn't exist
+if [ ! -f "$KUBECONFIG" ] && [ -f "/usr/local/share/kubernetes-init.sh" ]; then
+    echo "🔧 Running Kubernetes initialization..."
+    bash /usr/local/share/kubernetes-init.sh
+fi
+
+# Run the original kubectl command
+exec /usr/local/bin/kubectl-orig "$@"
+KUBECTL_WRAPPER_EOF
+
+# Backup original kubectl and replace with wrapper
+if [ -f "/usr/local/bin/kubectl" ]; then
+    mv /usr/local/bin/kubectl /usr/local/bin/kubectl-orig
+    mv /usr/local/bin/kubectl-wrapper /usr/local/bin/kubectl
+    chmod +x /usr/local/bin/kubectl
+    log_success "🔧 kubectl wrapper installed"
+fi
+
+log_success "🎉 Kubernetes outside-of-docker feature setup complete!"
