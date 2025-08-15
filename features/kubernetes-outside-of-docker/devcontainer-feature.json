@@ -1,8 +1,8 @@
 {
     "id": "kubernetes-outside-of-docker",
-    "version": "1.0.3",
+    "version": "2.0.3",
     "name": "Kubernetes Outside of Docker",
-    "description": "Re-use the host Kubernetes cluster from within a dev container. Configures kubectl to access clusters running on the host machine including Docker Desktop, kind, minikube, and others.",
+    "description": "Simple, reliable access to host Kubernetes clusters from dev containers. Automatically configures kubectl to work with Docker Desktop, kind, minikube, and other local clusters.",
     "documentationURL": "https://github.com/ruanzx/devcontainer-templates/tree/main/features/kubernetes-outside-of-docker",
     "licenseURL": "https://github.com/ruanzx/devcontainer-templates/blob/main/LICENSE",
     "keywords": [
