@@ -20,11 +20,16 @@ fi
 
 log_info "🔧 Configuring Kubernetes access from dev container..."
 
-# Detect the container user (could be vscode, root, or other)
-if [ -n "$_REMOTE_USER" ]; then
+# Detect the container user (prioritize actual user over existing users)
+if [ "$(id -u)" = "0" ]; then
+    # Running as root
+    CONTAINER_USER="root"
+elif [ -n "$_REMOTE_USER" ]; then
     CONTAINER_USER="$_REMOTE_USER"
 elif [ -n "$REMOTE_USER" ]; then
     CONTAINER_USER="$REMOTE_USER"
+elif [ -n "$USER" ]; then
+    CONTAINER_USER="$USER"
 elif getent passwd vscode >/dev/null 2>&1; then
     CONTAINER_USER="vscode"
 elif getent passwd node >/dev/null 2>&1; then
@@ -70,11 +75,16 @@ cat > "$INIT_SCRIPT" << 'INIT_SCRIPT_EOF'
 
 set -e
 
-# Detect the container user (could be vscode, root, or other)
-if [ -n "$_REMOTE_USER" ]; then
+# Detect the container user (prioritize actual user over existing users)
+if [ "$(id -u)" = "0" ]; then
+    # Running as root
+    CONTAINER_USER="root"
+elif [ -n "$_REMOTE_USER" ]; then
     CONTAINER_USER="$_REMOTE_USER"
 elif [ -n "$REMOTE_USER" ]; then
     CONTAINER_USER="$REMOTE_USER"
+elif [ -n "$USER" ]; then
+    CONTAINER_USER="$USER"
 elif getent passwd vscode >/dev/null 2>&1; then
     CONTAINER_USER="vscode"
 elif getent passwd node >/dev/null 2>&1; then
@@ -371,7 +381,8 @@ cat > /usr/local/bin/kubectl-wrapper << 'KUBECTL_WRAPPER_EOF'
 
 # Detect user and set KUBECONFIG if not already set
 if [ -z "$KUBECONFIG" ]; then
-    if [ "$USER" = "root" ] || [ "$(id -u)" = "0" ]; then
+    if [ "$(id -u)" = "0" ]; then
+        # Running as root
         export KUBECONFIG="/root/.kube/config-container"
     elif [ -n "$HOME" ]; then
         export KUBECONFIG="$HOME/.kube/config-container"
@@ -386,6 +397,14 @@ if [ ! -f "$KUBECONFIG" ] && [ -f "/usr/local/share/kubernetes-init.sh" ]; then
     bash /usr/local/share/kubernetes-init.sh
 fi
 
+# Verify KUBECONFIG is set and file exists
+if [ -z "$KUBECONFIG" ] || [ ! -f "$KUBECONFIG" ]; then
+    echo "❌ Error: No valid kubeconfig found. Please ensure:"
+    echo "   1. Host .kube directory is mounted to /tmp/host-kube"
+    echo "   2. Host kubeconfig exists and is accessible"
+    exit 1
+fi
+
 # Run the original kubectl command
 exec /usr/local/bin/kubectl-orig "$@"
 KUBECTL_WRAPPER_EOF
@@ -397,5 +416,45 @@ if [ -f "/usr/local/bin/kubectl" ]; then
     chmod +x /usr/local/bin/kubectl
     log_success "🔧 kubectl wrapper installed"
 fi
+
+# Also create a kubectl function that ensures KUBECONFIG is set
+cat > /etc/profile.d/kubernetes.sh << 'KUBECTL_PROFILE_EOF'
+#!/bin/bash
+# Ensure KUBECONFIG is always set for kubectl
+
+# Function to set KUBECONFIG
+set_kubeconfig() {
+    if [ "$(id -u)" = "0" ]; then
+        export KUBECONFIG="/root/.kube/config-container"
+    elif [ -n "$HOME" ]; then
+        export KUBECONFIG="$HOME/.kube/config-container"
+    else
+        export KUBECONFIG="/home/vscode/.kube/config-container"
+    fi
+}
+
+# Set KUBECONFIG when profile is loaded
+set_kubeconfig
+
+# Create kubectl function that ensures config is set
+kubectl() {
+    # Ensure KUBECONFIG is set
+    if [ -z "$KUBECONFIG" ]; then
+        set_kubeconfig
+    fi
+    
+    # Run initialization if needed
+    if [ ! -f "$KUBECONFIG" ] && [ -f "/usr/local/share/kubernetes-init.sh" ]; then
+        echo "🔧 Running Kubernetes initialization..."
+        bash /usr/local/share/kubernetes-init.sh
+    fi
+    
+    # Call the original kubectl
+    command kubectl "$@"
+}
+KUBECTL_PROFILE_EOF
+
+chmod +x /etc/profile.d/kubernetes.sh
+log_success "🔧 kubectl profile script installed"
 
 log_success "🎉 Kubernetes outside-of-docker feature setup complete!"
