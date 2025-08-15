@@ -1,0 +1,44 @@
+{
+    "id": "kubernetes-outside-of-docker",
+    "version": "1.0.0",
+    "name": "kubernetes-outside-of-docker",
+    "description": "Re-use the host kubernetes, adding the Kubectl CLI to a container. Feature invokes a script to enable using kubectl within a container to run Kubectl commands.",
+    "documentationURL": "",
+    "licenseURL": "",
+    "keywords": [
+        "kubernetes",
+        "k8s",
+        "devops"
+    ],
+    "entrypoint": "/usr/local/share/docker-init.sh",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-azuretools.vscode-containers"
+            ],
+            "settings": {
+                "github.copilot.chat.codeGeneration.instructions": [
+                    {
+                        "text": "This dev container includes the Docker CLI (`docker`) pre-installed and available on the `PATH` for running and managing containers using the Docker daemon on the host machine."
+                    }
+                ]
+            }
+        }
+    },
+    "containerEnv": {
+        "HOST_IP": "192.168.1.3",
+        "KUBECONFIG": "/home/vscode/.kube/config"
+    },
+    "runArgs": [
+        "--add-host=host.docker.internal:172.17.0.1",
+        "--add-host=kubernetes.docker.internal:172.17.0.1"
+    ],
+    "securityOpt": [
+        "label=disable"
+    ],
+    "postCreateCommand": "dotnet dev-certs https",
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ],
+    
+}

@@ -3,7 +3,8 @@
 	"image": "mcr.microsoft.com/devcontainers/base:ubuntu",
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
-		"ghcr.io/devcontainers/features/github-cli:1": {}
+		"ghcr.io/devcontainers/features/github-cli:1": {},
+		"ghcr.io/ruanzx/features/devcontainers-cli:latest": {}
 	},
 	"customizations": {
 		"vscode": {
@@ -14,6 +15,6 @@
 			]
 		}
 	},
-	"postCreateCommand": "chmod +x scripts/*.sh features/*/install.sh common/utils.sh devcontainer-features.sh; ./features/devcontainers-cli/install.sh",
+	"postCreateCommand": "chmod +x scripts/*.sh features/*/install.sh common/utils.sh devcontainer-features.sh;",
 	"remoteUser": "root"
 }
