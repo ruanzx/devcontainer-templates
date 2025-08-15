@@ -34,6 +34,9 @@ Comprehensive security scanning environment with Trivy and Gitleaks for vulnerab
 ### [Kubernetes Development](kubernetes-dev/)
 Complete Kubernetes development environment with K9s, Skaffold, and related tools.
 
+### [Lazygit Development](lazygit-dev/)
+Enhanced git workflow environment with Lazygit terminal UI for intuitive git operations.
+
 ### [Security Tools](security-tools/)
 Security-focused environment with Gitleaks and other security tools.
 
@@ -63,6 +66,7 @@ You can customize any example by:
 - `ghcr.io/ruanzx/features/k6` - Modern load testing tool
 - `ghcr.io/ruanzx/features/k9s` - Kubernetes terminal UI
 - `ghcr.io/ruanzx/features/kubectl` - Kubernetes command-line tool
+- `ghcr.io/ruanzx/features/lazygit` - Simple terminal UI for git commands
 - `ghcr.io/ruanzx/features/microsoft-edit` - Microsoft's modern text editor
 - `ghcr.io/ruanzx/features/ngrok` - Tunneling and reverse proxy for developing networked HTTP services
 - `ghcr.io/ruanzx/features/skaffold` - Kubernetes development workflow tool
