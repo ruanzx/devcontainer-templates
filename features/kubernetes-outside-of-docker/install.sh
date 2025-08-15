@@ -110,6 +110,20 @@ if [ ! -d "$KUBE_DIR" ]; then
     fi
 fi
 
+# Check if host mount directory exists
+if [ ! -d "$HOST_KUBE_MOUNT" ]; then
+    echo "⚠️  Host .kube directory not mounted at $HOST_KUBE_MOUNT"
+    echo "   To use this feature, you need to mount your host .kube directory:"
+    echo "   Add this to your devcontainer.json mounts:"
+    echo "   {"
+    echo "     \"source\": \"\${localEnv:HOME}/.kube\","
+    echo "     \"target\": \"/tmp/host-kube\","
+    echo "     \"type\": \"bind\""
+    echo "   }"
+    echo "   For Windows, use \${localEnv:USERPROFILE} instead of \${localEnv:HOME}"
+    exit 0
+fi
+
 # Copy host kubeconfig if available
 if [ -f "$HOST_KUBE_MOUNT/config" ]; then
     echo "📋 Copying host kubeconfig to user directory"
@@ -119,8 +133,14 @@ if [ -f "$HOST_KUBE_MOUNT/config" ]; then
     fi
 elif [ ! -f "$ORIGINAL_KUBECONFIG" ]; then
     echo "ℹ️  No kubeconfig found in host mount at $HOST_KUBE_MOUNT/config"
-    echo "   Ensure your host .kube directory is properly mounted"
-    echo "   The feature automatically mounts from \${localEnv:HOME}/.kube to /tmp/host-kube"
+    echo "   To use this feature, you need to mount your host .kube directory:"
+    echo "   Add this to your devcontainer.json mounts:"
+    echo "   {"
+    echo "     \"source\": \"\${localEnv:HOME}/.kube\","
+    echo "     \"target\": \"/tmp/host-kube\","
+    echo "     \"type\": \"bind\""
+    echo "   }"
+    echo "   For Windows, use \${localEnv:USERPROFILE} instead of \${localEnv:HOME}"
     exit 0
 fi
 

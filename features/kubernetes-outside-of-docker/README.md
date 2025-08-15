@@ -33,7 +33,9 @@ Add this feature to your `devcontainer.json`:
 
 ### With Required Mount
 
-To access your host Kubernetes cluster, you must mount your .kube directory:
+To access your host Kubernetes cluster, you must mount your .kube directory. Add this mount configuration to your `devcontainer.json`:
+
+#### Linux/macOS
 
 ```json
 {
@@ -43,11 +45,48 @@ To access your host Kubernetes cluster, you must mount your .kube directory:
   "mounts": [
     {
       "source": "${localEnv:HOME}/.kube",
-      "target": "/home/vscode/.kube", 
+      "target": "/tmp/host-kube",
       "type": "bind"
     }
   ]
 }
+```
+
+#### Windows
+
+```json
+{
+  "features": {
+    "ghcr.io/ruanzx/features/kubernetes-outside-of-docker:latest": {}
+  },
+  "mounts": [
+    {
+      "source": "${localEnv:USERPROFILE}/.kube",
+      "target": "/tmp/host-kube", 
+      "type": "bind"
+    }
+  ]
+}
+```
+
+#### Alternative: Direct User Directory Mount
+
+If you prefer to mount directly to the user directory (bypasses automatic configuration):
+
+```json
+{
+  "features": {
+    "ghcr.io/ruanzx/features/kubernetes-outside-of-docker:latest": {}
+  },
+  "mounts": [
+    {
+      "source": "${localEnv:HOME}/.kube",
+      "target": "/home/vscode/.kube",
+      "type": "bind"
+    }
+  ]
+}
+```
 ```
 
 ### Complete Example
@@ -131,6 +170,52 @@ If kubectl commands timeout:
 2. Check that the .kube directory is properly mounted
 3. Ensure network connectivity between container and host
 4. Try restarting the dev container
+
+## Troubleshooting
+
+### Mount Issues
+
+**Problem**: Error like "bind source path does not exist"
+
+**Cause**: The mount path is not resolving correctly, often on Windows systems.
+
+**Solutions**:
+1. **Windows Users**: Use `${localEnv:USERPROFILE}` instead of `${localEnv:HOME}`
+2. **Verify path exists**: Ensure `~/.kube` directory exists on your host
+3. **Check environment variables**: Verify `HOME` or `USERPROFILE` are set correctly
+4. **Use absolute paths**: Replace environment variables with absolute paths if needed
+
+**Example for Windows with absolute path**:
+```json
+{
+  "mounts": [
+    {
+      "source": "C:/Users/username/.kube",
+      "target": "/tmp/host-kube",
+      "type": "bind"
+    }
+  ]
+}
+```
+
+### No kubeconfig found
+
+**Problem**: Message "No kubeconfig found in host mount"
+
+**Solutions**:
+1. Ensure `~/.kube/config` exists on your host machine
+2. Verify the mount is configured correctly in `devcontainer.json`
+3. Check mount target is `/tmp/host-kube` (not user home directory)
+4. Restart the dev container after adding mounts
+
+### Permission Issues
+
+**Problem**: kubectl commands fail with permission errors
+
+**Solutions**:
+1. Check that the container user has read access to mounted files
+2. Verify file ownership in the container: `ls -la ~/.kube/`
+3. The feature automatically handles ownership, but manual mounts may need adjustment
 
 ## Files Created
 
