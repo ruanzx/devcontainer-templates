@@ -5,8 +5,16 @@
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
 		"ghcr.io/devcontainers/features/github-cli:1": {},
 		"ghcr.io/ruanzx/features/kubectl:latest": {},
-		"ghcr.io/ruanzx/features/devcontainers-cli:latest": {}
+		"ghcr.io/ruanzx/features/devcontainers-cli:latest": {},
+		"ghcr.io/ruanzx/features/kubernetes-outside-of-docker:2.0.4": {}
 	},
+	"mounts": [
+		{
+			"source": "${localEnv:USERPROFILE}/.kube",
+			"target": "/tmp/host-kube",
+			"type": "bind"
+		}
+	],
 	"customizations": {
 		"vscode": {
 			"extensions": [

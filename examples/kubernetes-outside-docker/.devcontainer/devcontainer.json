@@ -1,0 +1,21 @@
+{
+  "name": "Kubernetes Outside Docker Example",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/ruanzx/features/kubectl:latest": {},
+    "ghcr.io/ruanzx/features/kubernetes-outside-of-docker:latest": {}
+  },
+  "mounts": [
+    {
+      "source": "${localEnv:USERPROFILE}/.kube",
+      "target": "/tmp/host-kube",
+      "type": "bind"
+    }
+  ],
+  "postCreateCommand": [
+    "echo '🚀 Testing Kubernetes connectivity from dev container...'",
+    "kubectl version --client",
+    "kubectl config current-context || echo 'No context set'",
+    "echo '💡 Try: kubectl get nodes'"
+  ]
+}

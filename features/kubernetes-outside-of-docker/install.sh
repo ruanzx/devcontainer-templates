@@ -65,7 +65,16 @@ if [ -f "$HOST_KUBE_MOUNT/config" ]; then
     if [ -z "$GATEWAY_IP" ]; then
         GATEWAY_IP="172.17.0.1"
     fi
-    log_info "🌐 Using gateway IP: $GATEWAY_IP"
+    
+    # For Docker Desktop, try to detect the correct IP that matches the certificate
+    # Docker Desktop often uses 192.168.65.3 which is in the certificate SAN
+    DOCKER_DESKTOP_IP="192.168.65.3"
+    if ping -c 1 -W 1 "$DOCKER_DESKTOP_IP" >/dev/null 2>&1; then
+        GATEWAY_IP="$DOCKER_DESKTOP_IP"
+        log_info "🐳 Detected Docker Desktop, using $GATEWAY_IP"
+    else
+        log_info "🌐 Using default gateway IP: $GATEWAY_IP"
+    fi
     
     # Copy and immediately fix the kubeconfig
     cp "$HOST_KUBE_MOUNT/config" "$KUBE_DIR/config"
@@ -85,7 +94,7 @@ if [ -f "$HOST_KUBE_MOUNT/config" ]; then
     sed -i "s|server: http://127\.0\.0\.1$|server: http://$GATEWAY_IP:8080|g" "$KUBE_DIR/config"
     sed -i "s|server: http://localhost$|server: http://$GATEWAY_IP:8080|g" "$KUBE_DIR/config"
     
-    # Handle Docker Desktop's kubernetes.docker.internal
+    # Handle Docker Desktop's kubernetes.docker.internal (most common case)
     sed -i "s|server: https://kubernetes\.docker\.internal[:/]|server: https://$GATEWAY_IP:|g" "$KUBE_DIR/config"
     sed -i "s|server: http://kubernetes\.docker\.internal[:/]|server: http://$GATEWAY_IP:|g" "$KUBE_DIR/config"
     sed -i "s|server: https://kubernetes\.docker\.internal$|server: https://$GATEWAY_IP:6443|g" "$KUBE_DIR/config"
