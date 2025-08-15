@@ -1,6 +1,6 @@
 # DevContainer Features Collection
 
-A collection of 17 high-quality DevContainer Features for enhancing development environments with popular tools and utilities.
+A collection of 18 high-quality DevContainer Features for enhancing development environments with popular tools and utilities.
 
 ## 📦 Available Features
 
@@ -10,6 +10,7 @@ This repository provides the following DevContainer Features:
 
 - **[APT Package Manager](features/apt/)** - Install packages using APT package manager on Debian-like systems
 - **[DevContainers CLI](features/devcontainers-cli/)** - Official CLI for working with Development Containers
+- **[Lazygit](features/lazygit/)** - A simple terminal UI for git commands that makes git easy
 - **[Microsoft Edit](features/microsoft-edit/)** - A fast, simple text editor that uses standard command line conventions
 - **[ngrok](features/ngrok/)** - Tunneling and reverse proxy for developing and understanding networked, HTTP services
 - **[yq](features/yq/)** - A lightweight and portable command-line YAML, JSON and XML processor
@@ -58,6 +59,7 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
     "ghcr.io/ruanzx/features/helm:3.16.1": {},
     "ghcr.io/ruanzx/features/k9s:0.32.7": {},
     "ghcr.io/ruanzx/features/yq:4.44.3": {},
+    "ghcr.io/ruanzx/features/lazygit:0.54.2": {},
     "ghcr.io/ruanzx/features/microsoft-edit:1.2.0": {},
     "ghcr.io/ruanzx/features/ngrok:latest": {},
     "ghcr.io/ruanzx/features/k6:latest": {},

@@ -1,0 +1,9 @@
+{
+  "name": "Test Lazygit Install",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "./build/lazygit": {
+      "version": "0.54.2"
+    }
+  }
+}

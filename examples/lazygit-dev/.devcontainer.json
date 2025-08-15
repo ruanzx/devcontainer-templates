@@ -1,0 +1,23 @@
+{
+  "name": "Lazygit Development Environment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/ruanzx/features/lazygit:0.54.2": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "GitHub.vscode-pull-request-github"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "git.enableSmartCommit": true,
+        "git.confirmSync": false
+      }
+    }
+  },
+  "postCreateCommand": "echo 'Welcome to your Lazygit development environment! Run \"lazygit\" to get started.'",
+  "remoteUser": "vscode"
+}

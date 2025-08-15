@@ -1,0 +1,27 @@
+{
+    "id": "lazygit",
+    "version": "0.54.2",
+    "name": "Lazygit",
+    "description": "A simple terminal UI for git commands - makes git easy!",
+    "documentationURL": "https://github.com/jesseduffield/lazygit",
+    "licenseURL": "https://github.com/jesseduffield/lazygit/blob/master/LICENSE",
+    "keywords": [
+        "git",
+        "lazygit",
+        "tui",
+        "terminal-ui",
+        "version-control",
+        "devops",
+        "developer-tools"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "description": "Version of Lazygit to install",
+            "default": "0.54.2"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
