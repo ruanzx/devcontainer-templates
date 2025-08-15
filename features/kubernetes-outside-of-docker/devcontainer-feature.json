@@ -1,0 +1,44 @@
+{
+    "id": "kubernetes-outside-of-docker",
+    "version": "1.0.0",
+    "name": "Kubernetes Outside of Docker",
+    "description": "Re-use the host Kubernetes cluster from within a dev container. Configures kubectl to access clusters running on the host machine including Docker Desktop, kind, minikube, and others.",
+    "documentationURL": "https://github.com/ruanzx/devcontainer-templates/tree/main/features/kubernetes-outside-of-docker",
+    "licenseURL": "https://github.com/ruanzx/devcontainer-templates/blob/main/LICENSE",
+    "keywords": [
+        "kubernetes",
+        "k8s",
+        "kubectl",
+        "devops",
+        "cluster",
+        "host-access"
+    ],
+    "mounts": [
+        {
+            "source": "${localEnv:HOME}/.kube",
+            "target": "/home/vscode/.kube",
+            "type": "bind"
+        }
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-kubernetes-tools.vscode-kubernetes-tools"
+            ],
+            "settings": {
+                "github.copilot.chat.codeGeneration.instructions": [
+                    {
+                        "text": "This dev container has kubectl configured to access the host Kubernetes cluster. Use kubectl commands to interact with the cluster running on the host machine."
+                    }
+                ]
+            }
+        }
+    },
+    "containerEnv": {
+        "KUBECONFIG": "/home/vscode/.kube/config-container"
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/ruanzx/features/kubectl:latest"
+    ]
+}
