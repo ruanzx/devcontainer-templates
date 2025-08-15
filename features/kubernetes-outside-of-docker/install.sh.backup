@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # kubernetes-outside-of-docker feature installer
-# Simple, clean implementation to access host Kubernetes cluster from dev container
+# Configures kubectl to access host Kubernetes cluster from dev container with runtime initialization
 
 set -e
 
@@ -166,7 +166,7 @@ if [ -d "$HOST_KUBE_MOUNT" ]; then
 fi
 
 # Set up environment variables for shell sessions
-log_info "🔧 Setting up environment variables..."
+log_info "� Setting up environment variables..."
 cat > /etc/profile.d/kubernetes-outside-docker.sh << 'PROFILE_EOF'
 #!/bin/bash
 # Kubernetes outside-of-docker environment setup
@@ -188,16 +188,6 @@ ensure_kubectl_config() {
 
 # Run initialization automatically when profile loads
 ensure_kubectl_config 2>/dev/null || true
-
-# Create kubectl function that ensures config is properly initialized
-if command -v kubectl >/dev/null 2>&1; then
-    kubectl() {
-        # Ensure initialization runs before kubectl commands
-        ensure_kubectl_config 2>/dev/null || true
-        command kubectl "$@"
-    }
-    export -f kubectl
-fi
 PROFILE_EOF
 
 chmod +x /etc/profile.d/kubernetes-outside-docker.sh
