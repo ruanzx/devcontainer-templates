@@ -6,7 +6,7 @@
 		"ghcr.io/devcontainers/features/github-cli:1": {},
 		"ghcr.io/ruanzx/features/kubectl:latest": {},
 		"ghcr.io/ruanzx/features/devcontainers-cli:latest": {},
-		"ghcr.io/ruanzx/features/kubernetes-outside-of-docker:2.0.4": {}
+		"./features/kubernetes-outside-of-docker": {}
 	},
 	"mounts": [
 		{
@@ -24,6 +24,6 @@
 			]
 		}
 	},
-	"postCreateCommand": "chmod +x scripts/*.sh features/*/install.sh common/utils.sh devcontainer-features.sh;",
+	"postCreateCommand": [],
 	"remoteUser": "root"
 }

@@ -3,18 +3,45 @@
 # kubernetes-outside-of-docker feature installer
 # Simple, clean implementation to access host Kubernetes cluster from dev container
 
-set -e
+set -euo pipefail  # Enhanced error handling: exit on error, undefined vars, pipe failures
 
-# Source common utilities
+# Add debug logging to track execution
+echo "🐛 DEBUG: kubernetes-outside-of-docker feature install script started at $(date)"
+echo "🐛 DEBUG: Running as user: $(id)"
+echo "🐛 DEBUG: PWD: $(pwd)"
+echo "🐛 DEBUG: Script path: ${BASH_SOURCE[0]}"
+
+# Enhanced error handling
+trap 'echo "🐛 ERROR: Script failed at line $LINENO with exit code $?" >&2' ERR
+
+# Define logging functions (fallback if utils.sh is not available)
+log_info() {
+    echo "ℹ️  $1"
+}
+
+log_warning() {
+    echo "⚠️  $1"
+}
+
+log_success() {
+    echo "✅ $1"
+}
+
+# Source common utilities if available
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+echo "🐛 DEBUG: Script directory: $SCRIPT_DIR"
+echo "🐛 DEBUG: Checking for utils.sh files..."
+
 if [[ -f "${SCRIPT_DIR}/utils.sh" ]]; then
+    echo "🐛 DEBUG: Found utils.sh in script directory"
     source "${SCRIPT_DIR}/utils.sh"
 elif [[ -f "${SCRIPT_DIR}/../../common/utils.sh" ]]; then
+    echo "🐛 DEBUG: Found utils.sh in common directory"
     source "${SCRIPT_DIR}/../../common/utils.sh"
 else
-    echo "Error: Could not find utils.sh"
-    exit 1
+    echo "🐛 DEBUG: utils.sh not found, using built-in logging functions"
+    log_warning "utils.sh not found, using built-in logging functions"
 fi
 
 log_info "🔧 Setting up Kubernetes access from dev container..."
@@ -43,6 +70,12 @@ fi
 
 # Create runtime initialization script for dynamic configuration
 log_info "📝 Creating runtime initialization script"
+
+# Ensure the directory exists
+mkdir -p "$(dirname "$INIT_SCRIPT")"
+
+# Add debug info to track script creation
+echo "🐛 DEBUG: Creating init script at: $INIT_SCRIPT"
 cat > "$INIT_SCRIPT" << 'INIT_SCRIPT_EOF'
 #!/bin/bash
 
@@ -110,7 +143,8 @@ if [ -f "$HOST_KUBE_MOUNT/config" ]; then
     # Copy and fix the kubeconfig
     cp "$HOST_KUBE_MOUNT/config" "$KUBE_DIR/config"
     
-    # Replace localhost, 127.0.0.1, and kubernetes.docker.internal with gateway IP
+    # Replace only localhost and 127.0.0.1 with gateway IP
+    # Leave kubernetes.docker.internal as-is since it resolves correctly and matches the certificate
     sed -i "s|server: https://127\.0\.0\.1[:/]|server: https://$GATEWAY_IP:|g" "$KUBE_DIR/config"
     sed -i "s|server: https://localhost[:/]|server: https://$GATEWAY_IP:|g" "$KUBE_DIR/config"
     sed -i "s|server: http://127\.0\.0\.1[:/]|server: http://$GATEWAY_IP:|g" "$KUBE_DIR/config"
@@ -119,10 +153,8 @@ if [ -f "$HOST_KUBE_MOUNT/config" ]; then
     sed -i "s|server: https://localhost$|server: https://$GATEWAY_IP:6443|g" "$KUBE_DIR/config"
     sed -i "s|server: http://127\.0\.0\.1$|server: http://$GATEWAY_IP:8080|g" "$KUBE_DIR/config"
     sed -i "s|server: http://localhost$|server: http://$GATEWAY_IP:8080|g" "$KUBE_DIR/config"
-    sed -i "s|server: https://kubernetes\.docker\.internal[:/]|server: https://$GATEWAY_IP:|g" "$KUBE_DIR/config"
-    sed -i "s|server: http://kubernetes\.docker\.internal[:/]|server: http://$GATEWAY_IP:|g" "$KUBE_DIR/config"
-    sed -i "s|server: https://kubernetes\.docker\.internal$|server: https://$GATEWAY_IP:6443|g" "$KUBE_DIR/config"
-    sed -i "s|server: http://kubernetes\.docker\.internal$|server: http://$GATEWAY_IP:8080|g" "$KUBE_DIR/config"
+    
+    # Note: kubernetes.docker.internal is left unchanged as it resolves correctly in containers
     
     # Set ownership
     if [ "$CONTAINER_USER" != "root" ] && command -v chown >/dev/null 2>&1; then
@@ -140,8 +172,14 @@ INIT_SCRIPT_EOF
 
 chmod +x "$INIT_SCRIPT"
 
+echo "🐛 DEBUG: Init script created and made executable"
+ls -la "$INIT_SCRIPT"
+
 # Create symlink for compatibility with existing documentation
 ln -sf "$INIT_SCRIPT" "/usr/local/share/docker-init.sh"
+
+echo "🐛 DEBUG: Symlink created"
+ls -la "/usr/local/share/docker-init.sh"
 
 # Check if host mount exists for initial setup
 if [ ! -d "$HOST_KUBE_MOUNT" ]; then
@@ -167,9 +205,19 @@ fi
 
 # Set up environment variables for shell sessions
 log_info "🔧 Setting up environment variables..."
+
+# Ensure the directory exists
+mkdir -p /etc/profile.d
+
+echo "🐛 DEBUG: Creating profile script at: /etc/profile.d/kubernetes-outside-docker.sh"
 cat > /etc/profile.d/kubernetes-outside-docker.sh << 'PROFILE_EOF'
 #!/bin/bash
 # Kubernetes outside-of-docker environment setup
+
+# Debug logging (can be disabled by setting KUBE_DEBUG=false)
+if [[ "${KUBE_DEBUG:-true}" == "true" ]]; then
+    echo "🐛 DEBUG: Loading kubernetes-outside-docker profile script"
+fi
 
 # Set KUBECONFIG based on user
 if [ "$(id -u)" = "0" ]; then
@@ -198,13 +246,58 @@ if command -v kubectl >/dev/null 2>&1; then
     }
     export -f kubectl
 fi
+
+# Also set up for zsh if present
+if [ -n "$ZSH_VERSION" ]; then
+    if command -v kubectl >/dev/null 2>&1; then
+        kubectl() {
+            ensure_kubectl_config 2>/dev/null || true
+            command kubectl "$@"
+        }
+    fi
+fi
+
+if [[ "${KUBE_DEBUG:-true}" == "true" ]]; then
+    echo "🐛 DEBUG: kubernetes-outside-docker profile script loaded, KUBECONFIG=$KUBECONFIG"
+fi
 PROFILE_EOF
 
 chmod +x /etc/profile.d/kubernetes-outside-docker.sh
 
+echo "🐛 DEBUG: Profile script created and made executable"
+ls -la /etc/profile.d/kubernetes-outside-docker.sh
+
+# Also add to bashrc for non-login shells
+echo "🐛 DEBUG: Adding to bashrc for non-login shells"
+echo '# Source kubernetes configuration for non-login shells' >> /etc/bash.bashrc
+echo 'if [ -f /etc/profile.d/kubernetes-outside-docker.sh ]; then' >> /etc/bash.bashrc
+echo '    . /etc/profile.d/kubernetes-outside-docker.sh' >> /etc/bash.bashrc
+echo 'fi' >> /etc/bash.bashrc
+
+echo "🐛 DEBUG: bashrc updated"
+tail -n 5 /etc/bash.bashrc
+
 # Set KUBECONFIG for current session
 export KUBECONFIG="$KUBE_DIR/config"
 log_success "✅ KUBECONFIG set to: $KUBECONFIG"
+
+echo "🐛 DEBUG: kubernetes-outside-of-docker feature install script completed successfully at $(date)"
+
+# Create installation marker
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -f "$SCRIPT_DIR/install-marker.sh" ]]; then
+    echo "🐛 DEBUG: Creating installation marker"
+    bash "$SCRIPT_DIR/install-marker.sh"
+fi
+
+# Final validation
+if [[ -f /usr/local/share/kubernetes-init.sh ]] && [[ -f /etc/profile.d/kubernetes-outside-docker.sh ]]; then
+    echo "🐛 DEBUG: ✅ All required files created successfully"
+else
+    echo "🐛 DEBUG: ❌ Some required files are missing!"
+    echo "🐛 DEBUG: kubernetes-init.sh exists: $(test -f /usr/local/share/kubernetes-init.sh && echo 'YES' || echo 'NO')"
+    echo "🐛 DEBUG: profile script exists: $(test -f /etc/profile.d/kubernetes-outside-docker.sh && echo 'YES' || echo 'NO')"
+fi
 
 # Test kubectl if available and configuration exists
 if command -v kubectl >/dev/null 2>&1; then
