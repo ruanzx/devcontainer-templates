@@ -3,6 +3,7 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:latest": {},
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
     "ghcr.io/ruanzx/features/kubectl:latest": {},
     "ghcr.io/ruanzx/features/kubernetes-outside-of-docker:latest": {},
     "ghcr.io/ruanzx/features/helm:latest": {},

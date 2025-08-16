@@ -2,11 +2,11 @@
 	"name": "DevContainer Features Development",
 	"image": "mcr.microsoft.com/devcontainers/base:ubuntu",
 	"features": {
-		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
 		"ghcr.io/devcontainers/features/github-cli:1": {},
 		"ghcr.io/ruanzx/features/kubectl:latest": {},
 		"ghcr.io/ruanzx/features/devcontainers-cli:latest": {},
-		"./features/kubernetes-outside-of-docker": {}
+		"ghcr.io/ruanzx/features/kubernetes-outside-of-docker:latest": {}
 	},
 	"mounts": [
 		{
