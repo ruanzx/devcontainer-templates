@@ -139,37 +139,109 @@ publish_feature() {
     fi
 }
 
+# Function to validate and get feature path
+get_feature_path() {
+    local feature_name="$1"
+    local feature_path="$BUILD_DIR/$feature_name"
+    
+    if [[ ! -d "$feature_path" ]]; then
+        log_error "Feature '$feature_name' not found in build directory: $feature_path"
+        return 1
+    fi
+    
+    if [[ ! -f "$feature_path/devcontainer-feature.json" ]]; then
+        log_error "Feature '$feature_name' missing devcontainer-feature.json file"
+        return 1
+    fi
+    
+    echo "$feature_path"
+    return 0
+}
+
+# Function to list available features
+list_available_features() {
+    log_info "Available features in build directory:"
+    local features=()
+    for feature_path in "$BUILD_DIR"/*; do
+        if [[ -d "$feature_path" && -f "$feature_path/devcontainer-feature.json" ]]; then
+            local feature_name
+            feature_name=$(basename "$feature_path")
+            features+=("$feature_name")
+        fi
+    done
+    
+    if [[ ${#features[@]} -eq 0 ]]; then
+        log_warning "No built features found in $BUILD_DIR"
+        log_info "Please run the build script first: ./scripts/build.sh"
+        return 1
+    fi
+    
+    for feature in "${features[@]}"; do
+        log_info "  - $feature"
+    done
+    
+    return 0
+}
+
 # Main publish process
 main() {
+    local specific_features=("$@")
+    
     log_info "Starting publish process"
     
     check_prerequisites
     setup_authentication
     
-    # Find all built features (must contain devcontainer-feature.json)
+    # Determine features to publish
     local features=()
-    for feature_path in "$BUILD_DIR"/*; do
-        if [[ -d "$feature_path" && -f "$feature_path/devcontainer-feature.json" ]]; then
-            features+=("$feature_path")
+    
+    if [[ ${#specific_features[@]} -eq 0 ]]; then
+        # No specific features provided, publish all built features
+        log_info "No specific features provided, publishing all built features"
+        
+        for feature_path in "$BUILD_DIR"/*; do
+            if [[ -d "$feature_path" && -f "$feature_path/devcontainer-feature.json" ]]; then
+                features+=("$feature_path")
+            fi
+        done
+        
+        if [[ ${#features[@]} -eq 0 ]]; then
+            log_error "No built features found in $BUILD_DIR"
+            log_info "Please run the build script first: ./scripts/build.sh"
+            list_available_features
+            exit 1
         fi
-    done
-    
-    if [[ ${#features[@]} -eq 0 ]]; then
-        log_error "No built features found in $BUILD_DIR"
-        log_info "Please run the build script first: ./scripts/build.sh"
-        exit 1
+        
+        log_info "Found ${#features[@]} features to publish"
+    else
+        # Specific features provided, validate and get their paths
+        log_info "Publishing specific features: ${specific_features[*]}"
+        
+        for feature_name in "${specific_features[@]}"; do
+            local feature_path
+            if feature_path=$(get_feature_path "$feature_name"); then
+                features+=("$feature_path")
+            else
+                log_error "Feature '$feature_name' not available for publishing"
+                list_available_features
+                exit 1
+            fi
+        done
+        
+        log_info "Validated ${#features[@]} features for publishing"
     fi
-    
-    log_info "Found ${#features[@]} features to publish"
     
     # Publish individual features
     local failed_features=()
+    local published_features=()
+    
     for feature_path in "${features[@]}"; do
         local feature_name
         feature_name=$(basename "$feature_path")
         
         if publish_feature "$feature_path" "$MAKE_PUBLIC"; then
             log_success "Successfully published $feature_name"
+            published_features+=("$feature_name")
         else
             log_error "Failed to publish $feature_name"
             failed_features+=("$feature_name")
@@ -179,6 +251,7 @@ main() {
     # Report results
     if [[ ${#failed_features[@]} -eq 0 ]]; then
         log_success "All features published successfully!"
+        log_info "Published features: ${published_features[*]}"
         log_info "Features are now available at: $GITHUB_REGISTRY/$GITHUB_USERNAME/features/"
         log_info ""
         if [[ "$MAKE_PUBLIC" == "true" ]]; then
@@ -202,15 +275,22 @@ main() {
         log_info "}"
     else
         log_error "Failed to publish ${#failed_features[@]} features: ${failed_features[*]}"
+        if [[ ${#published_features[@]} -gt 0 ]]; then
+            log_info "Successfully published features: ${published_features[*]}"
+        fi
         exit 1
     fi
 }
 
 # Show usage information
 usage() {
-    echo "Usage: $0 [OPTIONS]"
+    echo "Usage: $0 [OPTIONS] [FEATURE_NAMES...]"
     echo ""
     echo "Publish DevContainer Features to GitHub Container Registry"
+    echo ""
+    echo "Arguments:"
+    echo "  FEATURE_NAMES         Specific feature names to publish (optional)"
+    echo "                        If not provided, all built features will be published"
     echo ""
     echo "Environment variables (can be set in .env file):"
     echo "  GITHUB_TOKEN          GitHub personal access token (required)"
@@ -221,21 +301,31 @@ usage() {
     echo ""
     echo "Options:"
     echo "  -h, --help           Show this help message"
+    echo "  -l, --list           List available features and exit"
     echo "  --public             Make packages public after publishing (default)"
     echo "  --private            Keep packages private"
     echo ""
     echo "Examples:"
     echo "  $0                   Publish all features (public by default)"
-    echo "  $0 --private         Publish all features and keep them private"
+    echo "  $0 kubectl helm      Publish only kubectl and helm features"
+    echo "  $0 --private apt     Publish only apt feature and keep it private"
+    echo "  $0 --list            List all available features"
     echo ""
 }
 
 # Parse command line arguments
+FEATURE_NAMES=()
+
 while [[ $# -gt 0 ]]; do
     case $1 in
         -h|--help)
             usage
             exit 0
+            ;;
+        -l|--list)
+            check_prerequisites
+            list_available_features
+            exit $?
             ;;
         --public)
             MAKE_PUBLIC=true
@@ -245,13 +335,18 @@ while [[ $# -gt 0 ]]; do
             MAKE_PUBLIC=false
             shift
             ;;
-        *)
+        -*)
             log_error "Unknown option: $1"
             usage
             exit 1
             ;;
+        *)
+            # This is a feature name
+            FEATURE_NAMES+=("$1")
+            shift
+            ;;
     esac
 done
 
-# Run main function
-main "$@"
+# Run main function with feature names
+main "${FEATURE_NAMES[@]}"

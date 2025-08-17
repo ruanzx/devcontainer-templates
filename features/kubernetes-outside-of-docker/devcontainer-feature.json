@@ -45,7 +45,7 @@
         }
     },
     "containerEnv": {
-        "KUBE_HOST_MOUNT": "/tmp/host-kube"
+        "KUBE_HOST_MOUNT": "/tmp/.kube"
     },
     "installsAfter": [
         "ghcr.io/devcontainers/features/common-utils",

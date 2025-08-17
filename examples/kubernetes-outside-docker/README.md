@@ -23,7 +23,7 @@ This example demonstrates how to use the `kubernetes-outside-of-docker` feature 
   "mounts": [
     {
       "source": "${localEnv:HOME}/.kube",
-      "target": "/tmp/host-kube", 
+      "target": "/tmp/.kube", 
       "type": "bind"
     }
   ]
@@ -39,7 +39,7 @@ For Windows hosts, use `USERPROFILE` instead of `HOME`:
   "mounts": [
     {
       "source": "${localEnv:USERPROFILE}/.kube",
-      "target": "/tmp/host-kube",
+      "target": "/tmp/.kube",
       "type": "bind"
     }
   ]
@@ -89,7 +89,7 @@ kubectl config current-context
 
 If you see connection errors:
 
-1. **Verify mount**: Check if `/tmp/host-kube/config` exists in the container
+1. **Verify mount**: Check if `/tmp/.kube/config` exists in the container
 2. **Check IP**: The feature logs which IP it's using for connectivity
 3. **Test manually**: Try `kubectl get nodes` to verify the connection
 4. **Certificate issues**: For Docker Desktop, ensure the cluster is using the certificate-valid IP

@@ -59,7 +59,7 @@ log_info "📋 Container user: $CONTAINER_USER"
 log_info "📁 User home: $USER_HOME"
 
 KUBE_DIR="$USER_HOME/.kube"
-HOST_KUBE_MOUNT="/tmp/host-kube"
+HOST_KUBE_MOUNT="/tmp/.kube"
 INIT_SCRIPT="/usr/local/share/kubernetes-init.sh"
 
 # Ensure .kube directory exists
@@ -100,7 +100,7 @@ else
 fi
 
 KUBE_DIR="$USER_HOME/.kube"
-HOST_KUBE_MOUNT="/tmp/host-kube"
+HOST_KUBE_MOUNT="/tmp/.kube"
 
 # Ensure .kube directory exists
 mkdir -p "$KUBE_DIR"
@@ -114,7 +114,7 @@ if [ ! -d "$HOST_KUBE_MOUNT" ]; then
     echo "   Add this mount to your devcontainer.json:"
     echo '   {
      "source": "${localEnv:HOME}/.kube",
-     "target": "/tmp/host-kube",
+     "target": "/tmp/.kube",
      "type": "bind"
    }'
     echo "   For Windows, use \${localEnv:USERPROFILE} instead of \${localEnv:HOME}"
@@ -189,12 +189,11 @@ if [ ! -d "$HOST_KUBE_MOUNT" ]; then
   "mounts": [
     {
       "source": "${localEnv:HOME}/.kube",
-      "target": "/tmp/host-kube",
+      "target": "/tmp/.kube",
       "type": "bind"
     }
   ]
 }'
-    # Don't exit - still create the initialization script
 fi
 
 # Run initial configuration if host mount is available

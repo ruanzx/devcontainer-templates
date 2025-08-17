@@ -81,9 +81,9 @@ else
 fi
 
 # Check mount
-if [ -d "/tmp/host-kube" ]; then
+if [ -d "/tmp/.kube" ]; then
     echo "✅ Host mount directory exists"
-    if [ -f "/tmp/host-kube/config" ]; then
+    if [ -f "/tmp/.kube/config" ]; then
         echo "✅ Host kubeconfig found"
     else
         echo "⚠️ Host kubeconfig not found (this may be expected if not mounted)"

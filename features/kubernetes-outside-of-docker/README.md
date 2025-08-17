@@ -45,7 +45,7 @@ To access your host Kubernetes cluster, you must mount your .kube directory. Add
   "mounts": [
     {
       "source": "${localEnv:HOME}/.kube",
-      "target": "/tmp/host-kube",
+      "target": "/tmp/.kube",
       "type": "bind"
     }
   ]
@@ -62,7 +62,7 @@ To access your host Kubernetes cluster, you must mount your .kube directory. Add
   "mounts": [
     {
       "source": "${localEnv:USERPROFILE}/.kube",
-      "target": "/tmp/host-kube", 
+      "target": "/tmp/.kube", 
       "type": "bind"
     }
   ]
@@ -191,7 +191,7 @@ If kubectl commands timeout:
   "mounts": [
     {
       "source": "C:/Users/username/.kube",
-      "target": "/tmp/host-kube",
+      "target": "/tmp/.kube",
       "type": "bind"
     }
   ]
@@ -205,7 +205,7 @@ If kubectl commands timeout:
 **Solutions**:
 1. Ensure `~/.kube/config` exists on your host machine
 2. Verify the mount is configured correctly in `devcontainer.json`
-3. Check mount target is `/tmp/host-kube` (not user home directory)
+3. Check mount target is `/tmp/.kube` (not user home directory)
 4. Restart the dev container after adding mounts
 
 ### Permission Issues

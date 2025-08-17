@@ -137,6 +137,37 @@ devcontainer features info
 - bash
 - GitHub CLI (optional, for authentication)
 
+### Unified Development Interface
+
+This repository provides a unified interface for all development operations through the main script:
+
+```bash
+# Set up development environment
+./devcontainer-features.sh setup
+
+# Build all features
+./devcontainer-features.sh build
+
+# Run tests
+./devcontainer-features.sh test
+./devcontainer-features.sh test syntax
+./devcontainer-features.sh test features
+
+# Publish all features
+./devcontainer-features.sh publish
+
+# Publish specific features
+./devcontainer-features.sh publish kubectl helm k9s
+
+# List available features
+./devcontainer-features.sh publish --list
+
+# Clean build artifacts
+./devcontainer-features.sh clean
+```
+
+Alternatively, you can run individual scripts directly from the `scripts/` directory.
+
 ### Environment Setup
 
 1. **Clone this repository:**
@@ -183,17 +214,32 @@ Available test types:
 Publish features to GitHub Container Registry:
 
 ```bash
+# Publish all features
 ./scripts/publish.sh
+
+# Publish specific features
+./scripts/publish.sh kubectl helm k9s
+
+# List available features
+./scripts/publish.sh --list
+
+# Publish with specific visibility settings
+./scripts/publish.sh --private apt ngrok
+./scripts/publish.sh --public kubectl helm
 ```
 
 Options:
-- `./scripts/publish.sh --public` - Publish with guidance to make packages public
-- `./scripts/publish.sh --private` - Publish as private (default)
+- `./scripts/publish.sh` - Publish all built features (public by default)
+- `./scripts/publish.sh <feature-names>` - Publish only specified features
+- `./scripts/publish.sh --list` - List all available features
+- `./scripts/publish.sh --public` - Make packages public after publishing (default)
+- `./scripts/publish.sh --private` - Keep packages private
 
 This will:
 - Authenticate with GitHub Container Registry
 - Build and push individual features with tool version tags
 - Tag each feature as `<feature>:<tool-version>` and `<feature>:latest`
+- Support selective publishing of specific features
 - Provide guidance for making packages public (when using `--public`)
 
 ### Manage Packages

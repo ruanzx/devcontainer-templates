@@ -11,7 +11,7 @@
 	"mounts": [
 		{
 			"source": "${localEnv:USERPROFILE}/.kube",
-			"target": "/tmp/host-kube",
+			"target": "/tmp/.kube",
 			"type": "bind"
 		}
 	],
