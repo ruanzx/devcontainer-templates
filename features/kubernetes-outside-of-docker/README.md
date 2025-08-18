@@ -6,10 +6,12 @@ This feature enables access to the host machine's Kubernetes cluster from within
 
 - 🔧 Automatic detection of host Kubernetes cluster configuration
 - 🌐 Smart network configuration for container-to-host connectivity  
-- 🏷️ Special handling for kind clusters and Docker Desktop Kubernetes
-- 🔐 Proper TLS configuration for container environments
+- 🏷️ Special handling for Docker Desktop, Rancher Desktop, kind, minikube, and other clusters
+- 🔐 Dynamic certificate IP extraction and TLS configuration for container environments
+- 📡 Intelligent IP testing to find working certificate-valid addresses
 - 📝 Automatic shell environment setup
 - 💾 Safe handling of original kubeconfig (creates backups)
+- 🎯 Generic Kubernetes context support for any cluster type
 
 ## Requirements
 

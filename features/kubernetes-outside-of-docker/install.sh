@@ -128,17 +128,91 @@ if [ -f "$HOST_KUBE_MOUNT/config" ]; then
     # Copy the original config first
     cp "$HOST_KUBE_MOUNT/config" "$KUBE_DIR/config"
     
+    # Function to extract certificate IPs from kubeconfig
+    extract_cert_ips() {
+        local config_file="$1"
+        local cert_ips=()
+        
+        # Extract certificate-authority-data and decode it
+        if command -v yq >/dev/null 2>&1; then
+            # Use yq if available for better YAML parsing
+            local cert_data=$(yq eval '.clusters[0].cluster.certificate-authority-data' "$config_file" 2>/dev/null)
+        else
+            # Fallback to grep/awk
+            local cert_data=$(grep -A 10 "certificate-authority-data:" "$config_file" | head -n 1 | awk '{print $2}' 2>/dev/null)
+        fi
+        
+        if [ -n "$cert_data" ] && [ "$cert_data" != "null" ] && command -v openssl >/dev/null 2>&1; then
+            # Decode base64 certificate and extract Subject Alternative Names
+            local san_ips=$(echo "$cert_data" | base64 -d 2>/dev/null | openssl x509 -noout -text 2>/dev/null | \
+                grep -A 1 "Subject Alternative Name:" | tail -n 1 | \
+                grep -oE "IP Address:[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" | \
+                sed 's/IP Address://' | tr '\n' ' ')
+            
+            if [ -n "$san_ips" ]; then
+                echo "$san_ips"
+                return 0
+            fi
+        fi
+        
+        # Fallback: return empty string if extraction fails
+        echo ""
+    }
+    
+    # Function to test certificate-valid IPs
+    test_cert_ips() {
+        local cert_ips="$1"
+        local context_name="$2"
+        
+        if [ -n "$cert_ips" ]; then
+            echo "🔍 Testing certificate-valid IPs for $context_name..."
+            echo "   Certificate IPs found: $cert_ips"
+            
+            for test_ip in $cert_ips; do
+                # Skip IPv6 and localhost addresses for container connectivity
+                if [[ "$test_ip" =~ ^127\. ]] || [[ "$test_ip" =~ : ]]; then
+                    continue
+                fi
+                
+                echo "  Testing $test_ip:6443..."
+                if timeout 2 bash -c "echo >/dev/tcp/$test_ip/6443" 2>/dev/null; then
+                    echo "  ✅ $test_ip:6443 is reachable and certificate-valid"
+                    echo "$test_ip"
+                    return 0
+                else
+                    echo "  ❌ $test_ip:6443 is not reachable"
+                fi
+            done
+        fi
+        
+        echo ""
+        return 1
+    }
+    
     # Detect Kubernetes distribution for appropriate IP selection
     KUBE_CONTEXT=""
-    KUBE_CLUSTER=""
     if grep -q "rancher-desktop" "$HOST_KUBE_MOUNT/config" 2>/dev/null; then
         echo "🐄 Detected Rancher Desktop"
         KUBE_CONTEXT="rancher-desktop"
-        KUBE_CLUSTER="rancher-desktop"
     elif grep -q "docker-desktop" "$HOST_KUBE_MOUNT/config" 2>/dev/null; then
         echo "🐳 Detected Docker Desktop"
         KUBE_CONTEXT="docker-desktop"
-        KUBE_CLUSTER="docker-desktop"
+    else
+        # Try to detect context name from kubeconfig
+        local detected_context=""
+        if command -v yq >/dev/null 2>&1; then
+            detected_context=$(yq eval '.current-context' "$HOST_KUBE_MOUNT/config" 2>/dev/null)
+        else
+            detected_context=$(grep "current-context:" "$HOST_KUBE_MOUNT/config" | awk '{print $2}' 2>/dev/null)
+        fi
+        
+        if [ -n "$detected_context" ] && [ "$detected_context" != "null" ]; then
+            echo "🔧 Detected Kubernetes context: $detected_context"
+            KUBE_CONTEXT="$detected_context"
+        else
+            echo "🔧 Generic Kubernetes cluster detected"
+            KUBE_CONTEXT="generic"
+        fi
     fi
     
     # Get gateway IP for fallback
@@ -149,44 +223,49 @@ if [ -f "$HOST_KUBE_MOUNT/config" ]; then
     
     TARGET_IP=""
     
-    # For Rancher Desktop, use certificate-valid IPs
-    if [ "$KUBE_CONTEXT" = "rancher-desktop" ]; then
-        echo "🔍 Testing Rancher Desktop certificate-valid IPs..."
+    # For known distributions, try their specific IPs first, then certificate IPs
+    if [ "$KUBE_CONTEXT" = "docker-desktop" ]; then
+        # Docker Desktop specific IP
+        DOCKER_DESKTOP_IP="192.168.65.3"
+        echo "🔍 Testing Docker Desktop specific IP..."
+        if timeout 2 bash -c "echo >/dev/tcp/$DOCKER_DESKTOP_IP/6443" 2>/dev/null; then
+            TARGET_IP="$DOCKER_DESKTOP_IP"
+            echo "  ✅ Docker Desktop IP $TARGET_IP:6443 is reachable"
+        fi
+    fi
+    
+    # If no specific IP worked, try certificate-extracted IPs for all contexts
+    if [ -z "$TARGET_IP" ]; then
+        CERT_IPS=$(extract_cert_ips "$HOST_KUBE_MOUNT/config")
+        if [ -n "$CERT_IPS" ]; then
+            TARGET_IP=$(test_cert_ips "$CERT_IPS" "$KUBE_CONTEXT")
+        fi
+    fi
+    
+    # If certificate IPs didn't work, try common Kubernetes IPs
+    if [ -z "$TARGET_IP" ]; then
+        echo "🔍 Testing common Kubernetes cluster IPs..."
+        COMMON_IPS="10.43.0.1 192.168.127.2 192.168.143.1 192.168.65.3 192.168.1.1 10.0.0.1"
         
-        # Test connectivity to certificate-valid IPs for Rancher Desktop
-        # Certificate is valid for: 10.43.0.1, 127.0.0.1, 192.168.127.2, 192.168.143.1, ::1
-        for test_ip in "192.168.127.2" "192.168.143.1" "10.43.0.1"; do
+        for test_ip in $COMMON_IPS; do
             echo "  Testing $test_ip:6443..."
             if timeout 2 bash -c "echo >/dev/tcp/$test_ip/6443" 2>/dev/null; then
                 TARGET_IP="$test_ip"
-                echo "  ✅ $test_ip:6443 is reachable and certificate-valid"
+                echo "  ✅ $test_ip:6443 is reachable"
                 break
             else
                 echo "  ❌ $test_ip:6443 is not reachable"
             fi
         done
-        
-        if [ -z "$TARGET_IP" ]; then
-            echo "⚠️  No certificate-valid IPs found for Rancher Desktop, using gateway IP"
-            TARGET_IP="$GATEWAY_IP"
-        fi
-    
-    # For Docker Desktop, try the known working IP that matches certificates
-    elif [ "$KUBE_CONTEXT" = "docker-desktop" ]; then
-        DOCKER_DESKTOP_IP="192.168.65.3"
-        if timeout 2 bash -c "echo >/dev/tcp/$DOCKER_DESKTOP_IP/6443" 2>/dev/null; then
-            TARGET_IP="$DOCKER_DESKTOP_IP"
-            echo "🐳 Using Docker Desktop IP: $TARGET_IP"
-        else
-            TARGET_IP="$GATEWAY_IP"
-            echo "🌐 Docker Desktop IP not reachable, using gateway IP: $TARGET_IP"
-        fi
-    
-    # For other distributions, use gateway IP
-    else
-        TARGET_IP="$GATEWAY_IP"
-        echo "🌐 Using gateway IP: $TARGET_IP"
     fi
+    
+    # Final fallback to gateway IP
+    if [ -z "$TARGET_IP" ]; then
+        echo "⚠️  No certificate-valid or common IPs found, using gateway IP"
+        TARGET_IP="$GATEWAY_IP"
+    fi
+    
+    echo "� Selected target IP: $TARGET_IP"
     
     # Replace only localhost and 127.0.0.1 with target IP
     # Leave kubernetes.docker.internal as-is since it resolves correctly and matches the certificate
