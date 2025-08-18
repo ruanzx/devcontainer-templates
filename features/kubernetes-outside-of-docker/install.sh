@@ -12,7 +12,48 @@ echo "🐛 DEBUG: PWD: $(pwd)"
 echo "🐛 DEBUG: Script path: ${BASH_SOURCE[0]}"
 
 # Enhanced error handling
-trap 'echo "🐛 ERROR: Script failed at line $LINENO with exit code $?" >&2' ERR
+trap 'echo "🐛 ERROR: Script failed at line $LINENO with exit code $?" >&2; handle_mount_errors' ERR
+
+# Function to handle mount-related errors
+handle_mount_errors() {
+    local exit_code=$?
+    
+    echo "🔍 Checking for common mount issues..."
+    
+    # Check for Wayland socket mount errors (common on Windows)
+    if docker logs $(hostname) 2>&1 | grep -q "wayland.*does not exist" 2>/dev/null; then
+        echo "❌ Detected Wayland socket mount error"
+        echo "💡 This is a common issue on Windows with WSL"
+        echo "💡 This error can usually be ignored for CLI-only development"
+        echo ""
+        echo "🔧 To fix this issue:"
+        echo "1. Disable GUI forwarding in VS Code settings:"
+        echo "   - File > Preferences > Settings"
+        echo "   - Search for 'devcontainer gui'"
+        echo "   - Disable 'Dev > Containers: Forward GUI'"
+        echo ""
+        echo "2. Or add this to your devcontainer.json:"
+        echo '   "runArgs": ["--security-opt", "label=disable"]'
+        echo ""
+    fi
+    
+    # Check for .kube mount issues  
+    if [[ ! -d "$HOST_KUBE_MOUNT" ]]; then
+        echo "❌ Kubernetes configuration mount missing"
+        echo "💡 Add this mount to your devcontainer.json:"
+        echo '{
+  "mounts": [
+    {
+      "source": "${localEnv:USERPROFILE}/.kube",
+      "target": "/tmp/.kube",
+      "type": "bind"
+    }
+  ]
+}'
+    fi
+    
+    return $exit_code
+}
 
 # Define logging functions (fallback if utils.sh is not available)
 log_info() {
