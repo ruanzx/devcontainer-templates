@@ -10,8 +10,8 @@ This repository provides the following DevContainer Features:
 
 - **[APT Package Manager](features/apt/)** - Install packages using APT package manager on Debian-like systems
 - **[DevContainers CLI](features/devcontainers-cli/)** - Official CLI for working with Development Containers
+- **[Edit](features/edit/)** - A fast, simple text editor that uses standard command line conventions
 - **[Lazygit](features/lazygit/)** - A simple terminal UI for git commands that makes git easy
-- **[Microsoft Edit](features/microsoft-edit/)** - A fast, simple text editor that uses standard command line conventions
 - **[ngrok](features/ngrok/)** - Tunneling and reverse proxy for developing and understanding networked, HTTP services
 - **[yq](features/yq/)** - A lightweight and portable command-line YAML, JSON and XML processor
 
@@ -20,6 +20,7 @@ This repository provides the following DevContainer Features:
 - **[kubectl](features/kubectl/)** - The Kubernetes command-line tool
 - **[Helm](features/helm/)** - The package manager for Kubernetes
 - **[K9s](features/k9s/)** - Kubernetes CLI to manage your clusters in style
+- **[Kubernetes Outside of Docker](features/kubernetes-outside-of-docker/)** - Access host Kubernetes clusters from dev containers
 - **[Skaffold](features/skaffold/)** - Easy and repeatable Kubernetes development
 
 ### 🧪 Testing & Performance
@@ -55,19 +56,22 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
       "packages": "curl,jq,tree"
     },
     "ghcr.io/ruanzx/features/devcontainers-cli:0.80.0": {},
-    "ghcr.io/ruanzx/features/kubectl:1.31.0": {},
+    "ghcr.io/ruanzx/features/kubectl:1.31.1": {},
     "ghcr.io/ruanzx/features/helm:3.16.1": {},
     "ghcr.io/ruanzx/features/k9s:0.32.7": {},
+    "ghcr.io/ruanzx/features/kubernetes-outside-of-docker:2.0.8": {},
     "ghcr.io/ruanzx/features/yq:4.44.3": {},
     "ghcr.io/ruanzx/features/lazygit:0.54.2": {},
-    "ghcr.io/ruanzx/features/microsoft-edit:1.2.0": {},
+    "ghcr.io/ruanzx/features/edit:1.2.0": {},
     "ghcr.io/ruanzx/features/ngrok:latest": {},
     "ghcr.io/ruanzx/features/k6:latest": {},
     "ghcr.io/ruanzx/features/skaffold:2.16.1": {},
     "ghcr.io/ruanzx/features/gitleaks:8.21.1": {},
     "ghcr.io/ruanzx/features/trivy:latest": {},
     "ghcr.io/ruanzx/features/aws-sam-cli:latest": {},
-    "ghcr.io/ruanzx/features/dotnet-tools:latest": {}
+    "ghcr.io/ruanzx/features/dotnet-tools:latest": {},
+    "ghcr.io/ruanzx/features/terraform-docs:latest": {},
+    "ghcr.io/ruanzx/features/terraformer:latest": {}
   }
 }
 ```
@@ -126,6 +130,48 @@ devcontainer exec bash
 
 # Get feature info
 devcontainer features info
+```
+
+### ☸️ Kubernetes Outside of Docker
+
+The **Kubernetes Outside of Docker** feature provides seamless access to host Kubernetes clusters from within development containers:
+
+```json
+{
+  "features": {
+    "ghcr.io/ruanzx/features/kubernetes-outside-of-docker:2.0.8": {
+      "enableClusterAccess": true,
+      "autoConfigureKubeconfig": true
+    }
+  }
+}
+```
+
+**Key Benefits:**
+- **Universal Compatibility**: Works with Docker Desktop, Rancher Desktop, kind, minikube, and other local clusters
+- **Automatic Configuration**: Dynamically configures kubectl to access host clusters
+- **TLS Certificate Handling**: Automatically resolves certificate authority issues across different Kubernetes distributions
+- **Context Detection**: Intelligently detects and selects the appropriate Kubernetes context
+- **Zero Configuration**: Works out-of-the-box with sensible defaults
+
+**Supported Platforms:**
+- Docker Desktop (Windows, macOS, Linux)
+- Rancher Desktop (Windows, macOS, Linux) 
+- kind (Kubernetes in Docker)
+- minikube
+- k3s/k3d
+- Generic Kubernetes clusters accessible from the host
+
+**Common Use Cases:**
+```bash
+# Access your local cluster from dev container
+kubectl get nodes
+
+# Deploy applications to local cluster
+kubectl apply -f deployment.yaml
+
+# Access cluster services
+kubectl port-forward service/my-app 8080:80
 ```
 
 ## Development
@@ -262,20 +308,48 @@ Clean up GitHub Container Registry packages:
 ├── .env.sample              # Environment variables template
 ├── .gitignore               # Git ignore patterns
 ├── README.md                # This file
+├── devcontainer-features.sh # Unified development interface
 ├── common/                  # Shared utilities
 │   └── utils.sh            # Common bash functions
 ├── features/               # Feature definitions
+│   ├── apt/
+│   ├── aws-sam-cli/
 │   ├── devcontainers-cli/
+│   ├── dotnet-tools/
+│   ├── edit/
 │   ├── gitleaks/
 │   ├── helm/
+│   ├── k6/
 │   ├── k9s/
 │   ├── kubectl/
-│   ├── microsoft-edit/
+│   ├── kubernetes-outside-of-docker/
+│   ├── lazygit/
+│   ├── ngrok/
 │   ├── skaffold/
+│   ├── terraform-docs/
+│   ├── terraformer/
+│   ├── trivy/
 │   └── yq/
+├── examples/               # Example configurations
+│   ├── apt-packages/
+│   ├── basic-all-features/
+│   ├── dotnet-dev/
+│   ├── infrastructure-import/
+│   ├── kubernetes-dev/
+│   ├── kubernetes-outside-docker/
+│   ├── lazygit-dev/
+│   ├── performance-testing/
+│   ├── security-scanning/
+│   ├── security-tools/
+│   ├── serverless-development/
+│   ├── terraform-dev/
+│   └── web-development-tunneling/
 └── scripts/                # Build and deployment scripts
     ├── build.sh            # Build all features
+    ├── create-examples.sh  # Generate usage examples
     ├── delete-packages.sh  # Delete GitHub packages
+    ├── dotnet-install.sh   # .NET installation helper
+    ├── fix-kubernetes-feature.sh # Kubernetes feature fixes
     ├── publish.sh          # Publish to registry
     └── test.sh             # Test all features
 ```

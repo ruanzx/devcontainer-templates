@@ -1,9 +1,9 @@
 {
     "name": "APT Package Manager",
     "id": "apt",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "description": "Install packages using APT package manager on Debian-like systems",
-    "documentationURL": "https://wiki.debian.org/Apt",
+    "documentationURL": "https://github.com/ruanzx/devcontainer-templates/blob/main/features/apt/README.md",
     "options": {
         "packages": {
             "type": "string",
