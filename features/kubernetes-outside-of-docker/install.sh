@@ -125,34 +125,79 @@ fi
 if [ -f "$HOST_KUBE_MOUNT/config" ]; then
     echo "📋 Configuring kubectl for container access..."
     
-    # Get gateway IP for host connectivity
+    # Copy the original config first
+    cp "$HOST_KUBE_MOUNT/config" "$KUBE_DIR/config"
+    
+    # Detect Kubernetes distribution for appropriate IP selection
+    KUBE_CONTEXT=""
+    KUBE_CLUSTER=""
+    if grep -q "rancher-desktop" "$HOST_KUBE_MOUNT/config" 2>/dev/null; then
+        echo "🐄 Detected Rancher Desktop"
+        KUBE_CONTEXT="rancher-desktop"
+        KUBE_CLUSTER="rancher-desktop"
+    elif grep -q "docker-desktop" "$HOST_KUBE_MOUNT/config" 2>/dev/null; then
+        echo "🐳 Detected Docker Desktop"
+        KUBE_CONTEXT="docker-desktop"
+        KUBE_CLUSTER="docker-desktop"
+    fi
+    
+    # Get gateway IP for fallback
     GATEWAY_IP=$(ip route show default 2>/dev/null | awk '/default/ {print $3}' | head -n1)
     if [ -z "$GATEWAY_IP" ]; then
         GATEWAY_IP="172.17.0.1"
     fi
     
+    TARGET_IP=""
+    
+    # For Rancher Desktop, use certificate-valid IPs
+    if [ "$KUBE_CONTEXT" = "rancher-desktop" ]; then
+        echo "🔍 Testing Rancher Desktop certificate-valid IPs..."
+        
+        # Test connectivity to certificate-valid IPs for Rancher Desktop
+        # Certificate is valid for: 10.43.0.1, 127.0.0.1, 192.168.127.2, 192.168.143.1, ::1
+        for test_ip in "192.168.127.2" "192.168.143.1" "10.43.0.1"; do
+            echo "  Testing $test_ip:6443..."
+            if timeout 2 bash -c "echo >/dev/tcp/$test_ip/6443" 2>/dev/null; then
+                TARGET_IP="$test_ip"
+                echo "  ✅ $test_ip:6443 is reachable and certificate-valid"
+                break
+            else
+                echo "  ❌ $test_ip:6443 is not reachable"
+            fi
+        done
+        
+        if [ -z "$TARGET_IP" ]; then
+            echo "⚠️  No certificate-valid IPs found for Rancher Desktop, using gateway IP"
+            TARGET_IP="$GATEWAY_IP"
+        fi
+    
     # For Docker Desktop, try the known working IP that matches certificates
-    DOCKER_DESKTOP_IP="192.168.65.3"
-    if ping -c 1 -W 1 "$DOCKER_DESKTOP_IP" >/dev/null 2>&1; then
-        GATEWAY_IP="$DOCKER_DESKTOP_IP"
-        echo "🐳 Using Docker Desktop IP: $GATEWAY_IP"
+    elif [ "$KUBE_CONTEXT" = "docker-desktop" ]; then
+        DOCKER_DESKTOP_IP="192.168.65.3"
+        if timeout 2 bash -c "echo >/dev/tcp/$DOCKER_DESKTOP_IP/6443" 2>/dev/null; then
+            TARGET_IP="$DOCKER_DESKTOP_IP"
+            echo "🐳 Using Docker Desktop IP: $TARGET_IP"
+        else
+            TARGET_IP="$GATEWAY_IP"
+            echo "🌐 Docker Desktop IP not reachable, using gateway IP: $TARGET_IP"
+        fi
+    
+    # For other distributions, use gateway IP
     else
-        echo "🌐 Using gateway IP: $GATEWAY_IP"
+        TARGET_IP="$GATEWAY_IP"
+        echo "🌐 Using gateway IP: $TARGET_IP"
     fi
     
-    # Copy and fix the kubeconfig
-    cp "$HOST_KUBE_MOUNT/config" "$KUBE_DIR/config"
-    
-    # Replace only localhost and 127.0.0.1 with gateway IP
+    # Replace only localhost and 127.0.0.1 with target IP
     # Leave kubernetes.docker.internal as-is since it resolves correctly and matches the certificate
-    sed -i "s|server: https://127\.0\.0\.1[:/]|server: https://$GATEWAY_IP:|g" "$KUBE_DIR/config"
-    sed -i "s|server: https://localhost[:/]|server: https://$GATEWAY_IP:|g" "$KUBE_DIR/config"
-    sed -i "s|server: http://127\.0\.0\.1[:/]|server: http://$GATEWAY_IP:|g" "$KUBE_DIR/config"
-    sed -i "s|server: http://localhost[:/]|server: http://$GATEWAY_IP:|g" "$KUBE_DIR/config"
-    sed -i "s|server: https://127\.0\.0\.1$|server: https://$GATEWAY_IP:6443|g" "$KUBE_DIR/config"
-    sed -i "s|server: https://localhost$|server: https://$GATEWAY_IP:6443|g" "$KUBE_DIR/config"
-    sed -i "s|server: http://127\.0\.0\.1$|server: http://$GATEWAY_IP:8080|g" "$KUBE_DIR/config"
-    sed -i "s|server: http://localhost$|server: http://$GATEWAY_IP:8080|g" "$KUBE_DIR/config"
+    sed -i "s|server: https://127\.0\.0\.1[:/]|server: https://$TARGET_IP:|g" "$KUBE_DIR/config"
+    sed -i "s|server: https://localhost[:/]|server: https://$TARGET_IP:|g" "$KUBE_DIR/config"
+    sed -i "s|server: http://127\.0\.0\.1[:/]|server: http://$TARGET_IP:|g" "$KUBE_DIR/config"
+    sed -i "s|server: http://localhost[:/]|server: http://$TARGET_IP:|g" "$KUBE_DIR/config"
+    sed -i "s|server: https://127\.0\.0\.1$|server: https://$TARGET_IP:6443|g" "$KUBE_DIR/config"
+    sed -i "s|server: https://localhost$|server: https://$TARGET_IP:6443|g" "$KUBE_DIR/config"
+    sed -i "s|server: http://127\.0\.0\.1$|server: http://$TARGET_IP:8080|g" "$KUBE_DIR/config"
+    sed -i "s|server: http://localhost$|server: http://$TARGET_IP:8080|g" "$KUBE_DIR/config"
     
     # Note: kubernetes.docker.internal is left unchanged as it resolves correctly in containers
     
