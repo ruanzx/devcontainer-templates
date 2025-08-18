@@ -335,54 +335,100 @@ mkdir -p /etc/profile.d
 echo "🐛 DEBUG: Creating profile script at: /etc/profile.d/kubernetes-outside-docker.sh"
 cat > /etc/profile.d/kubernetes-outside-docker.sh << 'PROFILE_EOF'
 #!/bin/bash
-# Kubernetes outside-of-docker environment setup
+# Enhanced Kubernetes Outside of Docker Profile Script
+# Provides better error handling and compatibility
 
-# Debug logging (can be disabled by setting KUBE_DEBUG=false)
-if [[ "${KUBE_DEBUG:-true}" == "true" ]]; then
-    echo "🐛 DEBUG: Loading kubernetes-outside-docker profile script"
-fi
+# Enhanced error handling for profile scripts
+set +e  # Don't exit on errors in profile scripts
+
+# Debug control
+KUBE_DEBUG="${KUBE_DEBUG:-false}"
+
+debug_log() {
+    if [[ "$KUBE_DEBUG" == "true" ]]; then
+        echo "🐛 DEBUG: $*" >&2
+    fi
+}
+
+debug_log "Loading enhanced kubernetes-outside-docker profile script"
 
 # Set KUBECONFIG based on user
 if [ "$(id -u)" = "0" ]; then
     export KUBECONFIG="/root/.kube/config"
+    debug_log "Set KUBECONFIG for root user: $KUBECONFIG"
 else
     export KUBECONFIG="$HOME/.kube/config"
+    debug_log "Set KUBECONFIG for non-root user: $KUBECONFIG"
 fi
 
 # Function to run kubernetes initialization if needed
 ensure_kubectl_config() {
-    if [ ! -f "$KUBECONFIG" ] && [ -f "/usr/local/share/kubernetes-init.sh" ]; then
-        echo "🔧 Initializing Kubernetes configuration..."
-        bash /usr/local/share/kubernetes-init.sh
+    debug_log "ensure_kubectl_config called"
+    
+    # Check if config already exists and is recent
+    if [ -f "$KUBECONFIG" ]; then
+        debug_log "KUBECONFIG file already exists: $KUBECONFIG"
+        return 0
+    fi
+    
+    # Check if initialization script exists
+    if [ ! -f "/usr/local/share/kubernetes-init.sh" ]; then
+        debug_log "kubernetes-init.sh not found, skipping initialization"
+        return 0
+    fi
+    
+    debug_log "Running kubernetes initialization..."
+    if bash /usr/local/share/kubernetes-init.sh 2>/dev/null; then
+        debug_log "Kubernetes initialization completed successfully"
+    else
+        debug_log "Kubernetes initialization failed or skipped"
     fi
 }
 
-# Run initialization automatically when profile loads
-ensure_kubectl_config 2>/dev/null || true
-
-# Create kubectl function that ensures config is properly initialized
-if command -v kubectl >/dev/null 2>&1; then
-    kubectl() {
-        # Ensure initialization runs before kubectl commands
-        ensure_kubectl_config 2>/dev/null || true
-        command kubectl "$@"
-    }
-    export -f kubectl
+# Run initialization automatically when profile loads (but not in subshells)
+if [ -z "$KUBE_PROFILE_LOADED" ]; then
+    export KUBE_PROFILE_LOADED=1
+    debug_log "First time loading profile, running initialization"
+    ensure_kubectl_config 2>/dev/null || true
+else
+    debug_log "Profile already loaded in parent shell, skipping initialization"
 fi
 
-# Also set up for zsh if present
-if [ -n "$ZSH_VERSION" ]; then
-    if command -v kubectl >/dev/null 2>&1; then
-        kubectl() {
-            ensure_kubectl_config 2>/dev/null || true
-            command kubectl "$@"
-        }
+# Enhanced kubectl wrapper function
+if command -v kubectl >/dev/null 2>&1; then
+    kubectl() {
+        debug_log "kubectl wrapper called with args: $*"
+        
+        # Ensure config exists before running kubectl
+        ensure_kubectl_config 2>/dev/null || true
+        
+        # Run the actual kubectl command
+        command kubectl "$@"
+    }
+    
+    # Export for bash
+    if [ -n "$BASH_VERSION" ]; then
+        export -f kubectl
+        debug_log "kubectl function exported for bash"
+    fi
+    
+    # For zsh compatibility
+    if [ -n "$ZSH_VERSION" ]; then
+        debug_log "Setting up kubectl for zsh"
     fi
 fi
 
-if [[ "${KUBE_DEBUG:-true}" == "true" ]]; then
-    echo "🐛 DEBUG: kubernetes-outside-docker profile script loaded, KUBECONFIG=$KUBECONFIG"
+# Add completion for kubectl if available
+if command -v kubectl >/dev/null 2>&1 && [ -n "$BASH_VERSION" ]; then
+    if kubectl completion bash >/dev/null 2>&1; then
+        # shellcheck disable=SC1090
+        source <(kubectl completion bash 2>/dev/null) || true
+        debug_log "kubectl bash completion loaded"
+    fi
 fi
+
+debug_log "kubernetes-outside-docker profile script loaded successfully"
+debug_log "KUBECONFIG=$KUBECONFIG"
 PROFILE_EOF
 
 chmod +x /etc/profile.d/kubernetes-outside-docker.sh
@@ -406,12 +452,52 @@ log_success "✅ KUBECONFIG set to: $KUBECONFIG"
 
 echo "🐛 DEBUG: kubernetes-outside-of-docker feature install script completed successfully at $(date)"
 
-# Create installation marker
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-if [[ -f "$SCRIPT_DIR/install-marker.sh" ]]; then
-    echo "🐛 DEBUG: Creating installation marker"
-    bash "$SCRIPT_DIR/install-marker.sh"
-fi
+# Create installation marker inline
+INSTALL_MARKER="/usr/local/share/kubernetes-outside-docker-installed"
+
+echo "🐛 DEBUG: Creating installation marker"
+cat > "$INSTALL_MARKER" << MARKER_EOF
+# kubernetes-outside-of-docker feature installation marker
+# Created: $(date)
+# User: $(id)
+# PWD: $(pwd)
+# Feature version: 2.0.8
+# Install script: ${BASH_SOURCE[0]}
+
+# Files that should exist after installation:
+EXPECTED_FILES=(
+    "/usr/local/share/kubernetes-init.sh"
+    "/etc/profile.d/kubernetes-outside-docker.sh"
+)
+
+# Validation function
+validate_installation() {
+    local all_good=true
+    
+    for file in "\${EXPECTED_FILES[@]}"; do
+        if [[ ! -f "\$file" ]]; then
+            echo "ERROR: Missing file: \$file" >&2
+            all_good=false
+        else
+            echo "OK: Found file: \$file"
+        fi
+    done
+    
+    if [[ "\$all_good" == "true" ]]; then
+        echo "✅ kubernetes-outside-of-docker feature installation validated"
+        return 0
+    else
+        echo "❌ kubernetes-outside-of-docker feature installation validation failed"
+        return 1
+    fi
+}
+
+# Export validation function
+export -f validate_installation
+MARKER_EOF
+
+chmod +x "$INSTALL_MARKER"
+echo "🐛 DEBUG: Installation marker created at: $INSTALL_MARKER"
 
 # Final validation
 if [[ -f /usr/local/share/kubernetes-init.sh ]] && [[ -f /etc/profile.d/kubernetes-outside-docker.sh ]]; then

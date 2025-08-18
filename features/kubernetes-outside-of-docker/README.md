@@ -9,9 +9,11 @@ This feature enables access to the host machine's Kubernetes cluster from within
 - 🏷️ Special handling for Docker Desktop, Rancher Desktop, kind, minikube, and other clusters
 - 🔐 Dynamic certificate IP extraction and TLS configuration for container environments
 - 📡 Intelligent IP testing to find working certificate-valid addresses
-- 📝 Automatic shell environment setup
+- 📝 Enhanced shell environment setup with kubectl wrapper and bash completion
 - 💾 Safe handling of original kubeconfig (creates backups)
 - 🎯 Generic Kubernetes context support for any cluster type
+- 🐛 Comprehensive debug mode and installation validation
+- 📦 Consolidated single-file installation (no external dependencies)
 
 ## Requirements
 
