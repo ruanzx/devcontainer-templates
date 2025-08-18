@@ -12,10 +12,5 @@
       "type": "bind"
     }
   ],
-  "postCreateCommand": [
-    "echo '🚀 Testing Kubernetes connectivity from dev container...'",
-    "kubectl version --client",
-    "kubectl config current-context || echo 'No context set'",
-    "echo '💡 Try: kubectl get nodes'"
-  ]
+  "postCreateCommand": "echo '🚀 Testing Kubernetes connectivity from dev container...'"
 }
