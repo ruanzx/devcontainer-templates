@@ -21,21 +21,9 @@
 				"ms-vscode.vscode-json",
 				"timonwong.shellcheck",
 				"foxundermoon.shell-format"
-			],
-			"settings": {
-				"dev.containers.forwardGUI": false
-			}
+			]
 		}
 	},
-	"postCreateCommand": ["bash .devcontainer/mount-validator.sh"],
-	"remoteUser": "root",
-	"runArgs": [
-		"--security-opt", "label=disable"
-	],
-	"containerEnv": {
-		"DISPLAY": ":0"
-	},
-	"init": true,
-	"privileged": false,
-	"overrideCommand": false
+	"postCreateCommand": [],
+	"remoteUser": "root"
 }
