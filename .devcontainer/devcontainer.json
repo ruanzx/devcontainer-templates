@@ -10,13 +10,17 @@
 	},
 	"mounts": [
 		{
-			"source": "${localEnv:USERPROFILE}/.kube",
-			"target": "/tmp/.kube",
+			"source": "${localEnv:USERPROFILE}/.kube/",
+			"target": "/tmp/.kube/",
 			"type": "bind"
 		}
 	],
 	"customizations": {
 		"vscode": {
+			"settings": {
+				"dev.containers.mountWaylandSocket": false,
+				"dev.containers.mountXServerSocket": false
+			},
 			"extensions": [
 				"ms-vscode.vscode-json",
 				"timonwong.shellcheck",

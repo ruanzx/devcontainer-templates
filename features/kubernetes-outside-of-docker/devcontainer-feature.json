@@ -20,7 +20,7 @@
             "description": "Enable network tunnel for container-to-host connectivity"
         },
         "enableTLS": {
-            "type": "boolean", 
+            "type": "boolean",
             "default": true,
             "description": "Configure TLS settings for container environment"
         },
@@ -36,6 +36,8 @@
                 "ms-kubernetes-tools.vscode-kubernetes-tools"
             ],
             "settings": {
+                "dev.containers.mountWaylandSocket": false,
+                "dev.containers.mountXServerSocket": false,
                 "github.copilot.chat.codeGeneration.instructions": [
                     {
                         "text": "This dev container has kubectl configured to access the host Kubernetes cluster. Use kubectl commands to interact with the cluster running on the host machine."
