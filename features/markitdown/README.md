@@ -28,8 +28,41 @@ MarkItDown is a lightweight Python utility that converts various files to Markdo
 
 ## Prerequisites
 
-- **Python 3.10+**: MarkItDown requires Python 3.10 or higher
-- **Python DevContainer Feature**: This feature automatically installs after the Python feature
+⚠️ **IMPORTANT**: This feature requires Python 3.10 or higher and **must** be used with the Python devcontainer feature.
+
+- **Python DevContainer Feature**: Add `"ghcr.io/devcontainers/features/python:1"` to your features
+- **Python Version**: MarkItDown requires Python 3.10+
+- **Dependency Order**: The Python feature will be automatically installed first due to the `installsAfter` declaration
+
+### Correct Usage Example
+
+```json
+{
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12"
+    },
+    "ghcr.io/ruanzx/features/markitdown:latest": {}
+  }
+}
+```
+
+### ❌ Incorrect Usage (Will Fail)
+
+```json
+{
+  "features": {
+    "ghcr.io/ruanzx/features/markitdown:latest": {}
+  }
+}
+```
+This will fail with "Python is required but not found" because the Python feature is not included.
+
+### `installSystemDeps` (boolean)
+Install system dependencies for full MarkItDown functionality.
+
+- **Default**: `true`
+- **Description**: When true, installs system packages like `ffmpeg` and `poppler-utils` that are needed for audio and PDF processing. Disable this if you prefer to manage system dependencies separately or want a smaller image.
 
 ## Options
 
@@ -103,6 +136,33 @@ Enable MarkItDown plugins by default.
   }
 }
 ```
+
+### Install with System Dependencies
+
+```json
+{
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {},
+    "ghcr.io/ruanzx/features/markitdown:latest": {
+      "installSystemDeps": true
+    }
+  }
+}
+```
+
+### Install Without System Dependencies (Smaller Image)
+
+```json
+{
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {},
+    "ghcr.io/ruanzx/features/markitdown:latest": {
+      "installSystemDeps": false
+    }
+  }
+}
+```
+Note: Without system dependencies, you may see warnings about missing `ffmpeg` or other tools.
 
 ## Advanced Usage
 
@@ -288,9 +348,66 @@ python3 -c "import markitdown; print('MarkItDown is ready!')"
 
 ## Troubleshooting
 
+### FFmpeg/Audio Processing Warnings
+
+**Problem**: You see warnings like:
+```
+RuntimeWarning: Couldn't find ffmpeg or avconv - defaulting to ffmpeg, but may not work
+```
+
+**Solutions**:
+1. **Enable system dependencies** (default behavior):
+```json
+{
+  "features": {
+    "ghcr.io/ruanzx/features/markitdown:latest": {
+      "installSystemDeps": true
+    }
+  }
+}
+```
+
+2. **Install ffmpeg manually** using the APT feature:
+```json
+{
+  "features": {
+    "ghcr.io/ruanzx/features/apt:latest": {
+      "packages": "ffmpeg"
+    },
+    "ghcr.io/ruanzx/features/markitdown:latest": {
+      "installSystemDeps": false
+    }
+  }
+}
+```
+
+3. **Ignore the warning** if you don't need audio processing - MarkItDown will still work for other file types.
+
+### "Python is required but not found" Error
+
+**Problem**: You see an error like:
+```
+[ERROR] Python is required but not found. Please install Python first.
+[INFO] This feature requires the Python devcontainer feature as a dependency.
+```
+
+**Solution**: Add the Python devcontainer feature to your configuration:
+
+```json
+{
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12"
+    },
+    "ghcr.io/ruanzx/features/markitdown:latest": {}
+  }
+}
+```
+
 ### Python Version Issues
 - Ensure Python 3.10+ is installed
 - MarkItDown requires modern Python features
+- Use `"version": "3.12"` or newer in the Python feature
 
 ### Missing Dependencies
 - Install with `extras: "all"` for full functionality

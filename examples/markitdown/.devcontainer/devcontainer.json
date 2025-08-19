@@ -1,0 +1,20 @@
+{
+	"name": "MarkItDown Development Environment",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+	"features": {
+		"ghcr.io/devcontainers/features/python:1": {
+			"version": "3.12"
+		},
+		"ghcr.io/ruanzx/features/markitdown:latest": {}
+	},
+	"customizations": {
+		"vscode": {
+			"settings": {},
+			"extensions": [
+				"ms-python.python"
+			]
+		}
+	},
+	"postCreateCommand": [],
+	"remoteUser": "root"
+}
