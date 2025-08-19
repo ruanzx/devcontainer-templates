@@ -1,0 +1,27 @@
+{
+    "name": "MarkItDown",
+    "id": "markitdown",
+    "version": "0.1.0",
+    "description": "Install MarkItDown, a utility for converting various files to Markdown format",
+    "documentationURL": "https://github.com/ruanzx/devcontainer-templates/blob/main/features/markitdown/README.md",
+    "options": {
+        "version": {
+            "type": "string",
+            "default": "latest",
+            "description": "Version of MarkItDown to install (e.g., '0.1.1' or 'latest')"
+        },
+        "extras": {
+            "type": "string",
+            "default": "all",
+            "description": "Extra dependencies to install (e.g., 'all', 'pdf,docx,pptx', or 'none')"
+        },
+        "enablePlugins": {
+            "type": "boolean",
+            "default": false,
+            "description": "Enable MarkItDown plugins by default"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/python:1"
+    ]
+}
