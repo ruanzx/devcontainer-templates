@@ -1,6 +1,6 @@
 {
     "id": "kubernetes-outside-of-docker",
-    "version": "2.0.8",
+    "version": "2.0.9",
     "name": "Kubernetes Outside of Docker",
     "description": "Simple, reliable access to host Kubernetes clusters from dev containers. Automatically configures kubectl to work with Docker Desktop, Rancher Desktop, kind, minikube, and other local clusters.",
     "documentationURL": "https://github.com/ruanzx/devcontainer-templates/tree/main/features/kubernetes-outside-of-docker",
