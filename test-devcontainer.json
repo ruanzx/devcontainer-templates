@@ -1,8 +1,0 @@
-{
-  "name": "Test kubectl Feature",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
-  "features": {
-    "./build/kubectl": {}
-  },
-  "postCreateCommand": "echo 'Testing kubectl feature'"
-}
