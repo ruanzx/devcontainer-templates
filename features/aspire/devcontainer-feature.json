@@ -1,22 +1,28 @@
 {
     "id": "aspire",
-    "version": "1.0.0",
-    "name": "aspire",
-    "description": "Aspire CLI, cross-platform tool designed to streamline the development, management, and deployment of application systems",
-    "documentationURL": "",
-    "licenseURL": "",
+    "version": "9.4.0",
+    "name": ".NET Aspire",
+    "description": ".NET Aspire project templates for building observable, production-ready distributed applications",
+    "documentationURL": "https://learn.microsoft.com/en-us/dotnet/aspire/",
+    "licenseURL": "https://github.com/dotnet/aspire/blob/main/LICENSE.TXT",
     "keywords": [
         "aspire",
-        "developer-tools"
+        "dotnet",
+        "microservices",
+        "distributed-apps",
+        "cloud-native",
+        "orchestration",
+        "observability"
     ],
     "options": {
         "version": {
             "type": "string",
-            "description": "Version of Aspire to install",
-            "default": "1.0.0"
+            "description": "Version of .NET Aspire templates to install",
+            "default": "9.4.0"
         }
     },
     "installsAfter": [
-        "ghcr.io/devcontainers/features/common-utils"
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/devcontainers/features/dotnet"
     ]
 }
