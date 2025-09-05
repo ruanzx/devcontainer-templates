@@ -363,41 +363,61 @@ fi
 
 # Function to run kubernetes initialization if needed
 ensure_kubectl_config() {
-    debug_log "ensure_kubectl_config called"
+    # Use type -t to check if debug_log function exists before calling it
+    if type -t debug_log >/dev/null 2>&1; then
+        debug_log "ensure_kubectl_config called"
+    fi
     
     # Check if config already exists and is recent
     if [ -f "$KUBECONFIG" ]; then
-        debug_log "KUBECONFIG file already exists: $KUBECONFIG"
+        if type -t debug_log >/dev/null 2>&1; then
+            debug_log "KUBECONFIG file already exists: $KUBECONFIG"
+        fi
         return 0
     fi
     
     # Check if initialization script exists
     if [ ! -f "/usr/local/share/kubernetes-init.sh" ]; then
-        debug_log "kubernetes-init.sh not found, skipping initialization"
+        if type -t debug_log >/dev/null 2>&1; then
+            debug_log "kubernetes-init.sh not found, skipping initialization"
+        fi
         return 0
     fi
     
-    debug_log "Running kubernetes initialization..."
+    if type -t debug_log >/dev/null 2>&1; then
+        debug_log "Running kubernetes initialization..."
+    fi
     if bash /usr/local/share/kubernetes-init.sh 2>/dev/null; then
-        debug_log "Kubernetes initialization completed successfully"
+        if type -t debug_log >/dev/null 2>&1; then
+            debug_log "Kubernetes initialization completed successfully"
+        fi
     else
-        debug_log "Kubernetes initialization failed or skipped"
+        if type -t debug_log >/dev/null 2>&1; then
+            debug_log "Kubernetes initialization failed or skipped"
+        fi
     fi
 }
 
 # Run initialization automatically when profile loads (but not in subshells)
 if [ -z "$KUBE_PROFILE_LOADED" ]; then
     export KUBE_PROFILE_LOADED=1
-    debug_log "First time loading profile, running initialization"
+    if type -t debug_log >/dev/null 2>&1; then
+        debug_log "First time loading profile, running initialization"
+    fi
     ensure_kubectl_config 2>/dev/null || true
 else
-    debug_log "Profile already loaded in parent shell, skipping initialization"
+    if type -t debug_log >/dev/null 2>&1; then
+        debug_log "Profile already loaded in parent shell, skipping initialization"
+    fi
 fi
 
 # Enhanced kubectl wrapper function
 if command -v kubectl >/dev/null 2>&1; then
     kubectl() {
-        debug_log "kubectl wrapper called with args: $*"
+        # Use type -t to check if debug_log function exists before calling it
+        if type -t debug_log >/dev/null 2>&1; then
+            debug_log "kubectl wrapper called with args: $*"
+        fi
         
         # Ensure config exists before running kubectl
         ensure_kubectl_config 2>/dev/null || true
@@ -409,12 +429,16 @@ if command -v kubectl >/dev/null 2>&1; then
     # Export for bash
     if [ -n "$BASH_VERSION" ]; then
         export -f kubectl
-        debug_log "kubectl function exported for bash"
+        if type -t debug_log >/dev/null 2>&1; then
+            debug_log "kubectl function exported for bash"
+        fi
     fi
     
     # For zsh compatibility
     if [ -n "$ZSH_VERSION" ]; then
-        debug_log "Setting up kubectl for zsh"
+        if type -t debug_log >/dev/null 2>&1; then
+            debug_log "Setting up kubectl for zsh"
+        fi
     fi
 fi
 
@@ -423,12 +447,16 @@ if command -v kubectl >/dev/null 2>&1 && [ -n "$BASH_VERSION" ]; then
     if kubectl completion bash >/dev/null 2>&1; then
         # shellcheck disable=SC1090
         source <(kubectl completion bash 2>/dev/null) || true
-        debug_log "kubectl bash completion loaded"
+        if type -t debug_log >/dev/null 2>&1; then
+            debug_log "kubectl bash completion loaded"
+        fi
     fi
 fi
 
-debug_log "kubernetes-outside-docker profile script loaded successfully"
-debug_log "KUBECONFIG=$KUBECONFIG"
+if type -t debug_log >/dev/null 2>&1; then
+    debug_log "kubernetes-outside-docker profile script loaded successfully"
+    debug_log "KUBECONFIG=$KUBECONFIG"
+fi
 PROFILE_EOF
 
 chmod +x /etc/profile.d/kubernetes-outside-docker.sh
