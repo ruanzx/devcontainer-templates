@@ -1,0 +1,40 @@
+{
+    "id": "pip",
+    "version": "1.0.0",
+    "name": "Python Pip Packages",
+    "description": "Install Python packages using pip package manager",
+    "documentationURL": "https://github.com/ruanzx/devcontainer-templates/blob/main/features/pip/README.md",
+    "licenseURL": "https://pypi.org/help/#licenses",
+    "keywords": [
+        "python",
+        "pip",
+        "packages",
+        "package-manager"
+    ],
+    "options": {
+        "packages": {
+            "type": "string",
+            "default": "",
+            "description": "Comma-separated list of Python package names to install (e.g., 'requests,numpy,pandas')"
+        },
+        "upgrade": {
+            "type": "boolean",
+            "default": false,
+            "description": "Upgrade packages if they are already installed"
+        },
+        "requirements": {
+            "type": "string",
+            "default": "",
+            "description": "Path to requirements.txt file to install packages from"
+        },
+        "extraArgs": {
+            "type": "string",
+            "default": "",
+            "description": "Additional arguments to pass to pip install command"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/devcontainers/features/python"
+    ]
+}
