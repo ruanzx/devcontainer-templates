@@ -1,0 +1,42 @@
+{
+    "name": "mirrord",
+    "id": "mirrord",
+    "version": "1.0.1",
+    "description": "Install mirrord, a tool that lets you easily mirror traffic from your Kubernetes cluster to your development environment",
+    "documentationURL": "https://github.com/metalbear-co/mirrord",
+    "licenseURL": "https://github.com/metalbear-co/mirrord/blob/main/LICENSE",
+    "keywords": [
+        "mirrord",
+        "kubernetes",
+        "development",
+        "traffic-mirroring",
+        "testing",
+        "debugging",
+        "cloud-native"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": [
+                "latest",
+                "3.161.0",
+                "3.160.0",
+                "3.159.0"
+            ],
+            "default": "latest",
+            "description": "Version of mirrord to install. Use 'latest' for the most recent release or specify a version like '3.161.0'"
+        },
+        "sha256": {
+            "type": "string",
+            "proposals": [
+                "automatic",
+                "dev-mode"
+            ],
+            "default": "automatic",
+            "description": "SHA256 checksum for verification. Use 'automatic' to download checksums, 'dev-mode' to skip verification, or provide a specific checksum"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
