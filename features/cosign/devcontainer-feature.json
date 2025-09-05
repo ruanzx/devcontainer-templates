@@ -1,0 +1,30 @@
+{
+    "name": "Cosign",
+    "id": "cosign",
+    "version": "1.0.1",
+    "description": "Install Cosign, a container signing verification and signing tool",
+    "documentationURL": "https://github.com/sigstore/cosign",
+    "licenseURL": "https://github.com/sigstore/cosign/blob/main/LICENSE",
+    "keywords": [
+        "cosign",
+        "sigstore",
+        "container",
+        "signing",
+        "verification",
+        "security",
+        "supply-chain"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "description": "Version of Cosign to install. Use 'latest' for the most recent release.",
+            "default": "latest"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ],
+    "containerEnv": {
+        "COSIGN_YES": "true"
+    }
+}
