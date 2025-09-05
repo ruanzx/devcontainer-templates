@@ -5,7 +5,8 @@
     "ghcr.io/devcontainers/features/dotnet:latest": {},
     "ghcr.io/ruanzx/features/dotnet-tools:latest": {
       "tools": "dotnet-ef@latest,dotnet-format@latest,dotnet-outdated-tool@latest,dotnet-sonarscanner@latest"
-    }
+    },
+    "ghcr.io/ruanzx/features/aspire:latest": {}
   },
   "customizations": {
     "vscode": {

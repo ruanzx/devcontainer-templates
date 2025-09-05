@@ -1,0 +1,22 @@
+{
+    "id": "aspire",
+    "version": "1.0.0",
+    "name": "aspire",
+    "description": "Aspire CLI, cross-platform tool designed to streamline the development, management, and deployment of application systems",
+    "documentationURL": "",
+    "licenseURL": "",
+    "keywords": [
+        "aspire",
+        "developer-tools"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "description": "Version of Aspire to install",
+            "default": "1.0.0"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
