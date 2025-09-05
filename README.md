@@ -1,6 +1,6 @@
 # DevContainer Features Collection
 
-A collection of 18 high-quality DevContainer Features for enhancing development environments with popular tools and utilities.
+A collection of 30+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
 
 ## 📦 Available Features
 
@@ -14,6 +14,8 @@ This repository provides the following DevContainer Features:
 - **[Lazygit](features/lazygit/)** - A simple terminal UI for git commands that makes git easy
 - **[ngrok](features/ngrok/)** - Tunneling and reverse proxy for developing and understanding networked, HTTP services
 - **[yq](features/yq/)** - A lightweight and portable command-line YAML, JSON and XML processor
+- **[MarkItDown](features/markitdown/)** - Utility for converting various files to Markdown format
+- **[Bun](features/bun/)** - Fast all-in-one JavaScript runtime and toolkit
 
 ### ☸️ Kubernetes & DevOps
 
@@ -22,21 +24,31 @@ This repository provides the following DevContainer Features:
 - **[K9s](features/k9s/)** - Kubernetes CLI to manage your clusters in style
 - **[Kubernetes Outside of Docker](features/kubernetes-outside-of-docker/)** - Access host Kubernetes clusters from dev containers
 - **[Skaffold](features/skaffold/)** - Easy and repeatable Kubernetes development
+- **[kubeseal](features/kubeseal/)** - Client-side utility for Kubernetes Sealed Secrets
+- **[mirrord](features/mirrord/)** - Mirror traffic from Kubernetes cluster to development environment
+- **[Argo](features/argo/)** - Argo Workflows and Argo CD command-line tools for GitOps
 
 ### 🧪 Testing & Performance
 
 - **[k6](features/k6/)** - Modern load testing tool with Node.js integration for performance testing
 - **[Trivy](features/trivy/)** - Vulnerability scanner for containers, file systems, and Git repositories
+- **[act](features/act/)** - Run GitHub Actions locally without pushing to GitHub
 
 ### 🔒 Security
 
 - **[Gitleaks](features/gitleaks/)** - Detect and prevent secrets in your git repos
+- **[Cosign](features/cosign/)** - Container signing and verification tool
+- **[GitSign](features/gitsign/)** - Keyless Git signing with Sigstore
 
 ### ☁️ Cloud & Infrastructure
 
 - **[AWS SAM CLI](features/aws-sam-cli/)** - AWS Serverless Application Model CLI for building and deploying serverless applications
 - **[Terraform Docs](features/terraform-docs/)** - Generate documentation from Terraform modules in various output formats
 - **[Terraformer](features/terraformer/)** - CLI tool to generate terraform files from existing infrastructure
+- **[tfsec](features/tfsec/)** - Security scanner for Terraform code to detect potential security issues
+- **[aztfy](features/aztfy/)** - Tool to import Azure resources into Terraform configuration
+- **[Azure Bicep](features/azure-bicep/)** - Azure Resource Manager template language and tooling
+- **[Google Cloud CLI](features/google-cloud-cli/)** - Official Google Cloud SDK and CLI tools
 
 ### 💻 Development Platforms
 
@@ -60,18 +72,30 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
     "ghcr.io/ruanzx/features/helm:3.16.1": {},
     "ghcr.io/ruanzx/features/k9s:0.32.7": {},
     "ghcr.io/ruanzx/features/kubernetes-outside-of-docker:2.0.8": {},
+    "ghcr.io/ruanzx/features/kubeseal:latest": {},
+    "ghcr.io/ruanzx/features/mirrord:latest": {},
     "ghcr.io/ruanzx/features/yq:4.44.3": {},
     "ghcr.io/ruanzx/features/lazygit:0.54.2": {},
     "ghcr.io/ruanzx/features/edit:1.2.0": {},
     "ghcr.io/ruanzx/features/ngrok:latest": {},
     "ghcr.io/ruanzx/features/k6:latest": {},
+    "ghcr.io/ruanzx/features/act:latest": {},
     "ghcr.io/ruanzx/features/skaffold:2.16.1": {},
     "ghcr.io/ruanzx/features/gitleaks:8.21.1": {},
+    "ghcr.io/ruanzx/features/cosign:latest": {},
+    "ghcr.io/ruanzx/features/gitsign:latest": {},
     "ghcr.io/ruanzx/features/trivy:latest": {},
+    "ghcr.io/ruanzx/features/tfsec:latest": {},
     "ghcr.io/ruanzx/features/aws-sam-cli:latest": {},
+    "ghcr.io/ruanzx/features/google-cloud-cli:latest": {},
+    "ghcr.io/ruanzx/features/azure-bicep:latest": {},
     "ghcr.io/ruanzx/features/dotnet-tools:latest": {},
     "ghcr.io/ruanzx/features/terraform-docs:latest": {},
-    "ghcr.io/ruanzx/features/terraformer:latest": {}
+    "ghcr.io/ruanzx/features/terraformer:latest": {},
+    "ghcr.io/ruanzx/features/aztfy:latest": {},
+    "ghcr.io/ruanzx/features/bun:latest": {},
+    "ghcr.io/ruanzx/features/markitdown:latest": {},
+    "ghcr.io/ruanzx/features/argo:latest": {}
   }
 }
 ```
@@ -173,6 +197,140 @@ kubectl apply -f deployment.yaml
 # Access cluster services
 kubectl port-forward service/my-app 8080:80
 ```
+
+### 🔄 mirrord - Traffic Mirroring
+
+The **mirrord** feature enables testing local code changes against real production traffic without deploying to the cluster:
+
+```json
+{
+  "features": {
+    "ghcr.io/ruanzx/features/mirrord:latest": {
+      "version": "3.161.0"
+    },
+    "ghcr.io/ruanzx/features/kubectl:latest": {}
+  }
+}
+```
+
+**Key Benefits:**
+- **Real Traffic Testing**: Test your local code with actual production traffic patterns
+- **Zero Deployment Risk**: No need to deploy untested code to production environments
+- **Easy Integration**: Works with any programming language and framework
+- **Kubernetes Native**: Seamlessly integrates with existing Kubernetes workflows
+
+**Common Use Cases:**
+```bash
+# Mirror traffic from a pod to your local application
+mirrord exec --target pod/my-app-pod -- python app.py
+
+# Mirror traffic from a deployment
+mirrord exec --target deployment/my-app -- npm start
+
+# Mirror with specific configuration
+mirrord exec --config-file mirrord.toml --target pod/my-app-pod -- go run main.go
+```
+
+### 🔐 Sealed Secrets with kubeseal
+
+The **kubeseal** feature provides client-side utility for Kubernetes Sealed Secrets, enabling secure secret management in GitOps workflows:
+
+```json
+{
+  "features": {
+    "ghcr.io/ruanzx/features/kubeseal:latest": {
+      "version": "v0.30.0"
+    },
+    "ghcr.io/ruanzx/features/kubectl:latest": {}
+  }
+}
+```
+
+**Key Benefits:**
+- **GitOps Safe**: Store encrypted secrets in version control safely
+- **Client-Side Encryption**: Secrets are encrypted before leaving your local environment
+- **Multi-Scope Support**: Supports strict, namespace-wide, and cluster-wide scopes
+- **Production Ready**: Battle-tested in production Kubernetes environments
+
+**Common Use Cases:**
+```bash
+# Encrypt a secret for GitOps
+kubectl create secret generic mysecret --dry-run=client --from-literal=password=supersecret -o yaml | kubeseal -o yaml > sealed-secret.yaml
+
+# Fetch public certificate for offline use
+kubeseal --fetch-cert > public.pem
+
+# Use offline mode with saved certificate
+kubeseal --cert public.pem --format yaml < secret.yaml > sealed-secret.yaml
+```
+
+### 🎬 GitHub Actions with act
+
+The **act** feature allows you to run GitHub Actions workflows locally, providing fast feedback without pushing to GitHub:
+
+```json
+{
+  "features": {
+    "ghcr.io/ruanzx/features/act:latest": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:latest": {}
+  }
+}
+```
+
+**Key Benefits:**
+- **Local Testing**: Test GitHub Actions workflows without pushing commits
+- **Fast Feedback**: Immediate results without waiting for CI/CD queues
+- **Cost Effective**: Reduce GitHub Actions minutes usage
+- **Development Friendly**: Perfect for iterating on workflow configurations
+
+**Common Use Cases:**
+```bash
+# Run all jobs in your workflow
+act
+
+# Run a specific job
+act -j test
+
+# Run with secrets
+act -s GITHUB_TOKEN=your_token
+
+# Use specific event
+act push
+```
+
+## Feature Characteristics
+
+All features in this collection are designed with the following principles:
+
+### 🛡️ Robust & Reliable
+- **Error Handling**: Comprehensive error handling with clear, actionable error messages
+- **Validation**: Input validation for versions, architectures, and options
+- **Cleanup**: Automatic cleanup of temporary files and resources
+- **Verification**: Post-installation verification to ensure tools work correctly
+
+### 🏗️ Architecture Support
+- **Multi-Platform**: Support for AMD64, ARM64, and other architectures where available
+- **OS Detection**: Automatic detection and handling of different operating systems
+- **Compatibility**: Tested across different container base images
+
+### 🔧 Developer Experience
+- **Consistent Options**: Standardized option names and behavior across features
+- **Comprehensive Logging**: Detailed logs with emoji indicators for easy reading
+- **Version Flexibility**: Support for latest versions and specific version pinning
+- **Documentation**: Each feature includes detailed README with examples
+
+### 🚀 Production Ready
+- **Checksum Verification**: Automatic checksum verification for downloaded binaries
+- **Retry Logic**: Built-in retry mechanisms for network operations
+- **Shared Utilities**: Common functionality through shared utility functions
+- **Security Focused**: Security-first approach with verification and validation
+
+### 📋 Feature Quality Standards
+Each feature includes:
+- **devcontainer-feature.json**: Complete metadata with options and documentation
+- **install.sh**: Robust installation script following best practices
+- **README.md**: Comprehensive documentation with usage examples
+- **utils.sh**: Shared utility functions for consistency (where applicable)
 
 ## Development
 
@@ -311,25 +469,37 @@ Clean up GitHub Container Registry packages:
 ├── devcontainer-features.sh # Unified development interface
 ├── common/                  # Shared utilities
 │   └── utils.sh            # Common bash functions
-├── features/               # Feature definitions
-│   ├── apt/
-│   ├── aws-sam-cli/
-│   ├── devcontainers-cli/
-│   ├── dotnet-tools/
-│   ├── edit/
-│   ├── gitleaks/
-│   ├── helm/
-│   ├── k6/
-│   ├── k9s/
-│   ├── kubectl/
-│   ├── kubernetes-outside-of-docker/
-│   ├── lazygit/
-│   ├── ngrok/
-│   ├── skaffold/
-│   ├── terraform-docs/
-│   ├── terraformer/
-│   ├── trivy/
-│   └── yq/
+├── features/               # Feature definitions (30+ features)
+│   ├── act/                # GitHub Actions local runner
+│   ├── apt/                # APT package manager
+│   ├── argo/               # Argo Workflows and CD tools
+│   ├── aws-sam-cli/        # AWS Serverless Application Model CLI
+│   ├── aztfy/              # Azure to Terraform import tool
+│   ├── azure-bicep/        # Azure Bicep templates
+│   ├── bun/                # JavaScript runtime and toolkit
+│   ├── cosign/             # Container signing tool
+│   ├── devcontainers-cli/  # DevContainers CLI
+│   ├── dotnet-tools/       # .NET development tools
+│   ├── edit/               # Fast text editor
+│   ├── gitleaks/           # Git secrets scanner
+│   ├── gitsign/            # Keyless Git signing
+│   ├── google-cloud-cli/   # Google Cloud SDK
+│   ├── helm/               # Kubernetes package manager
+│   ├── k6/                 # Load testing tool
+│   ├── k9s/                # Kubernetes cluster manager
+│   ├── kubectl/            # Kubernetes CLI
+│   ├── kubernetes-outside-of-docker/ # Host cluster access
+│   ├── kubeseal/           # Sealed Secrets client
+│   ├── lazygit/            # Terminal Git UI
+│   ├── markitdown/         # File to Markdown converter
+│   ├── mirrord/            # Traffic mirroring tool
+│   ├── ngrok/              # Tunneling service
+│   ├── skaffold/           # Kubernetes development
+│   ├── terraform-docs/     # Terraform documentation
+│   ├── terraformer/        # Infrastructure to Terraform
+│   ├── tfsec/              # Terraform security scanner
+│   ├── trivy/              # Vulnerability scanner
+│   └── yq/                 # YAML/JSON/XML processor
 ├── examples/               # Example configurations
 │   ├── apt-packages/
 │   ├── basic-all-features/

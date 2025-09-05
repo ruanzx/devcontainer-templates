@@ -1,0 +1,33 @@
+{
+    "name": "Gitsign",
+    "id": "gitsign",
+    "version": "1.0.0",
+    "description": "Install Gitsign, keyless Git signing with Sigstore for enhanced software supply chain security",
+    "documentationURL": "https://github.com/sigstore/gitsign",
+    "licenseURL": "https://github.com/sigstore/gitsign/blob/main/LICENSE",
+    "keywords": [
+        "gitsign",
+        "sigstore",
+        "git",
+        "signing",
+        "keyless",
+        "security",
+        "supply-chain",
+        "verification"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "description": "Version of Gitsign to install. Use 'latest' for the most recent release.",
+            "default": "latest"
+        },
+        "configureGit": {
+            "type": "boolean",
+            "description": "Automatically configure git to use gitsign for commit and tag signing.",
+            "default": true
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

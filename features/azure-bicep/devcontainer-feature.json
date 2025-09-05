@@ -1,0 +1,34 @@
+{
+    "id": "azure-bicep",
+    "version": "1.1.0",
+    "name": "Azure Bicep CLI",
+    "description": "Install Azure Bicep CLI - a declarative language (DSL) for deploying Azure resources",
+    "documentationURL": "https://github.com/ruanzx/devcontainer-templates/blob/main/features/azure-bicep/README.md",
+    "licenseURL": "https://github.com/Azure/bicep/blob/main/LICENSE",
+    "keywords": [
+        "azure",
+        "bicep",
+        "infrastructure",
+        "iac",
+        "arm",
+        "deployment",
+        "cli"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "description": "Version of Azure Bicep CLI to install (e.g., 'v0.30.3' or 'latest')",
+            "default": "latest"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-azuretools.vscode-bicep"
+            ]
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

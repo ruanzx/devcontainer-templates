@@ -1,0 +1,33 @@
+{
+    "name": "Google Cloud CLI",
+    "id": "google-cloud-cli",
+    "version": "1.0.1",
+    "description": "Install Google Cloud CLI (gcloud) command-line tools for Google Cloud Platform",
+    "documentationURL": "https://cloud.google.com/sdk/gcloud",
+    "licenseURL": "https://cloud.google.com/terms/",
+    "keywords": [
+        "google-cloud",
+        "gcloud",
+        "gcp",
+        "google-cloud-platform",
+        "cli",
+        "cloud",
+        "kubernetes",
+        "gke"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "default": "latest",
+            "description": "Version of Google Cloud CLI to install. Use 'latest' for the most recent release or specify a version like '458.0.1'"
+        },
+        "installGkeGcloudAuthPlugin": {
+            "type": "boolean",
+            "default": false,
+            "description": "Install the 'gke-gcloud-auth-plugin' for Kubernetes authentication"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

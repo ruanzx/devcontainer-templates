@@ -1,0 +1,28 @@
+{
+    "id": "aztfy",
+    "version": "1.1.0",
+    "name": "aztfexport (aztfy)",
+    "description": "Install aztfexport (formerly aztfy) - A tool to bring existing Azure resources under Terraform's management",
+    "documentationURL": "https://github.com/ruanzx/devcontainer-templates/blob/main/features/aztfy/README.md",
+    "licenseURL": "https://github.com/Azure/aztfexport/blob/main/LICENSE",
+    "keywords": [
+        "azure",
+        "terraform",
+        "infrastructure",
+        "iac",
+        "migration",
+        "import",
+        "aztfy",
+        "aztfexport"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "description": "Version of aztfexport to install (e.g., 'v0.18.0' or 'latest')",
+            "default": "latest"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

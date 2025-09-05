@@ -1,0 +1,27 @@
+{
+    "id": "bun",
+    "version": "1.0.1",
+    "name": "Bun",
+    "description": "A fast all-in-one JavaScript runtime. Bundle, transpile, install and run JavaScript & TypeScript projects — all in Bun.",
+    "documentationURL": "https://github.com/oven-sh/bun",
+    "licenseURL": "https://github.com/oven-sh/bun/blob/main/LICENSE.md",
+    "keywords": [
+        "javascript",
+        "typescript",
+        "runtime",
+        "bundler",
+        "transpiler",
+        "package-manager",
+        "bun"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "description": "Version of Bun to install",
+            "default": "latest"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

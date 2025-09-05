@@ -1,0 +1,28 @@
+{
+    "name": "tfsec",
+    "id": "tfsec",
+    "version": "1.0.0",
+    "description": "Install tfsec, a security scanner for Terraform code to detect potential security issues",
+    "documentationURL": "https://aquasecurity.github.io/tfsec/",
+    "licenseURL": "https://github.com/aquasecurity/tfsec/blob/master/LICENSE",
+    "keywords": [
+        "tfsec",
+        "terraform",
+        "security",
+        "scanner",
+        "static-analysis",
+        "infrastructure",
+        "iac",
+        "aquasecurity"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "default": "latest",
+            "description": "Version of tfsec to install. Use 'latest' for the most recent release or specify a version like '1.28.1'"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

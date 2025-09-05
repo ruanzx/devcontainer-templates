@@ -1,0 +1,27 @@
+{
+    "id": "act",
+    "version": "1.0.0",
+    "name": "act",
+    "description": "Run GitHub Actions locally. A tool that allows you to test GitHub Actions workflows on your local machine without pushing to GitHub.",
+    "documentationURL": "https://github.com/nektos/act",
+    "licenseURL": "https://github.com/nektos/act/blob/master/LICENSE",
+    "keywords": [
+        "act",
+        "github-actions",
+        "ci",
+        "continuous-integration",
+        "testing",
+        "workflow",
+        "local-development"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "description": "Version of act to install",
+            "default": "latest"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
