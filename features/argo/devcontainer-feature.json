@@ -1,0 +1,33 @@
+{
+    "id": "argo",
+    "version": "1.0.1",
+    "name": "Argo",
+    "description": "Installs Argo Workflows and Argo CD command-line tools for GitOps and workflow automation in Kubernetes environments.",
+    "documentationURL": "https://github.com/argoproj",
+    "licenseURL": "https://github.com/argoproj/argo-workflows/blob/master/LICENSE",
+    "keywords": [
+        "argo",
+        "argocd",
+        "argo-workflows",
+        "gitops",
+        "kubernetes",
+        "workflow",
+        "cd",
+        "continuous-deployment"
+    ],
+    "options": {
+        "argocd": {
+            "type": "boolean",
+            "description": "Install Argo CD CLI for GitOps continuous delivery",
+            "default": true
+        },
+        "argo": {
+            "type": "boolean", 
+            "description": "Install Argo Workflows CLI for container-native workflow engine",
+            "default": true
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
