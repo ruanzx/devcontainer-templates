@@ -1,0 +1,33 @@
+{
+    "name": "kubeseal",
+    "id": "kubeseal",
+    "version": "1.0.0",
+    "description": "Install kubeseal, the client-side utility for Kubernetes Sealed Secrets",
+    "documentationURL": "https://github.com/bitnami-labs/sealed-secrets",
+    "licenseURL": "https://github.com/bitnami-labs/sealed-secrets/blob/master/LICENSE",
+    "keywords": [
+        "kubeseal",
+        "kubernetes",
+        "sealed-secrets",
+        "bitnami",
+        "secrets",
+        "security",
+        "k8s",
+        "encryption"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "default": "latest",
+            "description": "Version of kubeseal to install. Use 'latest' for the most recent release or specify a version like '0.24.0'"
+        },
+        "sha256": {
+            "type": "string",
+            "default": "automatic",
+            "description": "SHA256 checksum for verification. Use 'automatic' to download checksums, 'dev-mode' to skip verification, or provide a specific checksum"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}
