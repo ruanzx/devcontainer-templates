@@ -1,0 +1,27 @@
+{
+    "id": "headlamp",
+    "version": "0.35.0",
+    "name": "Headlamp",
+    "description": "Headlamp is a user-friendly Kubernetes UI for the desktop and web that provides an easy way to manage and interact with Kubernetes clusters",
+    "documentationURL": "https://headlamp.dev/",
+    "licenseURL": "https://github.com/headlamp-k8s/headlamp/blob/main/LICENSE",
+    "keywords": [
+        "kubernetes",
+        "k8s",
+        "ui",
+        "dashboard",
+        "web-ui",
+        "cluster-management",
+        "headlamp"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "description": "Version of Headlamp to install",
+            "default": "0.35.0"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/ruanzx/devcontainer-features/kubernetes-outside-of-docker"
+    ]
+}
