@@ -2,6 +2,27 @@
 
 This feature installs [specify-cli](https://github.com/github/spec-kit), a toolkit to help you get started with Spec-Driven Development. Build high-quality software faster with executable specifications that directly generate working implementations.
 
+## Quick Start
+
+```bash
+# Check if specify is working
+specify check
+
+# Option 1: Create new project directory
+specify init my-project
+cd my-project
+
+# Option 2: Initialize in current directory (requires --here flag)
+mkdir my-project && cd my-project
+specify init --here
+
+# Option 3: Use with AI agent preference
+specify init my-project --ai claude --ignore-agent-tools
+cd my-project
+```
+
+> **UX Note**: The CLI requires `--here` flag to initialize in current directory. See [UX Considerations](#ux-considerations) for better workflows and upstream feedback information.
+
 ## Usage
 
 Reference this feature in your `devcontainer.json`:
@@ -256,22 +277,154 @@ WORKDIR /workspace
 
 ## Commands Reference
 
-### Project Management
+### Main Commands
 
 ```bash
-# Initialize new project
-specify init <project-name>
+# Get help
+specify --help
 
-# Initialize in current directory
-specify init --here
-
-# Check system requirements
+# Check system requirements and tool availability
 specify check
 ```
 
+### Initialize Projects
+
+The `init` command is the primary way to start new Spec-Driven Development projects:
+
+#### Basic Usage
+
+```bash
+# Create new project in a new directory
+specify init my-project
+
+# Initialize project in current directory
+specify init --here
+```
+
+#### Advanced Options
+
+```bash
+# Specify AI assistant during initialization
+specify init my-project --ai claude    # Use Claude Code
+specify init my-project --ai gemini    # Use Gemini CLI  
+specify init my-project --ai copilot   # Use GitHub Copilot
+
+# Skip git repository initialization
+specify init my-project --no-git
+
+# Skip AI agent tool checks
+specify init my-project --ignore-agent-tools
+
+# Combine options
+specify init my-project --ai claude --no-git
+specify init --here --ai gemini --ignore-agent-tools
+```
+
+#### Full Command Reference
+
+```
+Usage: specify init [OPTIONS] [PROJECT_NAME]
+
+Initialize a new Specify project from the latest template.
+
+Arguments:
+  project_name    Name for your new project directory (optional if using --here)
+
+Options:
+  --ai TEXT                   AI assistant to use: claude, gemini, or copilot
+  --ignore-agent-tools        Skip checks for AI agent tools like Claude Code
+  --no-git                   Skip git repository initialization  
+  --here                     Initialize project in the current directory instead of creating a new one
+  --help                     Show this message and exit
+```
+
+> **Note**: The CLI help formatting (single-line descriptions) is from the upstream tool. See [UX Considerations](#ux-considerations) below for workarounds.
+
+#### What the init command does:
+
+1. **Checks required tools** - Verifies git is available (optional)
+2. **AI assistant selection** - Lets you choose your preferred AI coding agent
+3. **Downloads template** - Gets the latest project template from GitHub
+4. **Extracts template** - Sets up the project structure in specified directory
+5. **Git initialization** - Creates a fresh git repository (unless --no-git)
+6. **AI setup** - Optionally configures AI assistant commands
+
+## UX Considerations
+
+### CLI Help Formatting
+The `specify init --help` command shows descriptions and examples on single lines, which can be hard to read. This is the upstream tool's behavior and cannot be modified by this DevContainer feature.
+
+**Workaround**: Use this documentation for better-formatted guidance, or refer to the [Commands Reference](#commands-reference) section above.
+
+### Directory Initialization Design
+The current CLI design requires the `--here` flag to initialize in the current directory, which may not be intuitive.
+
+**Current behavior**:
+```bash
+# Creates new directory
+specify init my-project
+
+# Uses current directory (requires --here flag)
+specify init --here
+```
+
+**Recommended workflow** for better UX:
+```bash
+# Method 1: Create and navigate (explicit)
+specify init my-project
+cd my-project
+
+# Method 2: Pre-create directory (more intuitive)
+mkdir my-project
+cd my-project  
+specify init --here
+
+# Method 3: Use descriptive names
+specify init $(basename $(pwd))-spec  # Uses current dir name
+```
+
+### Alternative Approaches
+If you prefer current-directory-first workflow:
+
+```bash
+# Create wrapper function in your shell profile
+specify_here() {
+    local project_name=${1:-$(basename $(pwd))}
+    specify init --here "$@"
+}
+
+# Then use: specify_here
+# Or: specify_here --ai claude
+```
+
+### Upstream Feedback
+These UX concerns are related to the upstream [spec-kit](https://github.com/github/spec-kit) project design. Consider:
+
+- **Filing issues**: [GitHub Issues](https://github.com/github/spec-kit/issues) for CLI design feedback
+- **Feature requests**: Suggesting `--output-dir` option or changing default behavior
+- **Documentation**: Contributing to upstream documentation for better examples
+
 ### Development Workflow
 
-The main development happens through AI agent commands, but you can also:
+After project initialization, the main development happens through AI agent commands:
+
+#### In your AI coding agent, use these commands:
+
+```bash
+# Create high-level specifications
+/specify Build an application that can help me organize my photos...
+
+# Define technical implementation approach  
+/plan The application uses Vite with minimal libraries...
+
+# Break down into actionable tasks
+/tasks
+
+# Implement specific features
+/implement
+```
+
+#### Project management commands:
 
 ```bash
 # Check project status
@@ -282,6 +435,12 @@ tree . -I '__pycache__'
 
 # Check Git status
 git status
+
+# Run your application (depends on generated code)
+# Examples:
+npm start          # For Node.js projects
+python app.py      # For Python projects
+make run          # If Makefile is generated
 ```
 
 ## Project Structure
@@ -320,6 +479,67 @@ my-project/
 
 ## Troubleshooting
 
+### Command Usage Issues
+
+**"Must specify either a project name or use --here flag" error:**
+```bash
+# ❌ Wrong - missing project name or --here flag
+specify init
+
+# ✅ Correct - provide project name
+specify init my-project
+
+# ✅ Correct - use --here flag for current directory
+specify init --here
+
+# ✅ Better UX - pre-create directory approach
+mkdir my-project && cd my-project && specify init --here
+```
+
+**CLI help formatting is hard to read:**
+```bash
+# ❌ Hard to read single-line help
+specify init --help
+
+# ✅ Use this README for better formatting
+# See "Commands Reference" section above for readable documentation
+```
+
+**Want to initialize in current directory by default:**
+```bash
+# Current CLI requires --here flag
+specify init --here
+
+# Alternative: Create wrapper function
+specify_here() { specify init --here "$@"; }
+specify_here --ai claude
+
+# Or: Pre-create directory approach
+mkdir project && cd project && specify init --here
+```
+
+**"Required AI tool is missing" error:**
+```bash
+# ❌ This fails if AI tools are not installed
+specify init my-project
+
+# ✅ Skip AI tool checks during initialization
+specify init my-project --ignore-agent-tools
+
+# ✅ Or specify a different AI assistant
+specify init my-project --ai copilot --ignore-agent-tools
+```
+
+**Git initialization fails:**
+```bash
+# If git init fails, the project is still created successfully
+# You can manually initialize git later:
+cd my-project
+git init
+git add .
+git commit -m "Initial commit"
+```
+
 ### Installation Issues
 
 **Python version incompatible:**
@@ -357,17 +577,31 @@ exec $SHELL
 # Check internet connectivity
 curl -I https://github.com
 
-# Check Git credentials
+# Check Git credentials (if needed)
 git config --list
 
-# Try manual clone
-git clone https://github.com/github/spec-kit.git
+# Try with ignore agent tools flag
+specify init my-project --ignore-agent-tools
+```
+
+**Project directory already exists:**
+```bash
+# ❌ This will fail if directory exists
+specify init my-project
+
+# ✅ Use a different name
+specify init my-project-v2
+
+# ✅ Or initialize in existing directory
+cd my-project
+specify init --here
 ```
 
 **AI agent commands not working:**
-- Ensure you're using a supported AI coding agent
+- Ensure you're using a supported AI coding agent (Claude Code, GitHub Copilot, Gemini CLI)
 - Check that the agent has access to the project files
 - Verify the agent understands the `/specify`, `/plan`, `/tasks` commands
+- Make sure the `.github/prompts/` directory contains the prompt files
 
 ### Development Issues
 
@@ -380,6 +614,17 @@ git clone https://github.com/github/spec-kit.git
 - Refine specifications with more details
 - Use `/plan` to guide technical choices
 - Break down complex features with `/tasks`
+
+### Common Error Messages and Solutions
+
+| Error Message | Solution | UX Improvement |
+|---------------|----------|----------------|
+| `Must specify either a project name or use --here flag` | Use `specify init project-name` or `specify init --here` | Consider pre-creating directory: `mkdir proj && cd proj && specify init --here` |
+| `Required AI tool is missing!` | Add `--ignore-agent-tools` flag or install the required AI tool | Use `--ignore-agent-tools` for faster setup |
+| `Error: Claude CLI is required for Claude Code projects` | Use `--ai copilot` or install Claude CLI | Specify AI preference upfront: `--ai copilot` |
+| `Template download failed` | Check internet connection and try `--ignore-agent-tools` | Use `--ignore-agent-tools` to skip problematic checks |
+| `Directory already exists` | Use a different project name or `cd` into directory and use `--here` | Pre-navigate: `cd existing-dir && specify init --here` |
+| `Git initialization failed` | Project still works, manually run `git init` in project directory | Use `--no-git` flag if git setup is problematic |
 
 ## Platform Support
 
