@@ -1,0 +1,49 @@
+{
+  "id": "claude-code-cli",
+  "version": "1.0.0",
+  "name": "Claude Code CLI",
+  "description": "Install Claude Code CLI, an AI-powered coding assistant by Anthropic that brings Claude's capabilities directly into your terminal and development workflow.",
+  "documentationURL": "https://docs.anthropic.com/en/docs/claude-code/setup",
+  "licenseURL": "https://console.anthropic.com/settings/terms",
+  "keywords": [
+    "claude-code",
+    "ai-assistant",
+    "anthropic",
+    "claude",
+    "terminal",
+    "coding-assistant",
+    "ai-coding",
+    "node.js",
+    "npm",
+    "development-tools"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "proposals": [
+        "latest",
+        "stable"
+      ],
+      "default": "latest",
+      "description": "Version of Claude Code CLI to install. Use 'latest' for the most recent version or 'stable' for the stable release."
+    },
+    "installMethod": {
+      "type": "string",
+      "proposals": [
+        "npm",
+        "native"
+      ],
+      "default": "npm",
+      "description": "Installation method: 'npm' for Node.js package installation or 'native' for native binary installation (beta)."
+    },
+    "installGlobally": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install Claude Code CLI globally. Set to false to skip global installation when using npm method."
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils",
+    "ghcr.io/devcontainers/features/node"
+  ]
+}
