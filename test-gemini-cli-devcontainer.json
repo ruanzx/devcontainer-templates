@@ -1,0 +1,10 @@
+{
+    "name": "Test Gemini CLI Feature",
+    "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+    "features": {
+        "./features/gemini-cli": {
+            "version": "latest"
+        }
+    },
+    "postCreateCommand": "gemini --version && echo 'Gemini CLI feature test completed successfully'"
+}

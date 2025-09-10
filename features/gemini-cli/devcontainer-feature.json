@@ -1,0 +1,41 @@
+{
+  "id": "gemini-cli",
+  "version": "1.0.0",
+  "name": "Gemini CLI",
+  "description": "Install Gemini CLI, an open-source AI agent that brings the power of Google Gemini directly into your terminal with built-in tools and MCP support.",
+  "documentationURL": "https://github.com/google-gemini/gemini-cli",
+  "licenseURL": "https://github.com/google-gemini/gemini-cli/blob/main/LICENSE",
+  "keywords": [
+    "gemini-cli",
+    "ai-agent",
+    "google-gemini",
+    "terminal",
+    "ai-assistant",
+    "code-generation",
+    "node.js",
+    "npm",
+    "mcp",
+    "model-context-protocol"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "proposals": [
+        "latest",
+        "preview",
+        "nightly"
+      ],
+      "default": "latest",
+      "description": "Version of Gemini CLI to install. Use 'latest' for stable, 'preview' for weekly previews, or 'nightly' for daily builds."
+    },
+    "installGlobally": {
+      "type": "boolean",
+      "default": true,
+      "description": "Install Gemini CLI globally using npm. Set to false to skip global installation."
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils",
+    "ghcr.io/devcontainers/features/node"
+  ]
+}
