@@ -1,0 +1,32 @@
+{
+  "id": "specify-cli",
+  "version": "1.0.0",
+  "name": "specify-cli",
+  "description": "Install specify-cli, a toolkit to help you get started with Spec-Driven Development. Build high-quality software faster with executable specifications.",
+  "documentationURL": "https://github.com/github/spec-kit",
+  "licenseURL": "https://github.com/github/spec-kit/blob/main/LICENSE",
+  "keywords": [
+    "specify-cli",
+    "spec-driven-development",
+    "specifications",
+    "ai-development",
+    "code-generation",
+    "github",
+    "python",
+    "uv",
+    "development-toolkit"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "proposals": [
+        "latest"
+      ],
+      "default": "latest",
+      "description": "Version of specify-cli to install. Use 'latest' for the most recent version."
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/python:1"
+  ]
+}
