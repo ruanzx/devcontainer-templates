@@ -1,0 +1,21 @@
+{
+  "name": "Spec Driven Development",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    },
+    "ghcr.io/ruanzx/features/specify-cli:latest": {
+      "version": "latest"
+    }
+  },
+  "postCreateCommand": "python3 --version && specify --help | head -5",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-json"
+      ]
+    }
+  },
+  "remoteUser": "root"
+}

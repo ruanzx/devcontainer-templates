@@ -33,9 +33,29 @@ fi
 
 # Check if Python 3.11+ is available
 if ! command_exists python3; then
-    log_error "Python 3 is required for specify-cli"
-    log_info "Please install Python 3.11+ or use the Python DevContainer feature"
-    exit 1
+    log_warning "Python 3 is not available, attempting to install it"
+    
+    # Try to install Python using apt (common in Debian/Ubuntu base images)
+    if command_exists apt-get; then
+        log_info "Installing Python 3 using apt-get"
+        apt-get update && apt-get install -y python3 python3-pip python3-venv
+        
+        # Check if installation was successful
+        if ! command_exists python3; then
+            log_error "Failed to install Python 3 using apt-get"
+            log_info "Please add the Python DevContainer feature to your devcontainer.json:"
+            log_info '  "ghcr.io/devcontainers/features/python:1": { "version": "3.11" }'
+            log_info "Or ensure Python 3.11+ is available in your base image"
+            exit 1
+        fi
+        log_success "Python 3 installed successfully using apt-get"
+    else
+        log_error "Python 3 is required for specify-cli and cannot be automatically installed"
+        log_info "Please add the Python DevContainer feature to your devcontainer.json:"
+        log_info '  "ghcr.io/devcontainers/features/python:1": { "version": "3.11" }'
+        log_info "Or ensure Python 3.11+ is available in your base image"
+        exit 1
+    fi
 fi
 
 # Check Python version

@@ -1,6 +1,6 @@
 {
   "id": "specify-cli",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "name": "specify-cli",
   "description": "Install specify-cli, a toolkit to help you get started with Spec-Driven Development. Build high-quality software faster with executable specifications.",
   "documentationURL": "https://github.com/github/spec-kit",
@@ -27,10 +27,6 @@
     }
   },
   "installsAfter": [
-    "ghcr.io/devcontainers/features/python:1",
-    "ghcr.io/ruanzx/features/claude-code-cli:latest",
-    "ghcr.io/ruanzx/features/gemini-cli:latest",
-    "ghcr.io/devcontainers/features/git:1",
-    "ghcr.io/devcontainers/features/github-cli:1"
+    "ghcr.io/devcontainers/features/python:1"
   ]
 }

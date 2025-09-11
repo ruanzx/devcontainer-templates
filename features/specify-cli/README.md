@@ -53,7 +53,7 @@ Reference this feature in your `devcontainer.json`:
 }
 ```
 
-### With Python DevContainer Feature
+### With Python DevContainer Feature (Recommended)
 
 ```json
 {
@@ -65,6 +65,8 @@ Reference this feature in your `devcontainer.json`:
     }
 }
 ```
+
+> **Note**: Python 3.11+ is required for specify-cli. The feature will attempt to install Python automatically if not available, but for best results, include the Python DevContainer feature.
 
 ### Complete Spec-Driven Development Environment
 
@@ -89,9 +91,11 @@ This feature installs:
 
 ## Prerequisites
 
-- **Python 3.11+**: Required for specify-cli (automatically checked)
+- **Python 3.11+**: Required for specify-cli (will be automatically installed if not available)
 - **Git**: Required for cloning project templates
 - **Internet connection**: Required for downloading templates and AI interactions
+
+> **Recommendation**: For best compatibility, include the Python DevContainer feature in your configuration.
 
 ## Verification
 
@@ -542,13 +546,14 @@ git commit -m "Initial commit"
 
 ### Installation Issues
 
-**Python version incompatible:**
+**Python version incompatible or missing:**
 ```bash
 # Check Python version
 python3 --version
 
-# Install Python 3.11+ if needed
-# Use the Python DevContainer feature for easy setup
+# If Python is missing, the feature will attempt to install it automatically
+# For best results, add Python feature to your devcontainer.json:
+# "ghcr.io/devcontainers/features/python:1": { "version": "3.11" }
 ```
 
 **uv installation failed:**
