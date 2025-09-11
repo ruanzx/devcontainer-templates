@@ -617,14 +617,14 @@ specify init --here
 
 ### Common Error Messages and Solutions
 
-| Error Message | Solution | UX Improvement |
-|---------------|----------|----------------|
-| `Must specify either a project name or use --here flag` | Use `specify init project-name` or `specify init --here` | Consider pre-creating directory: `mkdir proj && cd proj && specify init --here` |
-| `Required AI tool is missing!` | Add `--ignore-agent-tools` flag or install the required AI tool | Use `--ignore-agent-tools` for faster setup |
-| `Error: Claude CLI is required for Claude Code projects` | Use `--ai copilot` or install Claude CLI | Specify AI preference upfront: `--ai copilot` |
-| `Template download failed` | Check internet connection and try `--ignore-agent-tools` | Use `--ignore-agent-tools` to skip problematic checks |
-| `Directory already exists` | Use a different project name or `cd` into directory and use `--here` | Pre-navigate: `cd existing-dir && specify init --here` |
-| `Git initialization failed` | Project still works, manually run `git init` in project directory | Use `--no-git` flag if git setup is problematic |
+| Error Message                                            | Solution                                                             | UX Improvement                                                                  |
+| -------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `Must specify either a project name or use --here flag`  | Use `specify init project-name` or `specify init --here`             | Consider pre-creating directory: `mkdir proj && cd proj && specify init --here` |
+| `Required AI tool is missing!`                           | Add `--ignore-agent-tools` flag or install the required AI tool      | Use `--ignore-agent-tools` for faster setup                                     |
+| `Error: Claude CLI is required for Claude Code projects` | Use `--ai copilot` or install Claude CLI                             | Specify AI preference upfront: `--ai copilot`                                   |
+| `Template download failed`                               | Check internet connection and try `--ignore-agent-tools`             | Use `--ignore-agent-tools` to skip problematic checks                           |
+| `Directory already exists`                               | Use a different project name or `cd` into directory and use `--here` | Pre-navigate: `cd existing-dir && specify init --here`                          |
+| `Git initialization failed`                              | Project still works, manually run `git init` in project directory    | Use `--no-git` flag if git setup is problematic                                 |
 
 ## Platform Support
 

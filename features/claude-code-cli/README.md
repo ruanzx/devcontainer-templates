@@ -33,11 +33,11 @@ Reference this feature in your `devcontainer.json`:
 
 ## Options
 
-| Option           | Type    | Default | Description                                                                                                                |
-| ---------------- | ------- | ------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `version`        | string  | `latest`| Version to install: `latest` (most recent) or `stable` (stable release)                                                   |
-| `installMethod`  | string  | `npm`   | Installation method: `npm` (Node.js package) or `native` (native binary, beta)                                            |
-| `installGlobally`| boolean | `true`  | Install Claude Code CLI globally when using npm method. Set to false to skip global installation                          |
+| Option            | Type    | Default  | Description                                                                                      |
+| ----------------- | ------- | -------- | ------------------------------------------------------------------------------------------------ |
+| `version`         | string  | `latest` | Version to install: `latest` (most recent) or `stable` (stable release)                          |
+| `installMethod`   | string  | `npm`    | Installation method: `npm` (Node.js package) or `native` (native binary, beta)                   |
+| `installGlobally` | boolean | `true`   | Install Claude Code CLI globally when using npm method. Set to false to skip global installation |
 
 ## Examples
 
@@ -541,15 +541,15 @@ claude doctor
 
 ### Common Error Messages and Solutions
 
-| Error Message | Solution |
-|---------------|----------|
-| `Command 'claude' not found` | Add npm global bin to PATH or restart shell |
-| `Node.js version 18 or higher is required` | Upgrade Node.js or use Node.js DevContainer feature |
-| `Authentication failed` | Check billing status at console.anthropic.com or verify subscription |
-| `Permission denied` | Don't use sudo with npm; configure npm properly |
-| `Search functionality not working` | Install ripgrep or set USE_BUILTIN_RIPGREP=0 |
-| `Auto-updater permission issues` | Use `claude migrate-installer` or disable auto-updates |
-| `libgcc/libstdc++ not found` | Install missing libraries (Alpine: `apk add libgcc libstdc++`) |
+| Error Message                              | Solution                                                             |
+| ------------------------------------------ | -------------------------------------------------------------------- |
+| `Command 'claude' not found`               | Add npm global bin to PATH or restart shell                          |
+| `Node.js version 18 or higher is required` | Upgrade Node.js or use Node.js DevContainer feature                  |
+| `Authentication failed`                    | Check billing status at console.anthropic.com or verify subscription |
+| `Permission denied`                        | Don't use sudo with npm; configure npm properly                      |
+| `Search functionality not working`         | Install ripgrep or set USE_BUILTIN_RIPGREP=0                         |
+| `Auto-updater permission issues`           | Use `claude migrate-installer` or disable auto-updates               |
+| `libgcc/libstdc++ not found`               | Install missing libraries (Alpine: `apk add libgcc libstdc++`)       |
 
 ## Best Practices
 

@@ -35,10 +35,10 @@ Reference this feature in your `devcontainer.json`:
 
 ## Options
 
-| Option           | Type    | Default  | Description                                                                                          |
-| ---------------- | ------- | -------- | ---------------------------------------------------------------------------------------------------- |
-| `version`        | string  | `latest` | Version to install: `latest` (stable), `preview` (weekly), `nightly` (daily), or specific version |
-| `installGlobally`| boolean | `true`   | Install Gemini CLI globally using npm. Set to false to skip global installation                     |
+| Option            | Type    | Default  | Description                                                                                       |
+| ----------------- | ------- | -------- | ------------------------------------------------------------------------------------------------- |
+| `version`         | string  | `latest` | Version to install: `latest` (stable), `preview` (weekly), `nightly` (daily), or specific version |
+| `installGlobally` | boolean | `true`   | Install Gemini CLI globally using npm. Set to false to skip global installation                   |
 
 ## Examples
 
@@ -543,14 +543,14 @@ echo "*.log" >> .geminiignore
 
 ### Common Error Messages and Solutions
 
-| Error Message | Solution |
-|---------------|----------|
-| `Command 'gemini' not found` | Add npm global bin to PATH or restart shell |
-| `Node.js version 20 or higher is required` | Upgrade Node.js or use Node.js DevContainer feature |
-| `Authentication failed` | Check API key or run OAuth setup with `gemini` |
-| `Rate limit exceeded` | Wait for rate limit reset or upgrade to paid tier |
-| `Invalid model name` | Use valid model names like `gemini-2.5-pro` or `gemini-2.5-flash` |
-| `MCP server connection failed` | Check MCP server configuration in `~/.gemini/settings.json` |
+| Error Message                              | Solution                                                          |
+| ------------------------------------------ | ----------------------------------------------------------------- |
+| `Command 'gemini' not found`               | Add npm global bin to PATH or restart shell                       |
+| `Node.js version 20 or higher is required` | Upgrade Node.js or use Node.js DevContainer feature               |
+| `Authentication failed`                    | Check API key or run OAuth setup with `gemini`                    |
+| `Rate limit exceeded`                      | Wait for rate limit reset or upgrade to paid tier                 |
+| `Invalid model name`                       | Use valid model names like `gemini-2.5-pro` or `gemini-2.5-flash` |
+| `MCP server connection failed`             | Check MCP server configuration in `~/.gemini/settings.json`       |
 
 ## Best Practices
 
