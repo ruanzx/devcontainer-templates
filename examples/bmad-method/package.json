@@ -1,0 +1,28 @@
+{
+  "name": "bmad-method-sample-project",
+  "version": "1.0.0",
+  "description": "Sample project using BMAD-METHOD Universal AI Agent Framework",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "echo \"No tests yet - use BMAD agents to generate them!\"",
+    "bmad:setup": "npx bmad-method install",
+    "bmad:update": "npx bmad-method install"
+  },
+  "keywords": [
+    "bmad-method",
+    "ai-agents",
+    "agile-development",
+    "agentic-planning"
+  ],
+  "author": "BMAD-METHOD Developer",
+  "license": "MIT",
+  "devDependencies": {
+    "bmad-method": "^4.43.1"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
+  }
+}

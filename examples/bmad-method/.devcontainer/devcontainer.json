@@ -1,0 +1,60 @@
+{
+  "name": "BMAD-METHOD AI Agent Framework",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20",
+      "nodeGypDependencies": true,
+      "installYarnUsingApt": true
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "ppa": true,
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/bmad-method:1": {
+      "installWorkspace": true
+    }
+  },
+  "postCreateCommand": "node --version && npm --version && git --version && npx bmad-method --version",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-json",
+        "ms-vscode.vscode-typescript-next",
+        "ms-python.python",
+        "ms-python.autopep8",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-markdown"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit"
+        }
+      }
+    }
+  },
+  "forwardPorts": [3000, 8000, 8080],
+  "portsAttributes": {
+    "3000": {
+      "label": "Development Server",
+      "onAutoForward": "notify"
+    },
+    "8000": {
+      "label": "API Server",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Web UI",
+      "onAutoForward": "notify"
+    }
+  },
+  "remoteUser": "vscode"
+}
