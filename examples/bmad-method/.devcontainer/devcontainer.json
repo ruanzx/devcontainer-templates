@@ -17,10 +17,10 @@
       "version": "latest"
     },
     "ghcr.io/ruanzx/features/bmad-method:1": {
-      "installWorkspace": true
+      "installWorkspace": false
     }
   },
-  "postCreateCommand": "node --version && npm --version && git --version && npx bmad-method --version",
+  "postCreateCommand": "node --version && npm --version && git --version",
   "customizations": {
     "vscode": {
       "extensions": [
