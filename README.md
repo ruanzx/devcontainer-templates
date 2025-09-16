@@ -89,13 +89,21 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
     "ghcr.io/ruanzx/features/aws-sam-cli:latest": {},
     "ghcr.io/ruanzx/features/google-cloud-cli:latest": {},
     "ghcr.io/ruanzx/features/azure-bicep:latest": {},
-    "ghcr.io/ruanzx/features/dotnet-tools:latest": {},
+    "ghcr.io/ruanzx/features/dotnet-tools:latest": {
+      "tools": "dotnet-ef@latest,dotnet-format@latest,dotnet-outdated-tool@latest,dotnet-sonarscanner@latest"
+    },
     "ghcr.io/ruanzx/features/terraform-docs:latest": {},
     "ghcr.io/ruanzx/features/terraformer:latest": {},
     "ghcr.io/ruanzx/features/aztfy:latest": {},
     "ghcr.io/ruanzx/features/bun:latest": {},
     "ghcr.io/ruanzx/features/markitdown:latest": {},
-    "ghcr.io/ruanzx/features/argo:latest": {}
+    "ghcr.io/ruanzx/features/argo:latest": {},
+	"ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    },
+    "ghcr.io/ruanzx/features/specify-cli:latest": {
+      "version": "latest"
+    },
   }
 }
 ```
