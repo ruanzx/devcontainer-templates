@@ -1,0 +1,28 @@
+{
+    "id": "bmad-method",
+    "version": "1.0.0",
+    "name": "BMAD-METHOD",
+    "description": "Universal AI Agent Framework for Agentic Agile Driven Development - Transform any domain with specialized AI expertise.",
+    "documentationURL": "https://github.com/bmad-code-org/BMAD-METHOD",
+    "licenseURL": "https://github.com/bmad-code-org/BMAD-METHOD/blob/main/LICENSE",
+    "keywords": [
+        "ai",
+        "agents",
+        "framework",
+        "agile",
+        "development",
+        "nodejs",
+        "bmad"
+    ],
+    "options": {
+        "installWorkspace": {
+            "type": "boolean",
+            "description": "Install BMAD-METHOD globally vs. in the workspace",
+            "default": false
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/devcontainers/features/node"
+    ]
+}

@@ -1,6 +1,6 @@
 # DevContainer Features Collection
 
-A collection of 30+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
+A collection of 37+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
 
 ## 📦 Available Features
 
@@ -16,6 +16,14 @@ This repository provides the following DevContainer Features:
 - **[yq](features/yq/)** - A lightweight and portable command-line YAML, JSON and XML processor
 - **[MarkItDown](features/markitdown/)** - Utility for converting various files to Markdown format
 - **[Bun](features/bun/)** - Fast all-in-one JavaScript runtime and toolkit
+- **[specify-cli](features/specify-cli/)** - Spec-Driven Development toolkit for building high-quality software with executable specifications
+- **[pip](features/pip/)** - Python package installer and dependency management tool
+
+### 🤖 AI & Development Assistance
+
+- **[BMAD-METHOD](features/bmad-method/)** - Universal AI Agent Framework for Agentic Agile Driven Development
+- **[Claude Code CLI](features/claude-code-cli/)** - Command-line interface for interacting with Claude AI
+- **[Gemini CLI](features/gemini-cli/)** - Google Gemini AI command-line interface
 
 ### ☸️ Kubernetes & DevOps
 
@@ -27,6 +35,7 @@ This repository provides the following DevContainer Features:
 - **[kubeseal](features/kubeseal/)** - Client-side utility for Kubernetes Sealed Secrets
 - **[mirrord](features/mirrord/)** - Mirror traffic from Kubernetes cluster to development environment
 - **[Argo](features/argo/)** - Argo Workflows and Argo CD command-line tools for GitOps
+- **[Headlamp](features/headlamp/)** - Kubernetes web UI for cluster management
 
 ### 🧪 Testing & Performance
 
@@ -53,6 +62,7 @@ This repository provides the following DevContainer Features:
 ### 💻 Development Platforms
 
 - **[.NET Tools](features/dotnet-tools/)** - Essential .NET development tools including dotnet CLI and development certificates
+- **[.NET Aspire](features/aspire/)** - Cloud-ready app stack for building observable, production-ready, distributed applications
 
 ## Quick Start
 
@@ -89,21 +99,20 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
     "ghcr.io/ruanzx/features/aws-sam-cli:latest": {},
     "ghcr.io/ruanzx/features/google-cloud-cli:latest": {},
     "ghcr.io/ruanzx/features/azure-bicep:latest": {},
-    "ghcr.io/ruanzx/features/dotnet-tools:latest": {
-      "tools": "dotnet-ef@latest,dotnet-format@latest,dotnet-outdated-tool@latest,dotnet-sonarscanner@latest"
-    },
+    "ghcr.io/ruanzx/features/dotnet-tools:latest": {},
     "ghcr.io/ruanzx/features/terraform-docs:latest": {},
     "ghcr.io/ruanzx/features/terraformer:latest": {},
     "ghcr.io/ruanzx/features/aztfy:latest": {},
     "ghcr.io/ruanzx/features/bun:latest": {},
     "ghcr.io/ruanzx/features/markitdown:latest": {},
     "ghcr.io/ruanzx/features/argo:latest": {},
-	"ghcr.io/devcontainers/features/python:1": {
-      "version": "3.11"
-    },
-    "ghcr.io/ruanzx/features/specify-cli:latest": {
-      "version": "latest"
-    },
+    "ghcr.io/ruanzx/features/bmad-method:latest": {},
+    "ghcr.io/ruanzx/features/specify-cli:latest": {},
+    "ghcr.io/ruanzx/features/claude-code-cli:latest": {},
+    "ghcr.io/ruanzx/features/gemini-cli:latest": {},
+    "ghcr.io/ruanzx/features/headlamp:latest": {},
+    "ghcr.io/ruanzx/features/pip:latest": {},
+    "ghcr.io/ruanzx/features/aspire:latest": {}
   }
 }
 ```
@@ -304,6 +313,77 @@ act -s GITHUB_TOKEN=your_token
 
 # Use specific event
 act push
+```
+
+### 🤖 BMAD-METHOD Universal AI Framework
+
+The **BMAD-METHOD** feature provides a revolutionary AI agent framework for Agentic Agile Driven Development:
+
+```json
+{
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/ruanzx/features/bmad-method:1": {
+      "installWorkspace": true
+    }
+  }
+}
+```
+
+**Key Benefits:**
+- **Agentic Planning**: Dedicated agents (Analyst, PM, Architect) create detailed PRDs and Architecture documents
+- **Context-Engineered Development**: Scrum Master transforms plans into hyper-detailed development stories
+- **Universal Framework**: Works beyond software development - writing, business, wellness, education
+- **Web UI + IDE Integration**: Start planning in web UI, develop in your IDE
+- **Node.js Based**: Requires Node.js v20+ with npm and git
+
+**Common Use Cases:**
+```bash
+# Set up framework in your project
+npx bmad-method install
+
+# Check version
+npx bmad-method --version
+
+# Update existing installation
+npx bmad-method install  # Auto-detects and updates
+```
+
+### 📋 Spec-Driven Development with specify-cli
+
+The **specify-cli** feature provides GitHub's spec-kit toolkit for building high-quality software with executable specifications:
+
+```json
+{
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12"
+    },
+    "ghcr.io/ruanzx/features/specify-cli:1": {
+      "version": "latest"
+    }
+  }
+}
+```
+
+**Key Benefits:**
+- **Executable Specifications**: Write specifications that directly generate working implementations
+- **AI-Powered Development**: Leverage AI to transform specifications into code
+- **Template-Based**: Use official GitHub spec-kit templates for consistent project structure
+- **Modern Python Stack**: Built on Python 3.12+ with uv package manager
+
+**Common Use Cases:**
+```bash
+# Create a new project from specification
+specify new --template python-cli my-project
+
+# Generate implementation from spec
+specify generate
+
+# Validate specifications
+specify validate
 ```
 
 ## Feature Characteristics

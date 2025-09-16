@@ -40,6 +40,12 @@ Enhanced git workflow environment with Lazygit terminal UI for intuitive git ope
 ### [Security Tools](security-tools/)
 Security-focused environment with Gitleaks and other security tools.
 
+### [BMAD-METHOD AI Framework](bmad-method/)
+AI-powered development environment with BMAD-METHOD Universal AI Agent Framework for Agentic Agile Driven Development.
+
+### [Spec-Driven Development](spec-kit/)
+Spec-driven development environment with GitHub's specify-cli toolkit for building high-quality software with executable specifications.
+
 ## Quick Start
 
 1. Copy any example directory to your project
@@ -59,6 +65,7 @@ You can customize any example by:
 
 - `ghcr.io/ruanzx/features/apt` - Install system packages using APT package manager on Debian-like systems
 - `ghcr.io/ruanzx/features/aws-sam-cli` - AWS Serverless Application Model CLI for building and deploying serverless applications
+- `ghcr.io/ruanzx/features/bmad-method` - Universal AI Agent Framework for Agentic Agile Driven Development
 - `ghcr.io/ruanzx/features/devcontainers-cli` - DevContainers CLI tools
 - `ghcr.io/ruanzx/features/dotnet-tools` - .NET Global Tools (Entity Framework, formatters, etc.)
 - `ghcr.io/ruanzx/features/gitleaks` - Secret detection and prevention
@@ -70,6 +77,7 @@ You can customize any example by:
 - `ghcr.io/ruanzx/features/edit` - Microsoft's modern text editor
 - `ghcr.io/ruanzx/features/ngrok` - Tunneling and reverse proxy for developing networked HTTP services
 - `ghcr.io/ruanzx/features/skaffold` - Kubernetes development workflow tool
+- `ghcr.io/ruanzx/features/specify-cli` - Spec-Driven Development toolkit for building high-quality software with executable specifications
 - `ghcr.io/ruanzx/features/terraform-docs` - Generate documentation from Terraform modules
 - `ghcr.io/ruanzx/features/terraformer` - Generate Terraform files from existing infrastructure (reverse Terraform)
 - `ghcr.io/ruanzx/features/trivy` - Comprehensive security scanner for vulnerabilities in containers, file systems, and repositories
