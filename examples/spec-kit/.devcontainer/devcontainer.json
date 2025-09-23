@@ -13,9 +13,8 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-vscode.vscode-json"
       ]
     }
   },
-  "remoteUser": "root"
+  "remoteUser": "vscode"
 }
