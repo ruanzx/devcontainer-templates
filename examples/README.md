@@ -7,6 +7,9 @@ This directory contains example devcontainer configurations demonstrating how to
 ### [APT Package Management](apt-packages/)
 Demonstrates how to install custom system packages using the APT package manager.
 
+### [Azure Functions Development](azure-functions-core-tools/)
+Complete Azure Functions development environment with Azure Functions Core Tools supporting multiple programming languages.
+
 ### [Basic All Features](basic-all-features/)
 Demonstrates how to use all available features in a single devcontainer.
 
@@ -65,6 +68,7 @@ You can customize any example by:
 
 - `ghcr.io/ruanzx/features/apt` - Install system packages using APT package manager on Debian-like systems
 - `ghcr.io/ruanzx/features/aws-sam-cli` - AWS Serverless Application Model CLI for building and deploying serverless applications
+- `ghcr.io/ruanzx/features/azure-functions-core-tools` - Azure Functions Core Tools for building and deploying serverless functions on Azure
 - `ghcr.io/ruanzx/features/bmad-method` - Universal AI Agent Framework for Agentic Agile Driven Development
 - `ghcr.io/ruanzx/features/devcontainers-cli` - DevContainers CLI tools
 - `ghcr.io/ruanzx/features/dotnet-tools` - .NET Global Tools (Entity Framework, formatters, etc.)

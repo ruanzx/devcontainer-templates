@@ -1,8 +1,0 @@
-- https://github.com/kubeshark/kubeshark
-
-Refactor features/mirrord to
-- Scripting pattern match with pattern used in features/edit
-- Test the install.sh script
-- Create/update readme.md file in features/mirrord folder
-
-

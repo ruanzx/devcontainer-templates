@@ -4,11 +4,7 @@
 	"features": {
 		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
 		"ghcr.io/devcontainers/features/github-cli:1": {},
-		"ghcr.io/ruanzx/features/kubectl:latest": {},
-		"ghcr.io/ruanzx/features/devcontainers-cli:latest": {},
-		"ghcr.io/ruanzx/features/kubernetes-outside-of-docker:latest": {},
-		"ghcr.io/devcontainers/features/python:1": {},
-		"ghcr.io/devcontainers/features/dotnet": {}
+		"ghcr.io/ruanzx/features/devcontainers-cli:latest": {}
 	},
 	"mounts": [
 		{
