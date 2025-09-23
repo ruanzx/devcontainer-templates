@@ -3,12 +3,8 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
     "ghcr.io/devcontainers/features/node:latest": {
-      "version": "18"
+      "version": "20"
     },
-    "ghcr.io/devcontainers/features/python:latest": {
-      "version": "3.11"
-    },
-    "ghcr.io/devcontainers/features/dotnet:latest": {},
     "ghcr.io/devcontainers/features/azure-cli:latest": {},
     "ghcr.io/ruanzx/features/azure-functions-core-tools:latest": {
       "version": "latest",
@@ -21,30 +17,15 @@
       "extensions": [
         "ms-azuretools.vscode-azurefunctions",
         "ms-vscode.azurecli",
-        "ms-python.python",
-        "ms-python.flake8",
-        "ms-python.black-formatter",
-        "ms-vscode.vscode-node-azure-pack",
-        "bradlc.vscode-tailwindcss",
-        "ms-dotnettools.csharp",
-        "redhat.vscode-yaml",
-        "ms-vscode.vscode-json"
+        "ms-python.python"
       ]
     }
   },
-  "forwardPorts": [7071, 8080, 3000],
+  "forwardPorts": [7071],
   "portsAttributes": {
     "7071": {
       "label": "Azure Functions Runtime",
       "onAutoForward": "notify"
-    },
-    "8080": {
-      "label": "Local Development Server",
-      "onAutoForward": "silent"
-    },
-    "3000": {
-      "label": "Frontend Application",
-      "onAutoForward": "silent"
     }
   },
   "remoteUser": "vscode"

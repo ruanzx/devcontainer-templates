@@ -190,10 +190,23 @@ The example configures these ports:
 
 ### Common Issues
 
-1. **Port already in use**: Change the port in host.json or stop conflicting processes
-2. **Authentication issues**: Run `az login` and ensure proper permissions
-3. **Missing dependencies**: Install language-specific packages (npm install, pip install, etc.)
-4. **Runtime errors**: Check local.settings.json configuration
+1. **Container fails to start or connect (502 error)**
+   - Try the minimal configuration: `cp .devcontainer/devcontainer.minimal.json .devcontainer/devcontainer.json`
+   - Clean Docker resources: `docker system prune -f`
+   - Restart Docker and VS Code
+
+2. **Port already in use**: Change the port in host.json or stop conflicting processes
+3. **Authentication issues**: Run `az login` and ensure proper permissions
+4. **Missing dependencies**: Install language-specific packages (npm install, pip install, etc.)
+5. **Runtime errors**: Check local.settings.json configuration
+
+### Performance Optimization
+
+If the container is slow to start:
+- Use the minimal configuration first
+- Add features gradually
+- Reduce VS Code extensions
+- Ensure adequate system resources
 
 ### Useful Commands
 

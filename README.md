@@ -721,6 +721,10 @@ Check individual feature:
 docker run --rm -v ./features/k9s:/tmp/feature mcr.microsoft.com/devcontainers/base:ubuntu bash /tmp/feature/install.sh
 ```
 
+### Dev Container Connection Issues
+
+If you encounter Dev Container connection problems (502 errors, TCP upgrade failures), see the comprehensive [TROUBLESHOOTING.md](TROUBLESHOOTING.md) guide for solutions.
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
