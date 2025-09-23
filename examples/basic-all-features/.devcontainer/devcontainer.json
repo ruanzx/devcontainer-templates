@@ -21,6 +21,12 @@
     "ghcr.io/ruanzx/features/kubectl:latest": {},
     "ghcr.io/ruanzx/features/edit:latest": {},
     "ghcr.io/ruanzx/features/ngrok:latest": {},
+    "ghcr.io/devcontainers/features/node:latest": {
+      "version": "20"
+    },
+    "ghcr.io/ruanzx/features/npm:latest": {
+      "packages": "typescript,eslint,prettier"
+    },
     "ghcr.io/ruanzx/features/skaffold:latest": {},
     "ghcr.io/ruanzx/features/terraform-docs:latest": {},
     "ghcr.io/ruanzx/features/terraformer:latest": {},

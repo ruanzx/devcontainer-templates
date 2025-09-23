@@ -40,6 +40,9 @@ Complete Kubernetes development environment with K9s, Skaffold, and related tool
 ### [Lazygit Development](lazygit-dev/)
 Enhanced git workflow environment with Lazygit terminal UI for intuitive git operations.
 
+### [npm Global Packages](npm/)
+Node.js development environment with globally installed npm packages including TypeScript, Angular CLI, and development tools.
+
 ### [Security Tools](security-tools/)
 Security-focused environment with Gitleaks and other security tools.
 
@@ -80,6 +83,7 @@ You can customize any example by:
 - `ghcr.io/ruanzx/features/lazygit` - Simple terminal UI for git commands
 - `ghcr.io/ruanzx/features/edit` - Microsoft's modern text editor
 - `ghcr.io/ruanzx/features/ngrok` - Tunneling and reverse proxy for developing networked HTTP services
+- `ghcr.io/ruanzx/features/npm` - Install global npm packages for Node.js development environments
 - `ghcr.io/ruanzx/features/skaffold` - Kubernetes development workflow tool
 - `ghcr.io/ruanzx/features/specify-cli` - Spec-Driven Development toolkit for building high-quality software with executable specifications
 - `ghcr.io/ruanzx/features/terraform-docs` - Generate documentation from Terraform modules

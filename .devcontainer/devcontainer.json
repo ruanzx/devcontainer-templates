@@ -15,9 +15,7 @@
 	],
 	"customizations": {
 		"vscode": {
-			"settings": {
-				"dev.containers.mountWaylandSocket": false,
-				"dev.containers.mountXServerSocket": false
+			"settings": {			
 			},
 			"extensions": [
 				"ms-vscode.vscode-json",
@@ -27,5 +25,5 @@
 		}
 	},
 	"postCreateCommand": [],
-	"remoteUser": "root"
+	"remoteUser": "vscode"
 }
