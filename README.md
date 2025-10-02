@@ -74,7 +74,8 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
 {
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
-    "ghcr.io/ruanzx/features/apt:latest": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+	"ghcr.io/ruanzx/features/apt:latest": {
       "packages": "curl,jq,tree"
     },
     "ghcr.io/ruanzx/features/devcontainers-cli:0.80.0": {},
