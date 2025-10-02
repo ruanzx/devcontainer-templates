@@ -1,9 +1,0 @@
-Refactor features/bmad-method to
-- Scripting pattern match with pattern used in features/edit
-- Install the latest version of bmad-method
-- Test the install.sh script
-- Create/update readme.md file in features/bmad-method folder
-- Dependencies are nodejs (v20+), git, and will install separately by devcontainer features
-- Update the readme.md in project root folder
-Fetch below pages for reference:
-- https://github.com/bmad-code-org/BMAD-METHOD/blob/main/README.md

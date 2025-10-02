@@ -1,6 +1,6 @@
 # DevContainer Features Collection
 
-A collection of 37+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
+A collection of 39+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
 
 ## 📦 Available Features
 
@@ -13,6 +13,7 @@ This repository provides the following DevContainer Features:
 - **[Edit](features/edit/)** - A fast, simple text editor that uses standard command line conventions
 - **[Lazygit](features/lazygit/)** - A simple terminal UI for git commands that makes git easy
 - **[ngrok](features/ngrok/)** - Tunneling and reverse proxy for developing and understanding networked, HTTP services
+- **[npm](features/npm/)** - Install global npm packages for Node.js development environments
 - **[yq](features/yq/)** - A lightweight and portable command-line YAML, JSON and XML processor
 - **[MarkItDown](features/markitdown/)** - Utility for converting various files to Markdown format
 - **[Bun](features/bun/)** - Fast all-in-one JavaScript runtime and toolkit
@@ -52,6 +53,7 @@ This repository provides the following DevContainer Features:
 ### ☁️ Cloud & Infrastructure
 
 - **[AWS SAM CLI](features/aws-sam-cli/)** - AWS Serverless Application Model CLI for building and deploying serverless applications
+- **[Azure Functions Core Tools](features/azure-functions-core-tools/)** - Local development experience for creating, developing, testing, running, and debugging Azure Functions
 - **[Terraform Docs](features/terraform-docs/)** - Generate documentation from Terraform modules in various output formats
 - **[Terraformer](features/terraformer/)** - CLI tool to generate terraform files from existing infrastructure
 - **[tfsec](features/tfsec/)** - Security scanner for Terraform code to detect potential security issues
@@ -89,6 +91,9 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
     "ghcr.io/ruanzx/features/lazygit:0.54.2": {},
     "ghcr.io/ruanzx/features/edit:1.2.0": {},
     "ghcr.io/ruanzx/features/ngrok:latest": {},
+    "ghcr.io/ruanzx/features/npm:latest": {
+      "packages": "typescript,nodemon,eslint"
+    },
     "ghcr.io/ruanzx/features/k6:latest": {},
     "ghcr.io/ruanzx/features/act:latest": {},
     "ghcr.io/ruanzx/features/skaffold:2.16.1": {},
@@ -100,6 +105,7 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
     "ghcr.io/ruanzx/features/aws-sam-cli:latest": {},
     "ghcr.io/ruanzx/features/google-cloud-cli:latest": {},
     "ghcr.io/ruanzx/features/azure-bicep:latest": {},
+    "ghcr.io/ruanzx/features/azure-functions-core-tools:latest": {},
     "ghcr.io/ruanzx/features/dotnet-tools:latest": {},
     "ghcr.io/ruanzx/features/terraform-docs:latest": {},
     "ghcr.io/ruanzx/features/terraformer:latest": {},
@@ -719,6 +725,10 @@ Check individual feature:
 ```bash
 docker run --rm -v ./features/k9s:/tmp/feature mcr.microsoft.com/devcontainers/base:ubuntu bash /tmp/feature/install.sh
 ```
+
+### Dev Container Connection Issues
+
+If you encounter Dev Container connection problems (502 errors, TCP upgrade failures), see the comprehensive [TROUBLESHOOTING.md](TROUBLESHOOTING.md) guide for solutions.
 
 ## License
 

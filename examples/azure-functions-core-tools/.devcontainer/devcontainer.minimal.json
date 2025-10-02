@@ -1,0 +1,19 @@
+{
+  "name": "Azure Functions Minimal Environment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "features": {
+    "ghcr.io/ruanzx/features/azure-functions-core-tools:latest": {
+      "version": "latest",
+      "installMethod": "apt"
+    }
+  },
+  "postCreateCommand": "func --version",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-azurefunctions"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}

@@ -1,0 +1,41 @@
+{
+    "name": "npm Global Package Installer",
+    "id": "npm",
+    "version": "1.0.0",
+    "description": "Install global npm packages for Node.js development environments",
+    "documentationURL": "https://github.com/ruanzx/devcontainer-templates/blob/main/features/npm/README.md",
+    "keywords": [
+        "npm",
+        "nodejs",
+        "node",
+        "javascript",
+        "typescript",
+        "package-manager"
+    ],
+    "options": {
+        "packages": {
+            "type": "string",
+            "default": "",
+            "description": "Comma-separated list of global npm packages to install (e.g., 'typescript,@angular/cli,nodemon')"
+        },
+        "registry": {
+            "type": "string",
+            "default": "",
+            "description": "Custom npm registry URL (optional, defaults to npmjs.org)"
+        },
+        "installLatest": {
+            "type": "boolean",
+            "default": true,
+            "description": "Install latest versions of packages (append @latest to package names)"
+        },
+        "updateNpm": {
+            "type": "boolean",
+            "default": false,
+            "description": "Update npm to the latest version before installing packages"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/devcontainers/features/node"
+    ]
+}

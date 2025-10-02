@@ -1,0 +1,32 @@
+{
+  "name": "Azure Functions Development Environment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "features": {
+    "ghcr.io/devcontainers/features/node:latest": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/azure-cli:latest": {},
+    "ghcr.io/ruanzx/features/azure-functions-core-tools:latest": {
+      "version": "latest",
+      "installMethod": "apt"
+    }
+  },
+  "postCreateCommand": "func --version && az --version && echo 'Azure Functions development environment ready!'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-azuretools.vscode-azurefunctions",
+        "ms-vscode.azurecli",
+        "ms-python.python"
+      ]
+    }
+  },
+  "forwardPorts": [7071],
+  "portsAttributes": {
+    "7071": {
+      "label": "Azure Functions Runtime",
+      "onAutoForward": "notify"
+    }
+  },
+  "remoteUser": "vscode"
+}

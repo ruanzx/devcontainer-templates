@@ -7,6 +7,9 @@ This directory contains example devcontainer configurations demonstrating how to
 ### [APT Package Management](apt-packages/)
 Demonstrates how to install custom system packages using the APT package manager.
 
+### [Azure Functions Development](azure-functions-core-tools/)
+Complete Azure Functions development environment with Azure Functions Core Tools supporting multiple programming languages.
+
 ### [Basic All Features](basic-all-features/)
 Demonstrates how to use all available features in a single devcontainer.
 
@@ -37,6 +40,9 @@ Complete Kubernetes development environment with K9s, Skaffold, and related tool
 ### [Lazygit Development](lazygit-dev/)
 Enhanced git workflow environment with Lazygit terminal UI for intuitive git operations.
 
+### [npm Global Packages](npm/)
+Node.js development environment with globally installed npm packages including TypeScript, Angular CLI, and development tools.
+
 ### [Security Tools](security-tools/)
 Security-focused environment with Gitleaks and other security tools.
 
@@ -65,6 +71,7 @@ You can customize any example by:
 
 - `ghcr.io/ruanzx/features/apt` - Install system packages using APT package manager on Debian-like systems
 - `ghcr.io/ruanzx/features/aws-sam-cli` - AWS Serverless Application Model CLI for building and deploying serverless applications
+- `ghcr.io/ruanzx/features/azure-functions-core-tools` - Azure Functions Core Tools for building and deploying serverless functions on Azure
 - `ghcr.io/ruanzx/features/bmad-method` - Universal AI Agent Framework for Agentic Agile Driven Development
 - `ghcr.io/ruanzx/features/devcontainers-cli` - DevContainers CLI tools
 - `ghcr.io/ruanzx/features/dotnet-tools` - .NET Global Tools (Entity Framework, formatters, etc.)
@@ -76,6 +83,7 @@ You can customize any example by:
 - `ghcr.io/ruanzx/features/lazygit` - Simple terminal UI for git commands
 - `ghcr.io/ruanzx/features/edit` - Microsoft's modern text editor
 - `ghcr.io/ruanzx/features/ngrok` - Tunneling and reverse proxy for developing networked HTTP services
+- `ghcr.io/ruanzx/features/npm` - Install global npm packages for Node.js development environments
 - `ghcr.io/ruanzx/features/skaffold` - Kubernetes development workflow tool
 - `ghcr.io/ruanzx/features/specify-cli` - Spec-Driven Development toolkit for building high-quality software with executable specifications
 - `ghcr.io/ruanzx/features/terraform-docs` - Generate documentation from Terraform modules

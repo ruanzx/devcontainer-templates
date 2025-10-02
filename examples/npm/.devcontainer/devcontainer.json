@@ -1,0 +1,38 @@
+{
+  "name": "npm Global Packages Development Environment",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+    "ghcr.io/ruanzx/features/npm:latest": {
+      "packages": "typescript,nodemon,eslint,prettier,@angular/cli",
+      "installLatest": true,
+      "updateNpm": false
+    }
+  },
+  "postCreateCommand": "npm list -g --depth=0 && echo 'Available CLI tools:' && echo '- tsc (TypeScript compiler)' && echo '- nodemon (Node.js monitor)' && echo '- eslint (JavaScript linter)' && echo '- prettier (Code formatter)' && echo '- ng (Angular CLI)'",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-typescript-next",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "angular.ng-template"
+      ]
+    }
+  },
+  "forwardPorts": [3000, 4200, 8080],
+  "portsAttributes": {
+    "3000": {
+      "label": "Node.js Application",
+      "onAutoForward": "notify"
+    },
+    "4200": {
+      "label": "Angular Development Server",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Development Server",
+      "onAutoForward": "silent"
+    }
+  },
+  "remoteUser": "node"
+}

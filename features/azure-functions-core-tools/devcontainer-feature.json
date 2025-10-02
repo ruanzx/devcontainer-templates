@@ -1,0 +1,41 @@
+{
+    "id": "azure-functions-core-tools",
+    "version": "4.2.2",
+    "name": "Azure Functions Core Tools",
+    "description": "Azure Functions Core Tools provide a local development experience for creating, developing, testing, running, and debugging Azure Functions",
+    "documentationURL": "https://github.com/ruanzx/devcontainer-templates/blob/main/features/azure-functions-core-tools/README.md",
+    "licenseURL": "https://github.com/Azure/azure-functions-core-tools/blob/main/LICENSE",
+    "keywords": [
+        "azure",
+        "functions",
+        "serverless",
+        "func",
+        "cli",
+        "development",
+        "local",
+        "debug"
+    ],
+    "options": {
+        "version": {
+            "type": "string",
+            "description": "Version of Azure Functions Core Tools to install (e.g., '4.2.2' or 'latest')",
+            "default": "latest"
+        },
+        "installMethod": {
+            "type": "string",
+            "description": "Installation method: 'apt' for package repository or 'binary' for direct download",
+            "enum": ["apt", "binary"],
+            "default": "apt"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-azuretools.vscode-azurefunctions"
+            ]
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

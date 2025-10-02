@@ -12,7 +12,8 @@
     "ghcr.io/ruanzx/features/dotnet-tools:latest": {
       "tools": "dotnet-ef@latest,dotnet-format@latest,dotnet-outdated-tool@latest,dotnet-sonarscanner@latest"
     },
-    "ghcr.io/ruanzx/features/aspire:latest": {}
+    "ghcr.io/ruanzx/features/aspire:latest": {},
+    "ghcr.io/ruanzx/features/azure-functions-core-tools:latest": {},
     "ghcr.io/ruanzx/features/gitleaks:latest": {},
     "ghcr.io/ruanzx/features/helm:latest": {},
     "ghcr.io/ruanzx/features/k6:latest": {},
@@ -20,6 +21,12 @@
     "ghcr.io/ruanzx/features/kubectl:latest": {},
     "ghcr.io/ruanzx/features/edit:latest": {},
     "ghcr.io/ruanzx/features/ngrok:latest": {},
+    "ghcr.io/devcontainers/features/node:latest": {
+      "version": "20"
+    },
+    "ghcr.io/ruanzx/features/npm:latest": {
+      "packages": "typescript,eslint,prettier"
+    },
     "ghcr.io/ruanzx/features/skaffold:latest": {},
     "ghcr.io/ruanzx/features/terraform-docs:latest": {},
     "ghcr.io/ruanzx/features/terraformer:latest": {},
@@ -30,7 +37,7 @@
     },
     "ghcr.io/ruanzx/features/specify-cli:latest": {
       "version": "latest"
-    },
+    }
   },
   "customizations": {
     "vscode": {
