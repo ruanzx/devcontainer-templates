@@ -2,40 +2,148 @@
   "name": "Development Environment with All Features",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
-    "ghcr.io/devcontainers/features/dotnet:latest": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "upgradePackages": true
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "ppa": true,
+      "version": "latest"
+    },
     "ghcr.io/ruanzx/features/apt:latest": {
-      "packages": "htop,tree,curl,wget,vim,jq,unzip,zip",
+      "packages": "htop,tree,curl,wget,vim,nano,jq,unzip,zip,net-tools,dnsutils,telnet,build-essential",
       "cleanCache": true
     },
-    "ghcr.io/ruanzx/features/aws-sam-cli:latest": {},
-    "ghcr.io/ruanzx/features/devcontainers-cli:latest": {},
-    "ghcr.io/ruanzx/features/dotnet-tools:latest": {
-      "tools": "dotnet-ef@latest,dotnet-format@latest,dotnet-outdated-tool@latest,dotnet-sonarscanner@latest"
+    "ghcr.io/devcontainers/features/dotnet:latest": {
+      "version": "latest",
+      "installUsingApt": true
     },
-    "ghcr.io/ruanzx/features/aspire:latest": {},
-    "ghcr.io/ruanzx/features/azure-functions-core-tools:latest": {},
-    "ghcr.io/ruanzx/features/gitleaks:latest": {},
-    "ghcr.io/ruanzx/features/helm:latest": {},
-    "ghcr.io/ruanzx/features/k6:latest": {},
-    "ghcr.io/ruanzx/features/k9s:latest": {},
-    "ghcr.io/ruanzx/features/kubectl:latest": {},
-    "ghcr.io/ruanzx/features/edit:latest": {},
-    "ghcr.io/ruanzx/features/ngrok:latest": {},
-    "ghcr.io/devcontainers/features/node:latest": {
-      "version": "20"
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20",
+      "nodeGypDependencies": true,
+      "installYarnUsingApt": true
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12",
+      "installTools": true,
+      "optimize": true
+    },
+    "ghcr.io/ruanzx/features/bun:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/pip:latest": {
+      "packages": "requests,pytest,black,pylint,mypy",
+      "upgrade": false
     },
     "ghcr.io/ruanzx/features/npm:latest": {
-      "packages": "typescript,eslint,prettier"
+      "packages": "typescript,eslint,prettier,nodemon,ts-node"
     },
-    "ghcr.io/ruanzx/features/skaffold:latest": {},
-    "ghcr.io/ruanzx/features/terraform-docs:latest": {},
-    "ghcr.io/ruanzx/features/terraformer:latest": {},
-    "ghcr.io/ruanzx/features/trivy:latest": {},
-    "ghcr.io/ruanzx/features/yq:latest": {},
-	"ghcr.io/devcontainers/features/python:1": {
-      "version": "3.11"
+    "ghcr.io/ruanzx/features/dotnet-tools:latest": {
+      "tools": "dotnet-ef@latest,dotnet-script@latest,dotnet-format@latest,dotnet-outdated-tool@latest,dotnet-sonarscanner@latest,csharpier@latest"
+    },
+    "ghcr.io/ruanzx/features/aspire:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/aws-sam-cli:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/azure-functions-core-tools:latest": {
+      "version": "4"
+    },
+    "ghcr.io/ruanzx/features/azure-bicep:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/google-cloud-cli:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/kubectl:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/helm:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/k9s:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/kubernetes-outside-of-docker:latest": {
+      "enableTunnel": true,
+      "enableTLS": true,
+      "kubeconfigPath": ""
+    },
+    "ghcr.io/ruanzx/features/skaffold:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/argo:latest": {
+      "version": "latest",
+      "installWorkflows": true,
+      "installCD": true
+    },
+    "ghcr.io/ruanzx/features/mirrord:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/kubeseal:latest": {
+      "version": "latest"
+    },  
+    "ghcr.io/ruanzx/features/terraform-docs:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/terraformer:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/tfsec:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/aztfy:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/gitleaks:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/trivy:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/cosign:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/gitsign:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/k6:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/act:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/devcontainers-cli:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/edit:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/lazygit:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/yq:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/ngrok:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/markitdown:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/bmad-method:latest": {
+      "installWorkspace": false
     },
     "ghcr.io/ruanzx/features/specify-cli:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/claude-code-cli:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/gemini-cli:latest": {
       "version": "latest"
     }
   },
@@ -43,10 +151,46 @@
     "vscode": {
       "extensions": [
         "ms-kubernetes-tools.vscode-kubernetes-tools",
-        "redhat.vscode-yaml"
-      ]
+        "redhat.vscode-yaml",
+        "ms-azuretools.vscode-azurefunctions",
+        "ms-azuretools.vscode-bicep",
+        "amazonwebservices.aws-toolkit-vscode",
+        "googlecloudtools.cloudcode",
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.csharp",
+        "ms-python.python",
+        "ms-python.autopep8",
+        "ms-python.black-formatter",
+        "ms-vscode.vscode-typescript-next",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "editorconfig.editorconfig",
+        "hashicorp.terraform",
+        "4ops.terraform",
+        "eamodio.gitlens",
+        "github.copilot",
+        "github.copilot-chat",
+        "ms-vscode.vscode-json",
+        "redhat.vscode-xml",
+        "tamasfe.even-better-toml",
+        "ms-vscode.makefile-tools"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit",
+          "source.fixAll": "explicit"
+        },
+        "editor.rulers": [80, 120],
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true
+      }
     }
   },
-  "postCreateCommand": "echo 'DevContainer with all features ready!'",
-  "remoteUser": "root"
+  "forwardPorts": [],
+  "portsAttributes": {},
+  "postCreateCommand": "echo '🚀 DevContainer with ALL features ready!' && echo '' && echo '📦 Installed features:' && echo '  ✅ Development Tools (apt, git, editors)' && echo '  ✅ Languages (Node.js, Python, .NET, Bun)' && echo '  ✅ Cloud Tools (AWS SAM, Azure, Google Cloud)' && echo '  ✅ Kubernetes & DevOps (kubectl, helm, k9s, argo)' && echo '  ✅ Infrastructure as Code (terraform tools, bicep)' && echo '  ✅ Security Tools (trivy, gitleaks, cosign)' && echo '  ✅ AI Tools (BMAD-METHOD, specify-cli, Claude, Gemini)' && echo '  ✅ Testing & Performance (k6, act)' && echo '' && echo '💡 Run \"kubectl version\" to test Kubernetes access' && echo '💡 Run \"npx bmad-method --version\" to check BMAD-METHOD' && echo '💡 Run \"specify --help\" for spec-driven development'",
+  "remoteUser": "vscode"
 }
