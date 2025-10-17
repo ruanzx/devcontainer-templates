@@ -26,6 +26,16 @@ EXTRA_ARGS="${EXTRAARGS:-""}"
 
 log_info "Installing Python packages using pip"
 
+# Global variable to store pip command
+PIP_CMD=""
+USE_BREAK_SYSTEM_PACKAGES="false"
+
+# Function to check if pip supports --break-system-packages flag
+pip_supports_break_system_packages() {
+    local pip_cmd="${1:-pip3}"
+    $pip_cmd install --help 2>/dev/null | grep -q -- "--break-system-packages"
+}
+
 # Function to check if Python and pip are available
 check_python_environment() {
     if ! command_exists python3; then
@@ -50,6 +60,15 @@ check_python_environment() {
     
     log_info "Found Python: $(python3 --version 2>/dev/null || python --version)"
     log_info "Found pip: $($PIP_CMD --version | head -n1)"
+    
+    # Check if we should use --break-system-packages
+    if pip_supports_break_system_packages "$PIP_CMD"; then
+        USE_BREAK_SYSTEM_PACKAGES="true"
+        log_info "pip supports --break-system-packages flag"
+    else
+        USE_BREAK_SYSTEM_PACKAGES="false"
+        log_info "pip does not support --break-system-packages flag (older version)"
+    fi
 }
 
 # Function to validate package names
@@ -120,9 +139,11 @@ install_packages() {
         # Build pip install command
         local pip_args=("install")
         
-        # Add --break-system-packages for devcontainer environments
+        # Add --break-system-packages for newer pip versions in managed environments
         # This is safe in containers as they are isolated environments
-        pip_args+=("--break-system-packages")
+        if [[ "$USE_BREAK_SYSTEM_PACKAGES" == "true" ]]; then
+            pip_args+=("--break-system-packages")
+        fi
         
         if [[ "$UPGRADE" == "true" ]]; then
             pip_args+=("--upgrade")
@@ -178,8 +199,10 @@ install_from_requirements() {
     # Build pip install command
     local pip_args=("install" "-r" "$requirements_file")
     
-    # Add --break-system-packages for devcontainer environments
-    pip_args+=("--break-system-packages")
+    # Add --break-system-packages for newer pip versions in managed environments
+    if [[ "$USE_BREAK_SYSTEM_PACKAGES" == "true" ]]; then
+        pip_args+=("--break-system-packages")
+    fi
     
     if [[ "$UPGRADE" == "true" ]]; then
         pip_args+=("--upgrade")
@@ -233,40 +256,39 @@ fi
 
 # Create verification script
 VERIFY_SCRIPT="/usr/local/bin/verify-pip-packages"
-cat > "$VERIFY_SCRIPT" << 'EOF'
+run_with_privileges bash -c "cat > '$VERIFY_SCRIPT' << 'EOF'
 #!/bin/bash
-echo "🔍 Verifying pip installation and packages..."
+echo '🔍 Verifying pip installation and packages...'
 
 # Check Python
 if ! command -v python3 >/dev/null 2>&1; then
-    echo "❌ Python 3 not found"
+    echo '❌ Python 3 not found'
     exit 1
 fi
 
-echo "✅ Python found: $(python3 --version)"
+echo \"✅ Python found: \$(python3 --version)\"
 
 # Check pip
 if command -v pip3 >/dev/null 2>&1; then
-    PIP_CMD="pip3"
+    PIP_CMD='pip3'
 elif command -v pip >/dev/null 2>&1; then
-    PIP_CMD="pip"
+    PIP_CMD='pip'
 else
-    echo "❌ pip not found"
+    echo '❌ pip not found'
     exit 1
 fi
 
-echo "✅ pip found: $($PIP_CMD --version | head -n1)"
+echo \"✅ pip found: \$(\$PIP_CMD --version | head -n1)\"
 
 # List installed packages
-echo ""
-echo "📦 Installed Python packages:"
-$PIP_CMD list --format=columns | head -20
+echo ''
+echo '📦 Installed Python packages:'
+\$PIP_CMD list --format=columns | head -20
 
-echo ""
-echo "🎉 pip and Python packages are ready!"
+echo ''
+echo '🎉 pip and Python packages are ready!'
 EOF
-
-chmod +x "$VERIFY_SCRIPT"
+chmod +x '$VERIFY_SCRIPT'"
 log_info "Created verification script: $VERIFY_SCRIPT"
 
 log_success "🎉 Python package installation completed!"

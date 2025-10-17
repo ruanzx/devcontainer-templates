@@ -128,8 +128,8 @@ install_packages() {
         
         log_info "Installing package: $package"
         
-        # Install package globally
-        if npm install -g "$package"; then
+        # Install package globally (requires privileges for system-wide installation)
+        if run_with_privileges npm install -g "$package"; then
             log_success "Successfully installed: $package"
         else
             log_error "Failed to install: $package"

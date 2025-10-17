@@ -30,13 +30,13 @@
       "installTools": true,
       "optimize": true
     },
-    "ghcr.io/ruanzx/features/bun:latest": {
-      "version": "latest"
-    },
-    "ghcr.io/ruanzx/features/pip:latest": {
+	"ghcr.io/ruanzx/features/pip:latest": {
       "packages": "requests,pytest,black,pylint,mypy",
       "upgrade": false
     },
+    "ghcr.io/ruanzx/features/bun:latest": {
+      "version": "latest"
+    },    
     "ghcr.io/ruanzx/features/npm:latest": {
       "packages": "typescript,eslint,prettier,nodemon,ts-node"
     },

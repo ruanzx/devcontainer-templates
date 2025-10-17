@@ -1,6 +1,6 @@
 {
     "id": "pip",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "name": "Python Pip Packages",
     "description": "Install Python packages using pip package manager",
     "documentationURL": "https://github.com/ruanzx/devcontainer-templates/blob/main/features/pip/README.md",

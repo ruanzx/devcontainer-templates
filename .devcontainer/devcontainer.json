@@ -4,7 +4,8 @@
 	"features": {
 		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
 		"ghcr.io/devcontainers/features/github-cli:1": {},
-		"ghcr.io/ruanzx/features/devcontainers-cli:latest": {}
+		"ghcr.io/ruanzx/features/devcontainers-cli:latest": {},
+		"ghcr.io/devcontainers/features/python:1": {}
 	},
 	"mounts": [
 		{
@@ -15,7 +16,7 @@
 	],
 	"customizations": {
 		"vscode": {
-			"settings": {			
+			"settings": {
 			},
 			"extensions": [
 				"ms-vscode.vscode-json",
@@ -25,5 +26,5 @@
 		}
 	},
 	"postCreateCommand": [],
-	"remoteUser": "vscode"
+	"remoteUser": "root"
 }

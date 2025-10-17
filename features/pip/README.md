@@ -126,7 +126,11 @@ This feature requires Python 3 and pip to be installed. It's designed to work wi
 
 ## Container Environment
 
-This feature is optimized for container environments and automatically uses the `--break-system-packages` flag to handle externally-managed Python environments commonly found in modern container images.
+This feature is optimized for container environments and includes intelligent detection of pip capabilities:
+
+- **Automatic flag detection**: Checks if pip supports `--break-system-packages` (pip >= 22.1)
+- **Backward compatibility**: Works with older pip versions without the flag
+- **Safe installation**: Uses appropriate flags based on pip version and environment
 
 ## Verification
 

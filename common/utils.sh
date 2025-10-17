@@ -29,6 +29,43 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# Privilege management functions
+is_root() {
+    [ "$(id -u)" -eq 0 ]
+}
+
+has_sudo() {
+    command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null
+}
+
+run_with_privileges() {
+    if is_root; then
+        # Already root, run directly
+        "$@"
+    elif has_sudo; then
+        # Not root but have sudo, use it
+        sudo "$@"
+    else
+        # No root and no sudo, try anyway (will fail if privileges needed)
+        log_warning "Not running as root and sudo not available, attempting without privileges"
+        "$@"
+    fi
+}
+
+install_binary_with_privileges() {
+    local binary_path="$1"
+    local target_path="${2:-/usr/local/bin/$(basename "$binary_path")}"
+    
+    if is_root; then
+        install -m 755 "$binary_path" "$target_path"
+    elif has_sudo; then
+        sudo install -m 755 "$binary_path" "$target_path"
+    else
+        log_warning "Installing without root privileges, may fail"
+        install -m 755 "$binary_path" "$target_path"
+    fi
+}
+
 # Architecture detection
 get_architecture() {
     local arch=$(uname -m)
