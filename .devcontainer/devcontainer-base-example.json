@@ -1,8 +1,7 @@
 {
   "name": "Universal Development Environment - Base Image",
   "build": {
-    "dockerfile": "Dockerfile",
-    "context": "."
+    "image": "ruanzx/devcontainers-base:ubuntu-22.04"
   },
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
