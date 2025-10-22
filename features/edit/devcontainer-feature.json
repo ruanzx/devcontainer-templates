@@ -1,6 +1,6 @@
 {
     "id": "edit",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "name": "Edit",
     "description": "A fast, simple text editor that uses the standard command line conventions on Windows, Linux, and Mac.",
     "documentationURL": "https://github.com/microsoft/edit",

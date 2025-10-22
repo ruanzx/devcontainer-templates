@@ -30,7 +30,7 @@
       "optimize": true
     },
 	"ghcr.io/ruanzx/features/pip:latest": {
-      "packages": "requests,pytest,black,pylint,mypy",
+      "packages": "requests,pytest,black,pylint,mypy,pyyaml",
       "upgrade": false
     },
     "ghcr.io/ruanzx/features/bun:latest": {

@@ -211,13 +211,55 @@ install_packages() {
     fi
 }
 
-# Validate semver version
+# Validate semver version or resolve "latest"
 validate_version() {
     local version="$1"
-    if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-        log_error "Invalid version format: $version (expected semver)"
+    if [[ "$version" == "latest" ]]; then
+        return 0  # "latest" is valid, will be resolved separately
+    elif [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+        log_error "Invalid version format: $version (expected semver or 'latest')"
         return 1
     fi
+}
+
+# Get latest version from GitHub releases for specific platform
+get_latest_github_version() {
+    local repo="$1"  # e.g., "microsoft/edit"
+    local fallback_version="$2"  # fallback if API fails
+    local platform_pattern="$3"  # e.g., "x86_64-linux-gnu" (optional)
+    
+    # Try to get latest version from GitHub API
+    local latest_url="https://api.github.com/repos/${repo}/releases/latest"
+    local latest_version
+    
+    log_info "Fetching latest version from GitHub API: $repo" >&2
+    
+    # If platform pattern is provided, look for assets matching that pattern
+    if [[ -n "$platform_pattern" ]]; then
+        if latest_version=$(curl -fsSL "$latest_url" 2>/dev/null | grep '"name"' | grep "$platform_pattern" | head -1 | sed -E 's/.*"([^"]*'"$platform_pattern"'[^"]*)".*$/\1/' | sed -E 's/.*-([0-9]+\.[0-9]+\.[0-9]+)-.*/\1/'); then
+            if [[ -n "$latest_version" && "$latest_version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+                log_success "Latest platform-specific version detected: $latest_version" >&2
+                echo "$latest_version"
+                return 0
+            fi
+        fi
+        log_warning "No platform-specific asset found, falling back to tag-based detection" >&2
+    fi
+    
+    # Fall back to tag-based detection
+    if latest_version=$(curl -fsSL "$latest_url" 2>/dev/null | grep '"tag_name"' | cut -d'"' -f4); then
+        if [[ -n "$latest_version" ]]; then
+            # Remove 'v' prefix if present
+            latest_version=$(normalize_version "$latest_version")
+            log_success "Latest version detected from tag: $latest_version" >&2
+            echo "$latest_version"
+            return 0
+        fi
+    fi
+    
+    log_warning "Failed to fetch latest version from GitHub API, using fallback: $fallback_version" >&2
+    echo "$fallback_version"
+    return 1
 }
 
 # Strip v prefix from version

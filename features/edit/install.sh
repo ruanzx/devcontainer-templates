@@ -26,6 +26,12 @@ VERSION="${VERSION:-"1.2.0"}"
 
 log_info "Installing Microsoft Edit v${VERSION}"
 
+# Resolve "latest" to actual version if needed
+if [[ "$VERSION" == "latest" ]]; then
+    VERSION=$(get_latest_github_version "microsoft/edit" "1.2.0" "x86_64-linux-gnu")
+    log_info "Resolved latest version to: $VERSION"
+fi
+
 # Validate version
 validate_version "$VERSION"
 
