@@ -1,0 +1,99 @@
+{
+  "name": "Universal Development Environment - Base Image",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "configureZshAsDefaultShell": true,
+      "installOhMyZsh": true,
+      "upgradePackages": false
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.autopep8",
+        "ms-python.black-formatter",
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.csharp",
+        "ms-vscode.vscode-typescript-next",
+        "golang.go",
+        "rust-lang.rust-analyzer",
+        "redhat.java",
+        "bmewburn.vscode-intelephense-client",
+        "rebornix.ruby",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "redhat.vscode-xml",
+        "tamasfe.even-better-toml",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "ms-azuretools.vscode-azurefunctions",
+        "ms-azuretools.vscode-bicep",
+        "amazonwebservices.aws-toolkit-vscode",
+        "googlecloudtools.cloudcode",
+        "hashicorp.terraform",
+        "ms-vscode-remote.remote-containers",
+        "eamodio.gitlens",
+        "github.copilot",
+        "github.copilot-chat",
+        "editorconfig.editorconfig",
+        "ms-vscode.makefile-tools",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": "explicit",
+          "source.fixAll": "explicit"
+        },
+        "editor.rulers": [80, 120],
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+        "python.defaultInterpreterPath": "/usr/bin/python3",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.provider": "black",
+        "typescript.preferences.includePackageJsonAutoImports": "auto",
+        "javascript.preferences.includePackageJsonAutoImports": "auto",
+        "dotnet.completion.showCompletionItemsFromUnimportedNamespaces": true,
+        "go.toolsManagement.autoUpdate": true,
+        "go.useLanguageServer": true,
+        "rust-analyzer.checkOnSave.command": "cargo clippy"
+      }
+    }
+  },
+  "forwardPorts": [3000, 4200, 5000, 5173, 8000, 8080, 8081, 9000],
+  "portsAttributes": {
+    "3000": {
+      "label": "React Dev Server",
+      "onAutoForward": "notify"
+    },
+    "4200": {
+      "label": "Angular Dev Server", 
+      "onAutoForward": "notify"
+    },
+    "5000": {
+      "label": ".NET/Flask App",
+      "onAutoForward": "notify"
+    },
+    "5173": {
+      "label": "Vite Dev Server",
+      "onAutoForward": "notify"
+    },
+    "8000": {
+      "label": "Django/FastAPI",
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "echo '🚀 Universal DevContainer Ready!' && echo '' && echo '📦 Available Languages & Tools:' && echo '  🐍 Python: python3 --version' && echo '  🟢 Node.js: node --version' && echo '  🔷 .NET: dotnet --version' && echo '  🔶 Go: go version' && echo '  🦀 Rust: rustc --version' && echo '  ☕ Java: java --version' && echo '  🐘 PHP: php --version' && echo '  💎 Ruby: ruby --version' && echo '' && echo '☁️ Cloud CLIs: aws --version | az --version | gcloud --version' && echo '🐳 Container Tools: docker --version | kubectl version --client' && echo '🏗️ Infrastructure: terraform --version' && echo '' && echo '💡 Ready for multi-language development!'",
+  "remoteUser": "root"
+}
