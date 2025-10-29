@@ -1,6 +1,6 @@
 {
   "id": "specify-cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "name": "specify-cli",
   "description": "Install specify-cli, a toolkit to help you get started with Spec-Driven Development. Build high-quality software faster with executable specifications.",
   "documentationURL": "https://github.com/github/spec-kit",
