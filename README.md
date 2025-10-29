@@ -1,6 +1,6 @@
 # DevContainer Features Collection
 
-A collection of 39+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
+A collection of 40+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
 
 ## 📦 Available Features
 
@@ -18,6 +18,7 @@ This repository provides the following DevContainer Features:
 - **[MarkItDown](features/markitdown/)** - Utility for converting various files to Markdown format
 - **[Bun](features/bun/)** - Fast all-in-one JavaScript runtime and toolkit
 - **[specify-cli](features/specify-cli/)** - Spec-Driven Development toolkit for building high-quality software with executable specifications
+- **[OpenSpec](features/openspec/)** - Spec-driven development for AI coding assistants with structured change proposals
 - **[pip](features/pip/)** - Python package installer and dependency management tool
 
 ### 🤖 AI & Development Assistance

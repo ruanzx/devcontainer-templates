@@ -1,0 +1,35 @@
+{
+  "id": "openspec",
+  "version": "1.0.0",
+  "name": "OpenSpec",
+  "description": "Install OpenSpec, a spec-driven development tool for AI coding assistants. Align humans and AI on what to build before code is written with structured specifications and change proposals.",
+  "documentationURL": "https://github.com/Fission-AI/OpenSpec",
+  "licenseURL": "https://github.com/Fission-AI/OpenSpec/blob/main/LICENSE",
+  "keywords": [
+    "openspec",
+    "spec-driven-development",
+    "specifications",
+    "ai-development",
+    "ai-coding-assistants",
+    "code-generation",
+    "typescript",
+    "nodejs",
+    "development-workflow",
+    "change-management"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "proposals": [
+        "latest",
+        "0.13.0",
+        "0.12.0"
+      ],
+      "default": "latest",
+      "description": "Version of OpenSpec to install. Use 'latest' for the most recent version."
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/node:1"
+  ]
+}

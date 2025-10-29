@@ -52,6 +52,12 @@ AI-powered development environment with BMAD-METHOD Universal AI Agent Framework
 ### [Spec-Driven Development](spec-kit/)
 Spec-driven development environment with GitHub's specify-cli toolkit for building high-quality software with executable specifications.
 
+### [OpenSpec Development](openspec/)
+Spec-driven development for AI coding assistants with OpenSpec for structured change proposals and implementation tracking.
+
+### [MarkItDown Utility](markitdown/)
+Utility for converting various file formats to Markdown format using Python-based MarkItDown tool.
+
 ## Quick Start
 
 1. Copy any example directory to your project
@@ -84,6 +90,7 @@ You can customize any example by:
 - `ghcr.io/ruanzx/features/edit` - Microsoft's modern text editor
 - `ghcr.io/ruanzx/features/ngrok` - Tunneling and reverse proxy for developing networked HTTP services
 - `ghcr.io/ruanzx/features/npm` - Install global npm packages for Node.js development environments
+- `ghcr.io/ruanzx/features/openspec` - Spec-driven development for AI coding assistants with structured change proposals
 - `ghcr.io/ruanzx/features/skaffold` - Kubernetes development workflow tool
 - `ghcr.io/ruanzx/features/specify-cli` - Spec-Driven Development toolkit for building high-quality software with executable specifications
 - `ghcr.io/ruanzx/features/terraform-docs` - Generate documentation from Terraform modules
