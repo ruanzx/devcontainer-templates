@@ -1,0 +1,32 @@
+{
+  "id": "spec-kit",
+  "version": "1.0.4",
+  "name": "spec-kit",
+  "description": "Install spec-kit, a toolkit to help you get started with Spec-Driven Development. Build high-quality software faster with executable specifications.",
+  "documentationURL": "https://github.com/github/spec-kit",
+  "licenseURL": "https://github.com/github/spec-kit/blob/main/LICENSE",
+  "keywords": [
+    "spec-kit",
+    "spec-driven-development",
+    "specifications",
+    "ai-development",
+    "code-generation",
+    "github",
+    "python",
+    "uv",
+    "development-toolkit"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "proposals": [
+        "latest"
+      ],
+      "default": "latest",
+      "description": "Version of spec-kit to install. Use 'latest' for the most recent version."
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/python:1"
+  ]
+}

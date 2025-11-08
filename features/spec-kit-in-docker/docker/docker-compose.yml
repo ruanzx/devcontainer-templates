@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  spec-kit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: spec-kit:latest
+    container_name: spec-kit
+    volumes:
+      # Mount current directory as workspace
+      - .:/workspace
+      # Optional: Mount git config for repository operations
+      # - ~/.gitconfig:/root/.gitconfig:ro
+      # - ~/.ssh:/root/.ssh:ro
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    environment:
+      # Optional: Set GitHub token for rate limiting
+      # - GITHUB_TOKEN=${GITHUB_TOKEN}
+      # Optional: Set specific AI agent
+      # - SPEC_KIT_AI_AGENT=copilot
+    command: bash
+    
+  # Alternative: Run specific specify commands
+  spec-kit-init:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/workspace
+    working_dir: /workspace
+    command: specify init --here --ai copilot
+    profiles:
+      - init
+
+  spec-kit-check:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: specify check
+    profiles:
+      - check
