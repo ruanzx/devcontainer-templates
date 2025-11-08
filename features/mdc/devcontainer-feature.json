@@ -1,0 +1,29 @@
+{
+  "id": "mdc",
+  "version": "1.0.0",
+  "name": "MDC (Markdown to DOCX Converter)",
+  "description": "Installs a wrapper for MDC (Markdown to DOCX Converter) that runs in a Docker container",
+  "documentationURL": "https://github.com/ruanzx/devcontainer-features/tree/main/features/mdc",
+  "keywords": [
+    "markdown",
+    "docx",
+    "converter",
+    "pandoc",
+    "docker"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Version of the MDC Docker image to use"
+    },
+    "imageName": {
+      "type": "string",
+      "default": "ruanzx/mdc",
+      "description": "Docker image name for MDC"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1"
+  ]
+}
