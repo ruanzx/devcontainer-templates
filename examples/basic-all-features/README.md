@@ -66,7 +66,7 @@ This example demonstrates a **comprehensive development container** with all 44 
 
 ### 🤖 AI & Development Assistance
 - **BMAD-METHOD** - Universal AI Agent Framework (global installation)
-- **specify-cli** - Spec-Driven Development toolkit
+- **spec-kit** - Spec-Driven Development toolkit
 - **Claude Code CLI** - Claude AI integration
 - **Gemini CLI** - Google Gemini AI integration
 

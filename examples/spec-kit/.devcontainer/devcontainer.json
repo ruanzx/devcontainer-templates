@@ -5,7 +5,7 @@
     "ghcr.io/devcontainers/features/python:1": {
       "version": "3.11"
     },
-    "ghcr.io/ruanzx/features/specify-cli:latest": {
+    "ghcr.io/ruanzx/features/spec-kit:latest": {
       "version": "latest"
     }
   },

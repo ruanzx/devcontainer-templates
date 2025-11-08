@@ -1,6 +1,6 @@
-# specify-cli DevContainer Feature
+# spec-kit DevContainer Feature
 
-This feature installs [specify-cli](https://github.com/github/spec-kit), a toolkit to help you get started with Spec-Driven Development. Build high-quality software faster with executable specifications that directly generate working implementations.
+This feature installs [spec-kit](https://github.com/github/spec-kit), a toolkit to help you get started with Spec-Driven Development. Build high-quality software faster with executable specifications that directly generate working implementations.
 
 ## Quick Start
 
@@ -30,16 +30,16 @@ Reference this feature in your `devcontainer.json`:
 ```json
 {
     "features": {
-        "ghcr.io/ruanzx/features/specify-cli:latest": {}
+        "ghcr.io/ruanzx/features/spec-kit:latest": {}
     }
 }
 ```
 
 ## Options
 
-| Option    | Type   | Default    | Description                                                             |
-| --------- | ------ | ---------- | ----------------------------------------------------------------------- |
-| `version` | string | `"latest"` | Version of specify-cli to install. Currently only 'latest' is supported |
+| Option    | Type   | Default    | Description                                                         |
+| --------- | ------ | ---------- | ------------------------------------------------------------------- |
+| `version` | string | `"latest"` | Version of spec-kit to install. Currently only 'latest' is supported |
 
 ## Examples
 
@@ -48,7 +48,7 @@ Reference this feature in your `devcontainer.json`:
 ```json
 {
     "features": {
-        "ghcr.io/ruanzx/features/specify-cli:latest": {}
+        "ghcr.io/ruanzx/features/spec-kit:latest": {}
     }
 }
 ```
@@ -61,12 +61,12 @@ Reference this feature in your `devcontainer.json`:
         "ghcr.io/devcontainers/features/python:1": {
             "version": "3.11"
         },
-        "ghcr.io/ruanzx/features/specify-cli:latest": {}
+        "ghcr.io/ruanzx/features/spec-kit:latest": {}
     }
 }
 ```
 
-> **Note**: Python 3.11+ is **required** for specify-cli. This feature does not install Python automatically. Please include the Python DevContainer feature as shown above, or ensure Python 3.11+ is available in your base image.
+> **Note**: Python 3.11+ is **required** for spec-kit. This feature does not install Python automatically. Please include the Python DevContainer feature as shown above, or ensure Python 3.11+ is available in your base image.
 
 ### Complete Spec-Driven Development Environment
 
@@ -76,7 +76,7 @@ Reference this feature in your `devcontainer.json`:
         "ghcr.io/devcontainers/features/python:1": {
             "version": "3.11"
         },
-        "ghcr.io/ruanzx/features/specify-cli:latest": {},
+        "ghcr.io/ruanzx/features/spec-kit:latest": {},
         "ghcr.io/devcontainers/features/git:1": {},
         "ghcr.io/devcontainers/features/github-cli:1": {}
     }
@@ -87,11 +87,11 @@ Reference this feature in your `devcontainer.json`:
 
 This feature installs:
 - **uv package manager**: Modern Python package manager (if not already installed)
-- **specify-cli**: Spec-Driven Development toolkit from GitHub's spec-kit project
+- **spec-kit**: Spec-Driven Development toolkit from GitHub's spec-kit project
 
 ## Prerequisites
 
-- **Python 3.11+**: Required for specify-cli (must be installed via Python feature or base image)
+- **Python 3.11+**: Required for spec-kit (must be installed via Python feature or base image)
 - **Git**: Required for cloning project templates
 - **Internet connection**: Required for downloading templates and AI interactions
 
@@ -99,7 +99,7 @@ This feature installs:
 
 ## Verification
 
-After installation, you can verify specify-cli is working:
+After installation, you can verify spec-kit is working:
 
 ```bash
 # Check if specify is available
@@ -170,7 +170,7 @@ Specify works with various AI coding agents:
 
 ### Agent Commands
 
-Once you have specify-cli installed and a project initialized, use these commands in your AI agent:
+Once you have spec-kit installed and a project initialized, use these commands in your AI agent:
 
 - `/specify` - Create high-level specifications
 - `/plan` - Define technical implementation approach
@@ -223,7 +223,7 @@ Once you have specify-cli installed and a project initialized, use these command
     "name": "Spec-Driven Development",
     "image": "mcr.microsoft.com/devcontainers/python:3.11",
     "features": {
-        "ghcr.io/ruanzx/features/specify-cli:latest": {},
+        "ghcr.io/ruanzx/features/spec-kit:latest": {},
         "ghcr.io/devcontainers/features/github-cli:1": {}
     },
     "postCreateCommand": "specify check"
@@ -250,7 +250,7 @@ jobs:
         with:
           python-version: '3.11'
       
-      - name: Install specify-cli
+      - name: Install spec-kit
         run: |
           curl -LsSf https://astral.sh/uv/install.sh | sh
           export PATH="$HOME/.local/bin:$PATH"
@@ -268,7 +268,7 @@ jobs:
 # Dockerfile
 FROM mcr.microsoft.com/devcontainers/python:3.11
 
-# Install specify-cli
+# Install spec-kit
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
     export PATH="$HOME/.local/bin:$PATH" && \
     uv tool install git+https://github.com/github/spec-kit.git
@@ -647,13 +647,13 @@ specify init --here
 ## Security Considerations
 
 - **Template Sources**: Only uses official GitHub spec-kit templates
-- **AI Interactions**: No sensitive data is sent to AI services by specify-cli itself
+- **AI Interactions**: No sensitive data is sent to AI services by spec-kit itself
 - **Dependencies**: All Python dependencies are installed in isolated uv environments
 - **Network Access**: Requires internet for initial setup and template downloads
 
 ## Related Features
 
-- **Python**: Required base runtime for specify-cli
+- **Python**: Required base runtime for spec-kit
 - **Git**: Required for project templates and version control
 - **GitHub CLI**: Useful for GitHub integration and authentication
 - **Docker-in-Docker**: For containerized development workflows
@@ -662,7 +662,7 @@ specify init --here
 
 ### Custom Templates
 
-While specify-cli uses the official template, you can customize the generated projects:
+While spec-kit uses the official template, you can customize the generated projects:
 
 ```bash
 # After initialization, customize the structure
@@ -682,7 +682,7 @@ mkdir templates
         "ghcr.io/devcontainers/features/python:1": {
             "version": "3.11"
         },
-        "ghcr.io/ruanzx/features/specify-cli:latest": {},
+        "ghcr.io/ruanzx/features/spec-kit:latest": {},
         "ghcr.io/devcontainers/features/azure-cli:1": {},
         "ghcr.io/ruanzx/features/kubectl:latest": {}
     },
@@ -692,7 +692,7 @@ mkdir templates
 
 ### Multi-Language Projects
 
-Specify-cli can generate projects in any language:
+Spec-kit can generate projects in any language:
 
 ```
 /plan Use Python FastAPI for the backend API, React TypeScript for the frontend, 

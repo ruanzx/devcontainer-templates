@@ -329,7 +329,7 @@ openspec init
 
 OpenSpec works well with:
 
-- **[specify-cli](../specify-cli/)**: GitHub's spec-kit for spec-driven development
+- **[spec-kit](../spec-kit/)**: GitHub's spec-kit for spec-driven development
 - **[Git](https://github.com/devcontainers/features/tree/main/src/git)**: Version control for specs and changes
 - **[GitHub CLI](https://github.com/devcontainers/features/tree/main/src/github-cli)**: GitHub integration
 - **[Node.js](https://github.com/devcontainers/features/tree/main/src/node)**: Required runtime
@@ -367,7 +367,7 @@ This feature follows the same license as the parent repository. OpenSpec itself 
 
 ## Related Features
 
-- **[specify-cli](../specify-cli/)** - GitHub's spec-kit for spec-driven development
+- **[spec-kit](../spec-kit/)** - GitHub's spec-kit for spec-driven development
 - **[bmad-method](../bmad-method/)** - Universal AI Agent Framework for Agentic Agile Driven Development
 - **[claude-code-cli](../claude-code-cli/)** - Command-line interface for Claude AI
 - **[gemini-cli](../gemini-cli/)** - Google Gemini AI CLI

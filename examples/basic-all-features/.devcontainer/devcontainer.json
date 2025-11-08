@@ -137,7 +137,7 @@
     "ghcr.io/ruanzx/features/bmad-method:latest": {
       "installWorkspace": false
     },
-    "ghcr.io/ruanzx/features/specify-cli:latest": {
+    "ghcr.io/ruanzx/features/spec-kit:latest": {
       "version": "latest"
     },
     "ghcr.io/ruanzx/features/claude-code-cli:latest": {
@@ -191,6 +191,6 @@
   },
   "forwardPorts": [],
   "portsAttributes": {},
-  "postCreateCommand": "echo '🚀 DevContainer with ALL features ready!' && echo '' && echo '📦 Installed features:' && echo '  ✅ Development Tools (apt, git, editors)' && echo '  ✅ Languages (Node.js, Python, .NET, Bun)' && echo '  ✅ Cloud Tools (AWS SAM, Azure, Google Cloud)' && echo '  ✅ Kubernetes & DevOps (kubectl, helm, k9s, argo)' && echo '  ✅ Infrastructure as Code (terraform tools, bicep)' && echo '  ✅ Security Tools (trivy, gitleaks, cosign)' && echo '  ✅ AI Tools (BMAD-METHOD, specify-cli, Claude, Gemini)' && echo '  ✅ Testing & Performance (k6, act)' && echo '' && echo '💡 Run \"kubectl version\" to test Kubernetes access' && echo '💡 Run \"npx bmad-method --version\" to check BMAD-METHOD' && echo '💡 Run \"specify --help\" for spec-driven development'",
+  "postCreateCommand": "echo '🚀 DevContainer with ALL features ready!' && echo '' && echo '📦 Installed features:' && echo '  ✅ Development Tools (apt, git, editors)' && echo '  ✅ Languages (Node.js, Python, .NET, Bun)' && echo '  ✅ Cloud Tools (AWS SAM, Azure, Google Cloud)' && echo '  ✅ Kubernetes & DevOps (kubectl, helm, k9s, argo)' && echo '  ✅ Infrastructure as Code (terraform tools, bicep)' && echo '  ✅ Security Tools (trivy, gitleaks, cosign)' && echo '  ✅ AI Tools (BMAD-METHOD, spec-kit, Claude, Gemini)' && echo '  ✅ Testing & Performance (k6, act)' && echo '' && echo '💡 Run \"kubectl version\" to test Kubernetes access' && echo '💡 Run \"npx bmad-method --version\" to check BMAD-METHOD' && echo '💡 Run \"specify --help\" for spec-driven development'",
   "remoteUser": "vscode"
 }

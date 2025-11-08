@@ -17,7 +17,7 @@ This repository provides the following DevContainer Features:
 - **[yq](features/yq/)** - A lightweight and portable command-line YAML, JSON and XML processor
 - **[MarkItDown](features/markitdown/)** - Utility for converting various files to Markdown format
 - **[Bun](features/bun/)** - Fast all-in-one JavaScript runtime and toolkit
-- **[specify-cli](features/specify-cli/)** - Spec-Driven Development toolkit for building high-quality software with executable specifications
+- **[spec-kit](features/spec-kit/)** - Spec-Driven Development toolkit for building high-quality software with executable specifications
 - **[OpenSpec](features/openspec/)** - Spec-driven development for AI coding assistants with structured change proposals
 - **[pip](features/pip/)** - Python package installer and dependency management tool
 
@@ -115,7 +115,7 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
     "ghcr.io/ruanzx/features/markitdown:latest": {},
     "ghcr.io/ruanzx/features/argo:latest": {},
     "ghcr.io/ruanzx/features/bmad-method:latest": {},
-    "ghcr.io/ruanzx/features/specify-cli:latest": {},
+    "ghcr.io/ruanzx/features/spec-kit:latest": {},
     "ghcr.io/ruanzx/features/claude-code-cli:latest": {},
     "ghcr.io/ruanzx/features/gemini-cli:latest": {},
     "ghcr.io/ruanzx/features/headlamp:latest": {},
@@ -359,9 +359,9 @@ npx bmad-method --version
 npx bmad-method install  # Auto-detects and updates
 ```
 
-### 📋 Spec-Driven Development with specify-cli
+### 📋 Spec-Driven Development with spec-kit
 
-The **specify-cli** feature provides GitHub's spec-kit toolkit for building high-quality software with executable specifications:
+The **spec-kit** feature provides GitHub's spec-kit toolkit for building high-quality software with executable specifications:
 
 ```json
 {
@@ -369,7 +369,7 @@ The **specify-cli** feature provides GitHub's spec-kit toolkit for building high
     "ghcr.io/devcontainers/features/python:1": {
       "version": "3.12"
     },
-    "ghcr.io/ruanzx/features/specify-cli:1": {
+    "ghcr.io/ruanzx/features/spec-kit:1": {
       "version": "latest"
     }
   }

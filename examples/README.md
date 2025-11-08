@@ -50,7 +50,7 @@ Security-focused environment with Gitleaks and other security tools.
 AI-powered development environment with BMAD-METHOD Universal AI Agent Framework for Agentic Agile Driven Development.
 
 ### [Spec-Driven Development](spec-kit/)
-Spec-driven development environment with GitHub's specify-cli toolkit for building high-quality software with executable specifications.
+Spec-driven development environment with GitHub's spec-kit toolkit for building high-quality software with executable specifications.
 
 ### [OpenSpec Development](openspec/)
 Spec-driven development for AI coding assistants with OpenSpec for structured change proposals and implementation tracking.
@@ -92,7 +92,7 @@ You can customize any example by:
 - `ghcr.io/ruanzx/features/npm` - Install global npm packages for Node.js development environments
 - `ghcr.io/ruanzx/features/openspec` - Spec-driven development for AI coding assistants with structured change proposals
 - `ghcr.io/ruanzx/features/skaffold` - Kubernetes development workflow tool
-- `ghcr.io/ruanzx/features/specify-cli` - Spec-Driven Development toolkit for building high-quality software with executable specifications
+- `ghcr.io/ruanzx/features/spec-kit` - Spec-Driven Development toolkit for building high-quality software with executable specifications
 - `ghcr.io/ruanzx/features/terraform-docs` - Generate documentation from Terraform modules
 - `ghcr.io/ruanzx/features/terraformer` - Generate Terraform files from existing infrastructure (reverse Terraform)
 - `ghcr.io/ruanzx/features/trivy` - Comprehensive security scanner for vulnerabilities in containers, file systems, and repositories

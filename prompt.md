@@ -1,4 +1,4 @@
-Create the OpenSpec feature by following the instructions and the patterns used in features/specify-cli:
+Create the OpenSpec feature by following the instructions and the patterns used in features/spec-kit:
 
 Tasks:
 - Create the features/openspec folder with the required files:
@@ -6,7 +6,7 @@ Tasks:
   - devcontainer-feature.json: Metadata and configuration options.
   - README.md: Documentation for the feature.
 
-- Match the scripting pattern used in features/specify-cli:
+- Match the scripting pattern used in features/spec-kit:
   - Use utils.sh for shared utilities.
   - Implement proper logging and error handling.
   - Validate system requirements (e.g., OS, architecture).

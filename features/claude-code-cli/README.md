@@ -649,7 +649,7 @@ claude doctor
         },
         "ghcr.io/ruanzx/features/claude-code-cli:latest": {},
         "ghcr.io/ruanzx/features/gemini-cli:latest": {},
-        "ghcr.io/ruanzx/features/specify-cli:latest": {},
+        "ghcr.io/ruanzx/features/spec-kit:latest": {},
         "ghcr.io/devcontainers/features/github-cli:1": {}
     },
     "postCreateCommand": "claude doctor && gemini --version && specify check && echo 'Multi-AI development environment ready'"
