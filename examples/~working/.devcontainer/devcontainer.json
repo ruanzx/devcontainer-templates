@@ -8,6 +8,8 @@
       "installOhMyZsh": true,
       "upgradePackages": true
     },
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/azure-cli:1": {},
     "ghcr.io/devcontainers/features/dotnet:latest": {
       "version": "9.0",
       "dotnetRuntimeVersions": "lts",
@@ -18,8 +20,6 @@
     },
     "ghcr.io/ruanzx/features/aspire:latest": {},
     "ghcr.io/ruanzx/features/azure-bicep:latest": {},
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
-    "ghcr.io/devcontainers/features/azure-cli:1": {},
     "ghcr.io/ruanzx/features/spec-kit-in-docker:latest": {},
     "ghcr.io/ruanzx/features/markitdown-in-docker:latest": {},
     "ghcr.io/ruanzx/features/edit:latest": {},
