@@ -1,0 +1,26 @@
+{
+    "name": "MarkItDown (Docker-based)",
+    "id": "markitdown-in-docker",
+    "version": "1.0.0",
+    "description": "Install MarkItDown wrapper that runs in Docker. Convert various files to Markdown format using AI and document processing.",
+    "documentationURL": "https://github.com/microsoft/markitdown",
+    "options": {
+        "version": {
+            "type": "string",
+            "proposals": [
+                "latest"
+            ],
+            "default": "latest",
+            "description": "Docker image tag for MarkItDown. Use 'latest' for the most recent version."
+        },
+        "imageName": {
+            "type": "string",
+            "default": "ruanzx/markitdown",
+            "description": "Docker image name for MarkItDown."
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1",
+        "ghcr.io/devcontainers/features/docker-in-docker:2"
+    ]
+}
