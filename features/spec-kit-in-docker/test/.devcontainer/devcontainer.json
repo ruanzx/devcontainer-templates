@@ -1,0 +1,13 @@
+{
+  "name": "Test spec-kit-in-docker",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "../..": {
+      "version": "latest",
+      "imageName": "ruanzx/spec-kit"
+    }
+  },
+  "postCreateCommand": "specify --wrapper-help",
+  "remoteUser": "root"
+}

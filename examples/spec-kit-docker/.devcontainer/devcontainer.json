@@ -1,0 +1,21 @@
+{
+  "name": "Spec-Kit Docker Example",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "../../features/spec-kit-in-docker": {
+      "version": "latest",
+      "imageName": "ruanzx/spec-kit"
+    }
+  },
+  "postCreateCommand": "specify --wrapper-help",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}

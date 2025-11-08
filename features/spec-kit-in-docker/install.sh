@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Install spec-kit - Toolkit to help you get started with Spec-Driven Development
-# https://github.com/github/spec-kit
+# Install spec-kit wrapper for Docker
+# Provides a command-line wrapper for running spec-kit in a Docker container
 
 set -e
 
@@ -20,84 +20,269 @@ fi
 
 # Parse options
 VERSION="${VERSION:-"latest"}"
+IMAGE_NAME="${IMAGENAME:-"ruanzx/spec-kit"}"
 
-log_info "Installing spec-kit ${VERSION}"
+log_info "Installing spec-kit wrapper for Docker image ${IMAGE_NAME}:${VERSION}"
 
-# Detect system OS
-OS=$(get_os)
-
-if [[ "$OS" != "linux" ]]; then
-    log_error "spec-kit feature currently only supports Linux"
+# Check if Docker is available
+if ! command_exists docker; then
+    log_error "Docker is required but not found. Please install Docker first."
+    log_info "Consider using the docker-outside-of-docker feature"
     exit 1
 fi
 
-# Check if Python 3.11+ is available
-if ! command_exists python3; then
-    log_error "Python 3 is required for spec-kit but not found"
-    log_info "Please add the Python DevContainer feature to your devcontainer.json:"
-    log_info '  "ghcr.io/devcontainers/features/python:1": { "version": "3.11" }'
-    log_info "Or ensure Python 3.11+ is available in your base image"
-    exit 1
-fi
+# Create the specify wrapper script
+SPECIFY_WRAPPER="/usr/local/bin/specify"
 
-# Check Python version
-PYTHON_VERSION=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-PYTHON_MAJOR=$(echo "$PYTHON_VERSION" | cut -d. -f1)
-PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
+log_info "Creating specify wrapper script at $SPECIFY_WRAPPER"
 
-if [[ "$PYTHON_MAJOR" -lt 3 ]] || [[ "$PYTHON_MAJOR" -eq 3 && "$PYTHON_MINOR" -lt 11 ]]; then
-    log_warning "Python 3.11+ is recommended for spec-kit (detected: $PYTHON_VERSION)"
-fi
+cat > "$SPECIFY_WRAPPER" << 'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Install uv if not available
-if ! command_exists uv; then
-    log_info "Installing uv package manager (required for spec-kit)"
-    curl -LsSf https://astral.sh/uv/install.sh | sh
-    export PATH="$HOME/.local/bin:$PATH"
-    
-    # Verify uv installation
-    if ! command_exists uv; then
-        log_error "Failed to install uv package manager"
+# Spec-Kit - Docker Wrapper Script
+# This script wraps the spec-kit Docker container for easy command-line usage
+
+IMAGE_NAME="${SPECKIT_IMAGE_NAME:-ruanzx/spec-kit}"
+IMAGE_TAG="${SPECKIT_IMAGE_TAG:-latest}"
+FULL_IMAGE="${IMAGE_NAME}:${IMAGE_TAG}"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+print_error() {
+    echo -e "${RED}Error: $1${NC}" >&2
+}
+
+print_success() {
+    echo -e "${GREEN}$1${NC}"
+}
+
+print_warning() {
+    echo -e "${YELLOW}Warning: $1${NC}"
+}
+
+print_info() {
+    echo -e "${BLUE}$1${NC}"
+}
+
+check_docker() {
+    if ! docker info >/dev/null 2>&1; then
+        print_error "Docker is not running. Please start Docker and try again."
         exit 1
     fi
-    log_success "uv package manager installed successfully"
+}
+
+ensure_image() {
+    local force_pull="${1:-false}"
+    
+    if [ "$force_pull" = "true" ]; then
+        print_info "Force pulling latest image: $FULL_IMAGE"
+        docker pull "$FULL_IMAGE" || {
+            print_error "Failed to pull image '$FULL_IMAGE'"
+            exit 1
+        }
+        print_success "Image updated successfully!"
+    elif ! docker image inspect "$FULL_IMAGE" >/dev/null 2>&1; then
+        print_warning "Docker image '$FULL_IMAGE' not found locally. Pulling..."
+        docker pull "$FULL_IMAGE" || {
+            print_error "Failed to pull image '$FULL_IMAGE'"
+            exit 1
+        }
+        print_success "Image pulled successfully!"
+    fi
+}
+
+get_absolute_path() {
+    local path="$1"
+    if [[ "$path" = /* ]]; then
+        echo "$path"
+    else
+        echo "$(cd "$(dirname "$path")" 2>/dev/null && pwd)/$(basename "$path")"
+    fi
+}
+
+# Detect if running in dev container
+detect_dev_container_mounts() {
+    if [ -n "${REMOTE_CONTAINERS:-}" ] && [ "${REMOTE_CONTAINERS}" = "true" ]; then
+        local container_id=$(hostname)
+        if [ -n "$container_id" ]; then
+            # Get workspace mount from dev container
+            docker inspect --format '{{range .Mounts}}{{if eq .Type "bind"}}{{.Source}}:{{.Destination}}{{printf "\n"}}{{end}}{{end}}' "$container_id" 2>/dev/null | grep "/workspaces/" | head -n1 || echo ""
+        fi
+    fi
+    echo ""
+}
+
+translate_path_for_host() {
+    local container_path="$1"
+    local workspace_mount="$(detect_dev_container_mounts)"
+    
+    if [ -n "$workspace_mount" ]; then
+        local host_path=$(echo "$workspace_mount" | cut -d: -f1)
+        local mount_path=$(echo "$workspace_mount" | cut -d: -f2)
+        # Replace container workspace path with host path
+        echo "${container_path/#$mount_path/$host_path}"
+    else
+        echo "$container_path"
+    fi
+}
+
+# Parse wrapper-specific flags
+FORCE_UPGRADE=false
+WRAPPER_HELP=false
+ARGS=()
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --wrapper-upgrade)
+            FORCE_UPGRADE=true
+            shift
+            ;;
+        --wrapper-help)
+            WRAPPER_HELP=true
+            shift
+            ;;
+        *)
+            ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
+
+# Show wrapper help if requested
+if [ "$WRAPPER_HELP" = "true" ]; then
+    cat << 'HELP'
+Spec-Kit Docker Wrapper
+
+This wrapper runs spec-kit commands inside a Docker container for easy, isolated usage.
+
+WRAPPER FLAGS (must come before spec-kit commands):
+  --wrapper-upgrade    Force pull the latest spec-kit Docker image
+  --wrapper-help       Show this wrapper help message
+
+ENVIRONMENT VARIABLES:
+  SPECKIT_IMAGE_NAME   Docker image name (default: ruanzx/spec-kit)
+  SPECKIT_IMAGE_TAG    Docker image tag (default: latest)
+
+SPEC-KIT COMMANDS:
+  init                 Initialize a new spec-kit project
+  check                Check that all required tools are installed
+
+EXAMPLES:
+  # Upgrade the Docker image
+  specify --wrapper-upgrade
+
+  # Initialize a new project in current directory
+  specify init --here --ai copilot
+
+  # Initialize a new project in a subdirectory
+  specify init my-project --ai claude
+
+  # Check installed tools
+  specify check
+
+  # Get spec-kit help
+  specify --help
+
+  # Mount custom directories (advanced)
+  docker run -it --rm -v $(pwd):/workspace ruanzx/spec-kit bash
+
+For more information: https://github.com/github/spec-kit
+HELP
+    exit 0
 fi
 
-# Install spec-kit using uv
-log_info "Installing spec-kit using uv"
+# Check Docker
+check_docker
 
-if [[ "$VERSION" == "latest" ]]; then
-    # Install from git repository (latest)
-    uv tool install --python python3 git+https://github.com/github/spec-kit.git
+# Handle force upgrade
+if [ "$FORCE_UPGRADE" = "true" ]; then
+    ensure_image true
+    print_success "✓ Spec-kit Docker image upgraded successfully!"
+    exit 0
+fi
+
+# Ensure image exists
+ensure_image false
+
+# Get current directory (absolute)
+CURRENT_DIR="$(pwd)"
+HOST_CURRENT_DIR="$(translate_path_for_host "$CURRENT_DIR")"
+
+# Build Docker command
+DOCKER_CMD="docker run --rm -it"
+
+# Mount current directory as workspace
+DOCKER_CMD="$DOCKER_CMD -v \"$HOST_CURRENT_DIR:/workspace\""
+
+# Set working directory
+DOCKER_CMD="$DOCKER_CMD -w /workspace"
+
+# Mount git config if available (read-only)
+if [ -f "$HOME/.gitconfig" ]; then
+    HOST_GITCONFIG="$(translate_path_for_host "$HOME/.gitconfig")"
+    DOCKER_CMD="$DOCKER_CMD -v \"$HOST_GITCONFIG:/root/.gitconfig:ro\""
+fi
+
+# Pass through environment variables
+if [ -n "${GITHUB_TOKEN:-}" ]; then
+    DOCKER_CMD="$DOCKER_CMD -e GITHUB_TOKEN=\"$GITHUB_TOKEN\""
+fi
+
+if [ -n "${GH_TOKEN:-}" ]; then
+    DOCKER_CMD="$DOCKER_CMD -e GH_TOKEN=\"$GH_TOKEN\""
+fi
+
+# Add image
+DOCKER_CMD="$DOCKER_CMD $FULL_IMAGE"
+
+# Add spec-kit command and arguments
+if [ ${#ARGS[@]} -eq 0 ]; then
+    # No arguments, show help
+    DOCKER_CMD="$DOCKER_CMD specify --help"
 else
-    # For specific versions, we would need to check if they have releases
-    log_warning "Specific version installation not yet supported, installing latest"
-    uv tool install --python python3 git+https://github.com/github/spec-kit.git
+    DOCKER_CMD="$DOCKER_CMD specify ${ARGS[*]}"
 fi
 
-# Add uv tool bin to PATH if not already there
-UV_BIN_PATH="$HOME/.local/bin"
-if [[ ":$PATH:" != *":$UV_BIN_PATH:"* ]]; then
-    echo "export PATH=\"$UV_BIN_PATH:\$PATH\"" >> ~/.bashrc
-    echo "export PATH=\"$UV_BIN_PATH:\$PATH\"" >> ~/.zshrc 2>/dev/null || true
-    export PATH="$UV_BIN_PATH:$PATH"
+# Execute Docker command
+eval "$DOCKER_CMD"
+EOF
+
+# Set the image name and version as environment defaults in the script
+sed -i "s|IMAGE_NAME=\"\${SPECKIT_IMAGE_NAME:-ruanzx/spec-kit}\"|IMAGE_NAME=\"\${SPECKIT_IMAGE_NAME:-${IMAGE_NAME}}\"|" "$SPECIFY_WRAPPER"
+sed -i "s|IMAGE_TAG=\"\${SPECKIT_IMAGE_TAG:-latest}\"|IMAGE_TAG=\"\${SPECKIT_IMAGE_TAG:-${VERSION}}\"|" "$SPECIFY_WRAPPER"
+
+# Make the wrapper executable
+run_with_privileges chmod +x "$SPECIFY_WRAPPER"
+
+log_success "Spec-kit wrapper installed successfully at $SPECIFY_WRAPPER"
+
+# Pull the Docker image
+log_info "Pulling Docker image: ${IMAGE_NAME}:${VERSION}"
+if docker pull "${IMAGE_NAME}:${VERSION}" >/dev/null 2>&1; then
+    log_success "Docker image pulled successfully"
+else
+    log_warning "Failed to pull Docker image. It will be pulled on first use."
 fi
 
 # Verify installation
 if command_exists specify; then
-    # specify doesn't have a --version flag, but we can check if it runs
-    if specify --help > /dev/null 2>&1; then
-        log_success "spec-kit installed successfully"
-    else
-        log_error "spec-kit installation failed - command exists but not working properly"
-        exit 1
-    fi
+    log_success "Spec-kit command is now available: specify --help"
+    log_info "Docker image: ${IMAGE_NAME}:${VERSION}"
+    log_info ""
+    log_info "Quick start:"
+    log_info "  specify init my-project --ai copilot    # Initialize new project"
+    log_info "  specify check                            # Check requirements"
+    log_info "  specify --wrapper-upgrade                # Upgrade Docker image"
+    log_info "  specify --wrapper-help                   # Wrapper help"
 else
-    log_error "spec-kit installation failed - command not found"
-    log_info "You may need to restart your shell or source your profile"
+    log_error "Spec-kit wrapper installation failed"
     exit 1
 fi
 
-log_info "spec-kit installation completed"
-log_info "You can now use specify to initialize Spec-Driven Development projects!"
-log_info "Example: specify init my-project"
+log_info "Note: Spec-kit runs in a Docker container with your current directory mounted at /workspace"

@@ -2,6 +2,8 @@
 # A containerized version of spec-kit for spec-driven development
 # Documentation: https://github.com/github/spec-kit
 
+# docker build -t ruanzx/spec-kit .
+
 FROM python:3.12-slim
 
 # Set metadata

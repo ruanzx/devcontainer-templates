@@ -1,8 +1,8 @@
 {
-  "id": "spec-kit",
-  "version": "1.0.4",
-  "name": "spec-kit",
-  "description": "Install spec-kit, a toolkit to help you get started with Spec-Driven Development. Build high-quality software faster with executable specifications.",
+  "id": "spec-kit-in-docker",
+  "version": "1.0.0",
+  "name": "Spec-Kit (Docker-based)",
+  "description": "Install spec-kit wrapper that runs in Docker. Build high-quality software faster with executable specifications using AI coding agents.",
   "documentationURL": "https://github.com/github/spec-kit",
   "licenseURL": "https://github.com/github/spec-kit/blob/main/LICENSE",
   "keywords": [
@@ -12,8 +12,8 @@
     "ai-development",
     "code-generation",
     "github",
-    "python",
-    "uv",
+    "docker",
+    "container",
     "development-toolkit"
   ],
   "options": {
@@ -23,10 +23,16 @@
         "latest"
       ],
       "default": "latest",
-      "description": "Version of spec-kit to install. Use 'latest' for the most recent version."
+      "description": "Docker image tag for spec-kit. Use 'latest' for the most recent version."
+    },
+    "imageName": {
+      "type": "string",
+      "default": "ruanzx/spec-kit",
+      "description": "Docker image name for spec-kit."
     }
   },
   "installsAfter": [
-    "ghcr.io/devcontainers/features/python:1"
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1",
+    "ghcr.io/devcontainers/features/docker-in-docker:2"
   ]
 }
