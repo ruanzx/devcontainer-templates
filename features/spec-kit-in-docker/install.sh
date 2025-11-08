@@ -133,14 +133,14 @@ translate_path_for_host() {
 }
 
 # Parse wrapper-specific flags
-FORCE_UPGRADE=false
+UPGRADE_SPECKIT=false
 WRAPPER_HELP=false
 ARGS=()
 
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --wrapper-upgrade)
-            FORCE_UPGRADE=true
+        --upgrade)
+            UPGRADE_SPECKIT=true
             shift
             ;;
         --wrapper-help)
@@ -162,7 +162,7 @@ Spec-Kit Docker Wrapper
 This wrapper runs spec-kit commands inside a Docker container for easy, isolated usage.
 
 WRAPPER FLAGS (must come before spec-kit commands):
-  --wrapper-upgrade    Force pull the latest spec-kit Docker image
+  --upgrade            Upgrade spec-kit to the latest version inside the container
   --wrapper-help       Show this wrapper help message
 
 ENVIRONMENT VARIABLES:
@@ -174,8 +174,8 @@ SPEC-KIT COMMANDS:
   check                Check that all required tools are installed
 
 EXAMPLES:
-  # Upgrade the Docker image
-  specify --wrapper-upgrade
+  # Upgrade spec-kit to the latest version
+  specify --upgrade
 
   # Initialize a new project in current directory
   specify init --here --ai copilot
@@ -199,13 +199,6 @@ fi
 
 # Check Docker
 check_docker
-
-# Handle force upgrade
-if [ "$FORCE_UPGRADE" = "true" ]; then
-    ensure_image true
-    print_success "✓ Spec-kit Docker image upgraded successfully!"
-    exit 0
-fi
 
 # Ensure image exists
 ensure_image false
@@ -241,13 +234,25 @@ fi
 # Add image
 DOCKER_CMD="$DOCKER_CMD $FULL_IMAGE"
 
+# Build the command to execute inside the container
+CONTAINER_CMD=""
+
+# If upgrade flag is set, prepend the upgrade command
+if [ "$UPGRADE_SPECKIT" = "true" ]; then
+    print_info "Upgrading spec-kit to the latest version..."
+    CONTAINER_CMD="/root/.local/bin/uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git > /dev/null 2>&1 && "
+fi
+
 # Add spec-kit command and arguments
 if [ ${#ARGS[@]} -eq 0 ]; then
     # No arguments, show help
-    DOCKER_CMD="$DOCKER_CMD specify --help"
+    CONTAINER_CMD="${CONTAINER_CMD}specify --help"
 else
-    DOCKER_CMD="$DOCKER_CMD specify ${ARGS[*]}"
+    CONTAINER_CMD="${CONTAINER_CMD}specify ${ARGS[*]}"
 fi
+
+# Add the command to Docker
+DOCKER_CMD="$DOCKER_CMD bash -c \"$CONTAINER_CMD\""
 
 # Execute Docker command
 eval "$DOCKER_CMD"
@@ -278,7 +283,7 @@ if command_exists specify; then
     log_info "Quick start:"
     log_info "  specify init my-project --ai copilot    # Initialize new project"
     log_info "  specify check                            # Check requirements"
-    log_info "  specify --wrapper-upgrade                # Upgrade Docker image"
+    log_info "  specify --upgrade                        # Upgrade spec-kit"
     log_info "  specify --wrapper-help                   # Wrapper help"
 else
     log_error "Spec-kit wrapper installation failed"

@@ -43,8 +43,8 @@ A DevContainer feature that provides a Docker-based wrapper for [spec-kit](https
 # Show wrapper help
 specify --wrapper-help
 
-# Upgrade spec-kit Docker image
-specify --wrapper-upgrade
+# Upgrade spec-kit to latest version (runs upgrade inside container)
+specify --upgrade check
 ```
 
 ### Spec-Kit Commands
@@ -81,7 +81,8 @@ The feature installs a wrapper script at `/usr/local/bin/specify` that:
 3. Mounts your current directory as `/workspace`
 4. Mounts your git config (read-only)
 5. Passes through GitHub tokens
-6. Runs spec-kit commands in the Docker container
+6. If `--upgrade` flag is provided, upgrades spec-kit inside the container before running the command
+7. Runs spec-kit commands in the Docker container
 
 ## Examples
 
@@ -113,7 +114,10 @@ After initialization, use the spec-kit workflow:
 
 ```bash
 # Pull latest Docker image
-specify --wrapper-upgrade
+specify --upgrade check
+
+# The upgrade happens before the command runs
+# This upgrades spec-kit inside the container to the latest version
 ```
 
 ## Building the Docker Image
