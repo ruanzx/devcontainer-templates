@@ -74,20 +74,30 @@ This feature requires the .NET SDK to be installed. Add the .NET feature before 
 
 ## What's Installed
 
-This feature installs the .NET Aspire project templates using `dotnet new install Aspire.ProjectTemplates`. After installation, you'll have access to:
+This feature installs:
 
-- **aspire-starter**: .NET Aspire Starter Application
-- **aspire-apphost**: .NET Aspire AppHost project
-- **aspire-servicedefaults**: .NET Aspire Service defaults
-- **aspire-mstest**: .NET Aspire MSTest project
-- **aspire-nunit**: .NET Aspire NUnit project  
-- **aspire-xunit**: .NET Aspire xUnit project
+1. **The .NET Aspire workload** via `dotnet workload install aspire`, which includes:
+   - The `aspire` CLI command for managing Aspire apps
+   - Required SDKs and tools for .NET Aspire development
+
+2. **The .NET Aspire project templates** using `dotnet new install Aspire.ProjectTemplates`:
+   - **aspire-starter**: .NET Aspire Starter Application
+   - **aspire-apphost**: .NET Aspire AppHost project
+   - **aspire-servicedefaults**: .NET Aspire Service defaults
+   - **aspire-mstest**: .NET Aspire MSTest project
+   - **aspire-nunit**: .NET Aspire NUnit project  
+   - **aspire-xunit**: .NET Aspire xUnit project
+
+3. **PATH Configuration**: Adds `~/.dotnet/tools` to PATH for accessing the `aspire` command
 
 ## Getting Started
 
-After installation, you can create a new .NET Aspire application:
+After installation, you can use the `aspire` command and create new .NET Aspire applications:
 
 ```bash
+# Check aspire command is available
+aspire --help
+
 # Create a new Aspire starter application
 dotnet new aspire-starter -n MyAspireApp
 
@@ -97,6 +107,8 @@ cd MyAspireApp
 # Run the application
 dotnet run --project MyAspireApp.AppHost
 ```
+
+**Note**: If the `aspire` command is not found, run `source ~/.bashrc` to update your PATH in the current terminal session, or open a new terminal.
 
 ## Verification
 

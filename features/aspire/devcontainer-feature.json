@@ -1,6 +1,6 @@
 {
     "id": "aspire",
-    "version": "9.4.0",
+    "version": "1.0.3",
     "name": ".NET Aspire",
     "description": ".NET Aspire project templates for building observable, production-ready distributed applications",
     "documentationURL": "https://learn.microsoft.com/en-us/dotnet/aspire/",

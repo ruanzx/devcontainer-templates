@@ -126,4 +126,13 @@ else
     exit 1
 fi
 
+# Add .NET tools to PATH if not already there
+DOTNET_TOOLS_PATH="$HOME/.dotnet/tools"
+if [[ ":$PATH:" != *":$DOTNET_TOOLS_PATH:"* ]]; then
+    log_info "Adding .NET tools to PATH: $DOTNET_TOOLS_PATH"
+    echo "export PATH=\"$DOTNET_TOOLS_PATH:\$PATH\"" >> ~/.bashrc
+    echo "export PATH=\"$DOTNET_TOOLS_PATH:\$PATH\"" >> ~/.zshrc 2>/dev/null || true
+    export PATH="$DOTNET_TOOLS_PATH:$PATH"
+fi
+
 log_info ".NET Global Tools installation completed"

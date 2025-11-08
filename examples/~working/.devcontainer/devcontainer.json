@@ -18,7 +18,9 @@
     "ghcr.io/ruanzx/features/dotnet-tools:latest": {
       "tools": "dotnet-ef@latest,dotnet-format@latest,dotnet-outdated-tool@latest,dotnet-sonarscanner@latest,Microsoft.OpenApi.Kiota@latest"
     },
-    "ghcr.io/ruanzx/features/aspire:latest": {},
+    "ghcr.io/ruanzx/features/aspire:latest": {
+      "version": "9.4.0"
+    },
     "ghcr.io/ruanzx/features/azure-bicep:latest": {},
     "ghcr.io/ruanzx/features/spec-kit-in-docker:latest": {},
     "ghcr.io/ruanzx/features/markitdown-in-docker:latest": {},
