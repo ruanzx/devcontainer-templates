@@ -1,11 +1,11 @@
-# docker build -t ruanzx/markitdown:0.1.2 .
-# docker tag ruanzx/markitdown:0.1.2 ruanzx/markitdown:latest
-# docker run --rm -it --entrypoint /bin/bash ruanzx/markitdown:0.1.2
-# docker run --rm -it -v $(pwd)/:/data --entrypoint /bin/bash ruanzx/markitdown:0.1.2
+# docker build -t ruanzx/markitdown:0.1.3 .
+# docker tag ruanzx/markitdown:0.1.3 ruanzx/markitdown:latest
+# docker run --rm -it --entrypoint /bin/bash ruanzx/markitdown:0.1.3
+# docker run --rm -it -v $(pwd)/:/data --entrypoint /bin/bash ruanzx/markitdown:0.1.3
 #    markitdown /data/1.docx -o /data/1.md
 #    markitdown /data/2.pdf -x pdf -o /data/2.md
-# docker run --rm -it -v $(pwd)/:/data ruanzx/markitdown:0.1.2 /data/1.docx -o /data/1.md
-# docker run --rm -i ruanzx/markitdown:0.1.2 < ./data/1.docx > ./data/1.md
+# docker run --rm -it -v $(pwd)/:/data ruanzx/markitdown:0.1.3 /data/1.docx -o /data/1.md
+# docker run --rm -i ruanzx/markitdown:0.1.3 < ./data/1.docx > ./data/1.md
 
 FROM python:3.13-slim-bullseye AS base
 
@@ -24,7 +24,7 @@ RUN rm -rf /var/lib/apt/lists/*
 
 FROM base AS builder
 
-ENV MARKITDOWN_VERSION=0.1.2
+ENV MARKITDOWN_VERSION=0.1.3
 
 WORKDIR /src
 RUN git clone -b v${MARKITDOWN_VERSION} https://github.com/microsoft/markitdown.git .
