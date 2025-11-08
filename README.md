@@ -453,6 +453,10 @@ This repository provides a unified interface for all development operations thro
 ./devcontainer-features.sh test syntax
 ./devcontainer-features.sh test features
 
+# Test specific features
+./devcontainer-features.sh test markitdown-in-docker
+./devcontainer-features.sh test features kubectl helm
+
 # Publish all features
 ./devcontainer-features.sh publish
 
@@ -505,9 +509,28 @@ Run comprehensive tests:
 ```
 
 Available test types:
+- `./scripts/test.sh` - Run all tests (default)
 - `./scripts/test.sh syntax` - Check shell script and JSON syntax
-- `./scripts/test.sh features` - Test feature installations
-- `./scripts/test.sh all` - Run all tests (default)
+- `./scripts/test.sh features` - Test all feature installations
+- `./scripts/test.sh <feature-name>` - Test a specific feature
+- `./scripts/test.sh features <feature-names>` - Test multiple specific features
+
+Examples:
+```bash
+# Test all features
+./scripts/test.sh
+./scripts/test.sh all
+
+# Test syntax only
+./scripts/test.sh syntax
+
+# Test specific feature
+./scripts/test.sh markitdown-in-docker
+./scripts/test.sh spec-kit-in-docker
+
+# Test multiple features
+./scripts/test.sh features kubectl helm k9s
+```
 
 ### Publish Features
 

@@ -148,6 +148,8 @@ check_syntax() {
 # Main test process
 main() {
     local test_type="${1:-all}"
+    shift || true
+    local specific_features=("$@")
     
     log_info "Starting test process: $test_type"
     
@@ -172,21 +174,36 @@ main() {
             # Check if docker is available
             ensure_command "docker"
             
-            # Find all built features
+            # Find features to test
             local features=()
-            for feature_path in "$BUILD_DIR"/*; do
-                if [[ -d "$feature_path" ]]; then
-                    features+=("$feature_path")
-                fi
-            done
+            if [[ ${#specific_features[@]} -gt 0 ]]; then
+                # Test only specified features
+                log_info "Testing specific features: ${specific_features[*]}"
+                for feature_name in "${specific_features[@]}"; do
+                    local feature_path="$BUILD_DIR/$feature_name"
+                    if [[ -d "$feature_path" ]]; then
+                        features+=("$feature_path")
+                    else
+                        log_error "Feature not found: $feature_name"
+                        log_info "Available features: $(ls -1 "$BUILD_DIR" | tr '\n' ' ')"
+                        exit 1
+                    fi
+                done
+            else
+                # Test all features
+                for feature_path in "$BUILD_DIR"/*; do
+                    if [[ -d "$feature_path" ]]; then
+                        features+=("$feature_path")
+                    fi
+                done
+            fi
             
             if [[ ${#features[@]} -eq 0 ]]; then
-                log_error "No built features found in $BUILD_DIR"
-                log_info "Please run the build script first: ./scripts/build.sh"
+                log_error "No features to test"
                 exit 1
             fi
             
-            log_info "Found ${#features[@]} features to test"
+            log_info "Found ${#features[@]} feature(s) to test"
             
             # Test each feature
             local failed_features=()
@@ -210,38 +227,78 @@ main() {
             fi
             ;;
         *)
-            log_error "Unknown test type: $test_type"
-            echo "Usage: $0 [syntax|features|all]"
-            exit 1
+            # Assume it's a feature name
+            log_info "Testing specific feature: $test_type"
+            
+            # Run syntax checks first
+            if ! check_syntax; then
+                log_error "Syntax checks failed, aborting feature test"
+                exit 1
+            fi
+            
+            # Check if build directory exists
+            if [[ ! -d "$BUILD_DIR" ]]; then
+                log_error "Build directory not found: $BUILD_DIR"
+                log_info "Please run the build script first: ./scripts/build.sh"
+                exit 1
+            fi
+            
+            # Check if docker is available
+            ensure_command "docker"
+            
+            local feature_path="$BUILD_DIR/$test_type"
+            if [[ ! -d "$feature_path" ]]; then
+                log_error "Feature not found: $test_type"
+                log_info "Available features: $(ls -1 "$BUILD_DIR" | tr '\n' ' ')"
+                exit 1
+            fi
+            
+            if test_feature "$feature_path"; then
+                log_success "Feature $test_type test passed"
+            else
+                log_error "Feature $test_type test failed"
+                exit 1
+            fi
             ;;
     esac
 }
 
 # Show usage information
 usage() {
-    echo "Usage: $0 [TEST_TYPE]"
+    echo "Usage: $0 [TEST_TYPE] [FEATURE_NAMES...]"
     echo ""
     echo "Test DevContainer Features"
     echo ""
     echo "Test types:"
-    echo "  syntax     Run syntax checks only"
-    echo "  features   Run feature installation tests"
-    echo "  all        Run all tests (default)"
+    echo "  syntax              Run syntax checks only"
+    echo "  features            Run feature installation tests"
+    echo "  all                 Run all tests (default)"
+    echo "  <feature-name>      Test a specific feature"
+    echo ""
+    echo "Examples:"
+    echo "  $0                              # Run all tests"
+    echo "  $0 syntax                       # Run syntax checks only"
+    echo "  $0 features                     # Run all feature tests"
+    echo "  $0 features kubectl helm        # Test only kubectl and helm"
+    echo "  $0 markitdown-in-docker         # Test only markitdown-in-docker"
     echo ""
     echo "Options:"
-    echo "  -h, --help Show this help message"
+    echo "  -h, --help          Show this help message"
     echo ""
 }
 
 # Parse command line arguments
-while [[ $# -gt 0 ]]; do
+if [[ $# -eq 0 ]]; then
+    # Default to running all tests
+    main "all"
+else
     case $1 in
         -h|--help)
             usage
             exit 0
             ;;
         syntax|features|all)
-            main "$1"
+            main "$@"
             exit $?
             ;;
         *)
@@ -250,12 +307,10 @@ while [[ $# -gt 0 ]]; do
                 usage
                 exit 1
             else
-                main "$1"
+                # Treat as feature name
+                main "$@"
                 exit $?
             fi
             ;;
     esac
-done
-
-# Default to running all tests
-main "all"
+fi
