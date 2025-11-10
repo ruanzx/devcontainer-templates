@@ -3,10 +3,10 @@
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
-      "installZsh": true,
-      "configureZshAsDefaultShell": true,
-      "installOhMyZsh": true,
-      "upgradePackages": true
+      "installZsh": false,
+      "configureZshAsDefaultShell": false,
+      "installOhMyZsh": false,
+      "upgradePackages": false
     },
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
     "ghcr.io/devcontainers/features/azure-cli:1": {},
@@ -24,7 +24,9 @@
     "ghcr.io/ruanzx/features/azure-bicep:latest": {},
     "ghcr.io/ruanzx/features/spec-kit-in-docker:latest": {},
     "ghcr.io/ruanzx/features/markitdown-in-docker:latest": {},
-    "ghcr.io/ruanzx/features/edit:latest": {},
+    "ghcr.io/ruanzx/features/edit:latest": {
+      "version": "1.2.0"
+    },
     "ghcr.io/ruanzx/features/mdc:latest": {}
   },
   "customizations": {
