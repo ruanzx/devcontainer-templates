@@ -1,23 +1,30 @@
 {
   "name": ".NET Development Environment",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  "image": "mcr.microsoft.com/dotnet/sdk:10.0",
   "features": {
-    "ghcr.io/devcontainers/features/dotnet:latest": {},
-    "ghcr.io/ruanzx/features/dotnet-tools:latest": {
-      "tools": "dotnet-ef@latest,dotnet-format@latest,dotnet-outdated-tool@latest,dotnet-sonarscanner@latest"
+    "ghcr.io/devcontainers/features/dotnet:latest": {
+      "version": "9.0"
     },
-    "ghcr.io/ruanzx/features/aspire:latest": {}
+    "ghcr.io/ruanzx/features/edit:latest": {
+      "version": "1.2.0"
+    },
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/ruanzx/features/spec-kit-in-docker:latest": {
+      "version": "latest"
+    },
+    "ghcr.io/ruanzx/features/markitdown-in-docker:latest": {
+      "version": "latest"
+    }
   },
   "customizations": {
     "vscode": {
       "extensions": [
-        "ms-dotnettools.csharp",
-        "ms-dotnettools.vscode-dotnet-runtime",
-        "bradlc.vscode-tailwindcss",
-        "formulahendry.dotnet-test-explorer"
+        "yzhang.markdown-all-in-one",
+        "ms-dotnettools.csharp"
       ]
     }
   },
-  "postCreateCommand": "dotnet --version && dotnet tool list --global",
-  "remoteUser": "root"
+  "postCreateCommand": "./.devcontainer/scripts/postCreateCommand.sh",
+  "remoteUser": "root",
+  "runArgs": []
 }
