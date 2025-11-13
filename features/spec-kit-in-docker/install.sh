@@ -133,16 +133,11 @@ translate_path_for_host() {
 }
 
 # Parse wrapper-specific flags
-UPGRADE_SPECKIT=false
 WRAPPER_HELP=false
 ARGS=()
 
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --upgrade)
-            UPGRADE_SPECKIT=true
-            shift
-            ;;
         --wrapper-help)
             WRAPPER_HELP=true
             shift
@@ -160,9 +155,9 @@ if [ "$WRAPPER_HELP" = "true" ]; then
 Spec-Kit Docker Wrapper
 
 This wrapper runs spec-kit commands inside a Docker container for easy, isolated usage.
+Spec-kit is automatically updated to the latest version once per day.
 
 WRAPPER FLAGS (must come before spec-kit commands):
-  --upgrade            Upgrade spec-kit to the latest version inside the container
   --wrapper-help       Show this wrapper help message
 
 ENVIRONMENT VARIABLES:
@@ -174,9 +169,6 @@ SPEC-KIT COMMANDS:
   check                Check that all required tools are installed
 
 EXAMPLES:
-  # Upgrade spec-kit to the latest version
-  specify --upgrade
-
   # Initialize a new project in current directory
   specify init --here --ai copilot
 
@@ -189,8 +181,8 @@ EXAMPLES:
   # Get spec-kit help
   specify --help
 
-  # Mount custom directories (advanced)
-  docker run -it --rm -v $(pwd):/workspace ruanzx/spec-kit bash
+  # Force update to latest version (remove volume)
+  docker volume rm speckit-uv-tools
 
 For more information: https://github.com/github/spec-kit
 HELP
@@ -207,8 +199,43 @@ ensure_image false
 CURRENT_DIR="$(pwd)"
 HOST_CURRENT_DIR="$(translate_path_for_host "$CURRENT_DIR")"
 
+# Create or use a named volume for spec-kit tool cache to persist updates
+SPECKIT_VOLUME="speckit-uv-tools"
+
+# Check if this is the first run or if we should update (once per day)
+LAST_UPDATE_FILE="/tmp/speckit-last-update-check"
+CURRENT_TIME=$(date +%s)
+SHOULD_UPDATE=false
+
+if ! docker volume inspect "$SPECKIT_VOLUME" >/dev/null 2>&1; then
+    print_info "First run detected. Creating persistent volume and updating spec-kit..."
+    docker volume create "$SPECKIT_VOLUME" >/dev/null 2>&1
+    SHOULD_UPDATE=true
+else
+    if [ -f "$LAST_UPDATE_FILE" ]; then
+        LAST_UPDATE=$(cat "$LAST_UPDATE_FILE")
+        TIME_DIFF=$((CURRENT_TIME - LAST_UPDATE))
+        # Update if more than 24 hours (86400 seconds) have passed
+        if [ $TIME_DIFF -gt 86400 ]; then
+            SHOULD_UPDATE=true
+        fi
+    else
+        SHOULD_UPDATE=true
+    fi
+fi
+
+# Update spec-kit if needed
+if [ "$SHOULD_UPDATE" = "true" ]; then
+    print_info "Updating spec-kit to the latest version..."
+    docker run --rm -v "$SPECKIT_VOLUME:/root/.local/share/uv/tools" "$FULL_IMAGE" bash -c "uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git >/dev/null 2>&1 && echo 'Spec-kit updated successfully'" || print_warning "Failed to update spec-kit, using existing version"
+    echo "$CURRENT_TIME" > "$LAST_UPDATE_FILE"
+fi
+
 # Build Docker command
 DOCKER_CMD="docker run --rm -it"
+
+# Mount the persistent spec-kit tools volume
+DOCKER_CMD="$DOCKER_CMD -v $SPECKIT_VOLUME:/root/.local/share/uv/tools"
 
 # Mount current directory as workspace
 DOCKER_CMD="$DOCKER_CMD -v \"$HOST_CURRENT_DIR:/workspace\""
@@ -234,25 +261,12 @@ fi
 # Add image
 DOCKER_CMD="$DOCKER_CMD $FULL_IMAGE"
 
-# Build the command to execute inside the container
-CONTAINER_CMD=""
-
-# If upgrade flag is set, prepend the upgrade command
-if [ "$UPGRADE_SPECKIT" = "true" ]; then
-    print_info "Upgrading spec-kit to the latest version..."
-    CONTAINER_CMD="/root/.local/bin/uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git > /dev/null 2>&1 && "
-fi
-
-# Add spec-kit command and arguments
-if [ ${#ARGS[@]} -eq 0 ]; then
-    # No arguments, show help
-    CONTAINER_CMD="${CONTAINER_CMD}specify --help"
+# Add specify command and arguments
+if [ ${#ARGS[@]} -gt 0 ]; then
+    DOCKER_CMD="$DOCKER_CMD specify ${ARGS[*]}"
 else
-    CONTAINER_CMD="${CONTAINER_CMD}specify ${ARGS[*]}"
+    DOCKER_CMD="$DOCKER_CMD specify --help"
 fi
-
-# Add the command to Docker
-DOCKER_CMD="$DOCKER_CMD bash -c \"$CONTAINER_CMD\""
 
 # Execute Docker command
 eval "$DOCKER_CMD"
@@ -283,8 +297,10 @@ if command_exists specify; then
     log_info "Quick start:"
     log_info "  specify init my-project --ai copilot    # Initialize new project"
     log_info "  specify check                            # Check requirements"
-    log_info "  specify --upgrade                        # Upgrade spec-kit"
     log_info "  specify --wrapper-help                   # Wrapper help"
+    log_info ""
+    log_info "Note: Spec-kit is automatically updated once per day"
+    log_info "To force update: docker volume rm speckit-uv-tools"
 else
     log_error "Spec-kit wrapper installation failed"
     exit 1
