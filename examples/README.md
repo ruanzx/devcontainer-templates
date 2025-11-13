@@ -49,6 +49,9 @@ Security-focused environment with Gitleaks and other security tools.
 ### [BMAD-METHOD AI Framework](bmad-method/)
 AI-powered development environment with BMAD-METHOD Universal AI Agent Framework for Agentic Agile Driven Development.
 
+### [BMAD-METHOD Docker](bmad-method-docker/)
+Docker-based AI development environment with BMAD-METHOD running in containers - no Node.js installation required on host.
+
 ### [Spec-Driven Development](spec-kit/)
 Spec-driven development environment with GitHub's spec-kit toolkit for building high-quality software with executable specifications.
 
@@ -79,6 +82,7 @@ You can customize any example by:
 - `ghcr.io/ruanzx/features/aws-sam-cli` - AWS Serverless Application Model CLI for building and deploying serverless applications
 - `ghcr.io/ruanzx/features/azure-functions-core-tools` - Azure Functions Core Tools for building and deploying serverless functions on Azure
 - `ghcr.io/ruanzx/features/bmad-method` - Universal AI Agent Framework for Agentic Agile Driven Development
+- `ghcr.io/ruanzx/features/bmad-method-in-docker` - BMAD-METHOD wrapper for Docker-based execution without Node.js dependencies
 - `ghcr.io/ruanzx/features/devcontainers-cli` - DevContainers CLI tools
 - `ghcr.io/ruanzx/features/dotnet-tools` - .NET Global Tools (Entity Framework, formatters, etc.)
 - `ghcr.io/ruanzx/features/gitleaks` - Secret detection and prevention

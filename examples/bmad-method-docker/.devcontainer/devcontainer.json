@@ -1,0 +1,42 @@
+{
+  "name": "BMAD-METHOD Docker Example",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/ruanzx/features/bmad-method-in-docker:latest": {
+      "version": "latest",
+      "imageName": "ruanzx/bmad"
+    }
+  },
+  "postCreateCommand": "bmad --version && bmad help",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "ms-vscode.vscode-json",
+        "ms-vscode.vscode-markdown"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "files.autoSave": "onFocusChange"
+      }
+    }
+  },
+  "forwardPorts": [3000, 8000, 8080],
+  "portsAttributes": {
+    "3000": {
+      "label": "Development Server",
+      "onAutoForward": "notify"
+    },
+    "8000": {
+      "label": "API Server",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Web UI",
+      "onAutoForward": "notify"
+    }
+  },
+  "remoteUser": "vscode"
+}

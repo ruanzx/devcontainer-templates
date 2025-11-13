@@ -1,0 +1,20 @@
+{
+  "name": "bmad-method-docker-example",
+  "version": "1.0.0",
+  "description": "Example project using BMAD-METHOD in Docker",
+  "scripts": {
+    "bmad:install": "bmad install",
+    "bmad:status": "bmad status",
+    "bmad:update": "bmad update",
+    "bmad:flatten": "bmad flatten",
+    "bmad:expansions": "bmad list:expansions"
+  },
+  "keywords": [
+    "bmad",
+    "ai-agents",
+    "devcontainer",
+    "docker"
+  ],
+  "author": "",
+  "license": "MIT"
+}
