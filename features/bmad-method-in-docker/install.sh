@@ -89,9 +89,10 @@ check_docker() {
 }
 
 ensure_image() {
+    # Check if image exists locally, pull if not found
     if ! docker image inspect "$FULL_IMAGE" >/dev/null 2>&1; then
         print_warning "Docker image '$FULL_IMAGE' not found locally. Pulling..."
-        docker pull "$FULL_IMAGE" || {
+        docker pull "$FULL_IMAGE" >/dev/null 2>&1 || {
             print_error "Failed to pull image '$FULL_IMAGE'"
             exit 1
         }

@@ -106,14 +106,16 @@ bmad --help
 ## How It Works
 
 1. The feature installs a wrapper script at `/usr/local/bin/bmad`
-2. When you run `bmad`, it executes the BMAD-METHOD Docker container with:
-   - Current working directory mounted to `/workspace` in the container
-   - All commands passed through to the containerized BMAD-METHOD
+2. When you run `bmad`, it:
+   - Executes the BMAD-METHOD Docker container with your workspace mounted
+   - Passes all commands through to the containerized BMAD-METHOD
 3. The script automatically handles:
    - Path translation between dev container and host (when running in a dev container)
    - Volume mounting for workspace access
    - Docker image pulling (if not already present)
 4. All BMAD-METHOD files and outputs remain in your workspace
+
+**Note**: To get the latest BMAD-METHOD version, rebuild and push the Docker image with `npm install -g bmad-method@latest`
 
 ## Dev Container Integration
 
@@ -193,9 +195,35 @@ If you see "Docker is not running", ensure Docker is started:
 docker info
 ```
 
+### Update to Latest BMAD-METHOD
+
+To use the latest BMAD-METHOD version:
+
+1. Pull the latest Docker image:
+```bash
+docker pull ruanzx/bmad:latest
+```
+
+2. Or set the version explicitly:
+```json
+{
+  "features": {
+    "ghcr.io/ruanzx/devcontainer-features/bmad-method-in-docker:1.0.0": {
+      "version": "1.2.3"
+    }
+  }
+}
+```
+
+### Check Current BMAD-METHOD Version
+
+```bash
+bmad --version
+```
+
 ### Image Not Found
 
-If the BMAD-METHOD image is not found, it will be automatically pulled on first use. You can also pull it manually:
+If the BMAD-METHOD Docker image is not found locally, it will be automatically pulled on first use:
 
 ```bash
 docker pull ruanzx/bmad:latest
@@ -217,11 +245,12 @@ The wrapper mounts your current working directory to `/workspace` in the contain
 
 | Feature | Docker (this feature) | Native (bmad-method) |
 |---------|----------------------|---------------------|
-| Node.js Required | ❌ No | ✅ Yes (v20+) |
-| npm Required | ❌ No | ✅ Yes |
+| Node.js Required | ❌ No (in container) | ✅ Yes (v20+) |
+| npm Required | ❌ No (in container) | ✅ Yes |
 | Installation Size | Smaller (wrapper only) | Larger (full dependencies) |
 | Isolation | ✅ Fully isolated | ❌ Uses host Node.js |
-| Setup Speed | Faster | Slower (npm install) |
+| Updates | Manual (rebuild/pull image) | ❌ Manual (npm update) |
+| Startup Time | Fast | Fast |
 | Best For | Docker-based workflows | Node.js developers |
 
 ## Resources
