@@ -100,29 +100,49 @@ build_feature() {
 
 # Main build process
 main() {
+    local specific_features=("$@")
+    
     log_info "Starting build process"
     
-    # Clean build directory
-    if [[ -d "$BUILD_DIR" ]]; then
-        rm -rf "$BUILD_DIR"
+    # Clean build directory if building all features
+    if [[ ${#specific_features[@]} -eq 0 ]]; then
+        if [[ -d "$BUILD_DIR" ]]; then
+            rm -rf "$BUILD_DIR"
+        fi
     fi
     mkdir -p "$BUILD_DIR"
     
-    # Find all features
+    # Find all features or use specified ones
     if [[ ! -d "$FEATURES_DIR" ]]; then
         log_error "Features directory not found: $FEATURES_DIR"
         exit 1
     fi
     
     local features=()
-    for feature_path in "$FEATURES_DIR"/*; do
-        if [[ -d "$feature_path" ]]; then
-            features+=("$feature_path")
-        fi
-    done
+    
+    if [[ ${#specific_features[@]} -gt 0 ]]; then
+        # Build only specified features
+        log_info "Building specific features: ${specific_features[*]}"
+        for feature_name in "${specific_features[@]}"; do
+            local feature_path="$FEATURES_DIR/$feature_name"
+            if [[ -d "$feature_path" ]]; then
+                features+=("$feature_path")
+            else
+                log_error "Feature not found: $feature_name"
+                exit 1
+            fi
+        done
+    else
+        # Build all features
+        for feature_path in "$FEATURES_DIR"/*; do
+            if [[ -d "$feature_path" ]]; then
+                features+=("$feature_path")
+            fi
+        done
+    fi
     
     if [[ ${#features[@]} -eq 0 ]]; then
-        log_error "No features found in $FEATURES_DIR"
+        log_error "No features found to build"
         exit 1
     fi
     
