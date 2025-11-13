@@ -1,0 +1,31 @@
+{
+  "id": "bmad-method-in-docker",
+  "version": "1.0.0",
+  "name": "BMAD-METHOD (Docker)",
+  "description": "Installs a wrapper for BMAD-METHOD that runs in a Docker container - Universal AI Agent Framework for Agentic Agile Driven Development",
+  "documentationURL": "https://github.com/ruanzx/devcontainer-features/tree/main/features/bmad-method-in-docker",
+  "keywords": [
+    "bmad",
+    "ai",
+    "agents",
+    "framework",
+    "agile",
+    "development",
+    "docker"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Version tag of the BMAD-METHOD Docker image to use"
+    },
+    "imageName": {
+      "type": "string",
+      "default": "ruanzx/bmad",
+      "description": "Docker image name for BMAD-METHOD"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1"
+  ]
+}
