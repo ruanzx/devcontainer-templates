@@ -81,7 +81,6 @@ EOF
     # Run the test in a container to simulate the devcontainer environment
     if docker run --rm \
         -v "$test_container_dir/$feature_name:/tmp/feature" \
-        -v "$ROOT_DIR/common:/tmp/common" \
         -w /tmp/feature \
         mcr.microsoft.com/devcontainers/base:ubuntu \
         bash -c "
@@ -93,10 +92,6 @@ EOF
             # Set up environment
             export _CONTAINER_USER=vscode
             export _REMOTE_USER=vscode
-            
-            # Create the expected directory structure and copy utils
-            mkdir -p ../../common
-            cp /tmp/common/utils.sh ../../common/
             
             # Run the install script
             chmod +x install.sh

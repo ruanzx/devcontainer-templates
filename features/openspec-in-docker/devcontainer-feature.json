@@ -1,0 +1,30 @@
+{
+  "id": "openspec-in-docker",
+  "version": "1.0.0",
+  "name": "OpenSpec (Docker)",
+  "description": "Installs OpenSpec, a spec-driven development tool for AI coding assistants, that runs in a Docker container",
+  "documentationURL": "https://github.com/ruanzx/devcontainer-features/tree/main/features/openspec-in-docker",
+  "keywords": [
+    "openspec",
+    "spec",
+    "ai",
+    "development",
+    "docker",
+    "specifications"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Version tag of the OpenSpec Docker image to use"
+    },
+    "imageName": {
+      "type": "string",
+      "default": "ruanzx/openspec",
+      "description": "Docker image name for OpenSpec"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1"
+  ]
+}
