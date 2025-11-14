@@ -103,7 +103,7 @@ make_package_public() {
         return 0
     else
         log_warning "Failed to make package public via API: $package_name"
-        log_info "You may need to manually set visibility at: https://github.com/users/$GITHUB_USERNAME/packages/container/package/features%2F$package_name"
+        log_info "You may need to manually set visibility at: https://github.com/users/$GITHUB_USERNAME/packages/container/package/features/${package_name}"
         return 1
     fi
 }
