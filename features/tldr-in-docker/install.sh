@@ -163,23 +163,20 @@ ensure_image
 TLDR_VOLUME="tldr-cache"
 
 # Check if this is the first run or if we should update (once per day)
-LAST_UPDATE_FILE="/tmp/tldr-last-update-check"
 CURRENT_TIME=$(date +%s)
 SHOULD_UPDATE=false
 
+# Create volume if it doesn't exist
 if ! docker volume inspect "$TLDR_VOLUME" >/dev/null 2>&1; then
     print_info "First run detected. Creating persistent volume for tldr cache..."
     docker volume create "$TLDR_VOLUME" >/dev/null 2>&1
     SHOULD_UPDATE=true
 else
-    if [ -f "$LAST_UPDATE_FILE" ]; then
-        LAST_UPDATE=$(cat "$LAST_UPDATE_FILE")
-        TIME_DIFF=$((CURRENT_TIME - LAST_UPDATE))
-        # Update if more than 24 hours (86400 seconds) have passed
-        if [ $TIME_DIFF -gt 86400 ]; then
-            SHOULD_UPDATE=true
-        fi
-    else
+    # Check last update timestamp stored in the volume
+    LAST_UPDATE=$(docker run --rm -v "$TLDR_VOLUME:/root/.tldr" "$FULL_IMAGE" sh -c 'cat /root/.tldr/.last-update 2>/dev/null || echo 0' 2>/dev/null || echo 0)
+    TIME_DIFF=$((CURRENT_TIME - LAST_UPDATE))
+    # Update if more than 24 hours (86400 seconds) have passed
+    if [ $TIME_DIFF -gt 86400 ]; then
         SHOULD_UPDATE=true
     fi
 fi
@@ -187,8 +184,11 @@ fi
 # Update tldr cache if needed
 if [ "$SHOULD_UPDATE" = "true" ]; then
     print_info "Updating tldr cache..."
-    docker run --rm -v "$TLDR_VOLUME:/root/.tldr" "$FULL_IMAGE" tldr --update >/dev/null 2>&1 || print_warning "Failed to update tldr cache, using existing cache"
-    echo "$CURRENT_TIME" > "$LAST_UPDATE_FILE"
+    if docker run --rm -v "$TLDR_VOLUME:/root/.tldr" "$FULL_IMAGE" sh -c "tldr --update && echo $CURRENT_TIME > /root/.tldr/.last-update" >/dev/null 2>&1; then
+        print_success "Cache updated successfully!"
+    else
+        print_warning "Failed to update tldr cache, using existing cache"
+    fi
 fi
 
 # Build Docker command
