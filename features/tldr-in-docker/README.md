@@ -62,7 +62,12 @@ This feature requires Docker to be available. Add the Docker feature before this
 
 ## What's Installed
 
-This feature installs a wrapper script that runs tldr commands in a Docker container using the `ruanzx/tldr` image.
+This feature installs a wrapper script that runs tldr commands in a Docker container using the `ruanzx/tldr` image with persistent caching.
+
+**Caching Features:**
+- **Persistent Cache**: tldr pages are cached in a Docker named volume (`tldr-cache`)
+- **Automatic Updates**: Cache updates automatically once per day
+- **Performance**: Subsequent runs are faster due to cached pages
 
 ## Getting Started
 
@@ -78,12 +83,17 @@ tldr git
 # List all available pages
 tldr --list
 
-# Update local cache
+# Update local cache (also happens automatically daily)
 tldr --update
 
 # Get help for the tldr command itself
 tldr --help
 ```
+
+**Cache Management:**
+- Cache is automatically updated once per day
+- To force a cache refresh: `docker volume rm tldr-cache`
+- Cache persists across container restarts
 
 ## Requirements
 

@@ -67,6 +67,7 @@ fi
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 print_error() {
@@ -79,6 +80,10 @@ print_success() {
 
 print_warning() {
     echo -e "${YELLOW}Warning: $1${NC}"
+}
+
+print_info() {
+    echo -e "${BLUE}$1${NC}"
 }
 
 check_docker() {
@@ -111,7 +116,7 @@ while [[ $# -gt 0 ]]; do
             echo ""
             echo "Usage: tldr [command] [options]"
             echo ""
-            echo "This wrapper runs tldr in a Docker container."
+            echo "This wrapper runs tldr in a Docker container with persistent caching."
             echo ""
             echo "Commands:"
             echo "  <command>         Get help for a command (e.g., 'tldr tar')"
@@ -125,6 +130,11 @@ while [[ $# -gt 0 ]]; do
             echo "Environment Variables:"
             echo "  TLDR_IMAGE_NAME    Docker image name (default: ruanzx/tldr)"
             echo "  TLDR_IMAGE_TAG     Docker image tag (default: latest)"
+            echo ""
+            echo "Cache Management:"
+            echo "  Cache is persisted in Docker volume 'tldr-cache'"
+            echo "  Cache updates automatically once per day"
+            echo "  To force cache update: docker volume rm tldr-cache"
             echo ""
             echo "Examples:"
             echo "  tldr tar                    # Get help for tar command"
@@ -149,8 +159,43 @@ check_docker
 # Ensure Docker image exists
 ensure_image
 
+# Create or use a named volume for tldr cache to persist pages
+TLDR_VOLUME="tldr-cache"
+
+# Check if this is the first run or if we should update (once per day)
+LAST_UPDATE_FILE="/tmp/tldr-last-update-check"
+CURRENT_TIME=$(date +%s)
+SHOULD_UPDATE=false
+
+if ! docker volume inspect "$TLDR_VOLUME" >/dev/null 2>&1; then
+    print_info "First run detected. Creating persistent volume for tldr cache..."
+    docker volume create "$TLDR_VOLUME" >/dev/null 2>&1
+    SHOULD_UPDATE=true
+else
+    if [ -f "$LAST_UPDATE_FILE" ]; then
+        LAST_UPDATE=$(cat "$LAST_UPDATE_FILE")
+        TIME_DIFF=$((CURRENT_TIME - LAST_UPDATE))
+        # Update if more than 24 hours (86400 seconds) have passed
+        if [ $TIME_DIFF -gt 86400 ]; then
+            SHOULD_UPDATE=true
+        fi
+    else
+        SHOULD_UPDATE=true
+    fi
+fi
+
+# Update tldr cache if needed
+if [ "$SHOULD_UPDATE" = "true" ]; then
+    print_info "Updating tldr cache..."
+    docker run --rm -v "$TLDR_VOLUME:/root/.tldr" "$FULL_IMAGE" tldr --update >/dev/null 2>&1 || print_warning "Failed to update tldr cache, using existing cache"
+    echo "$CURRENT_TIME" > "$LAST_UPDATE_FILE"
+fi
+
 # Build Docker command
 DOCKER_CMD="docker run --rm"
+
+# Mount the persistent tldr cache volume
+DOCKER_CMD="$DOCKER_CMD -v $TLDR_VOLUME:/root/.tldr"
 
 # Add image name
 DOCKER_CMD="$DOCKER_CMD $FULL_IMAGE"
