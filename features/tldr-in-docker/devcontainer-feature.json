@@ -1,0 +1,30 @@
+{
+  "id": "tldr-in-docker",
+  "version": "1.0.0",
+  "name": "tldr (Docker)",
+  "description": "Installs tldr, a simplified and community-driven man pages, that runs in a Docker container",
+  "documentationURL": "https://github.com/tldr-pages/tldr",
+  "keywords": [
+    "tldr",
+    "man",
+    "help",
+    "documentation",
+    "docker",
+    "cli"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Version tag of the tldr Docker image to use"
+    },
+    "imageName": {
+      "type": "string",
+      "default": "ruanzx/tldr",
+      "description": "Docker image name for tldr"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1"
+  ]
+}
