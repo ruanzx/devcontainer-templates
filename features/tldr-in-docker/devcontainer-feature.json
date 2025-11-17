@@ -1,6 +1,6 @@
 {
   "id": "tldr-in-docker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "tldr (Docker)",
   "description": "Installs tldr, a simplified and community-driven man pages, that runs in a Docker container",
   "documentationURL": "https://github.com/tldr-pages/tldr",

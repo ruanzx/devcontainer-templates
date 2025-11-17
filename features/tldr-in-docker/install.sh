@@ -38,7 +38,7 @@ log_info "Creating tldr wrapper script at $TLDR_WRAPPER"
 
 cat > "$TLDR_WRAPPER" << 'EOF'
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 
 # tldr - Docker Wrapper Script
 # This script wraps the tldr Docker container for easy command-line usage
@@ -132,9 +132,10 @@ while [[ $# -gt 0 ]]; do
             echo "  TLDR_IMAGE_TAG     Docker image tag (default: latest)"
             echo ""
             echo "Cache Management:"
-            echo "  Cache is persisted in Docker volume 'tldr-cache'"
-            echo "  Cache updates automatically once per day"
-            echo "  To force cache update: docker volume rm tldr-cache"
+            echo "  Cache is persisted in Docker volume 'tldr-cache-<workspace-hash>'"
+            echo "  Each workspace gets its own isolated cache"
+            echo "  To update cache manually: tldr --update"
+            echo "  To clear cache: docker volume rm tldr-cache-<workspace-hash>"
             echo ""
             echo "Examples:"
             echo "  tldr tar                    # Get help for tar command"
@@ -160,34 +161,20 @@ check_docker
 ensure_image
 
 # Create or use a named volume for tldr cache to persist pages
+# Include current directory hash in volume name to make it unique per workspace
+WORKSPACE_HASH=$(echo "$PWD" | md5sum | cut -d' ' -f1 | cut -c1-8)
+# TLDR_VOLUME="tldr-cache-${WORKSPACE_HASH}"
 TLDR_VOLUME="tldr-cache"
 
-# Check if this is the first run or if we should update (once per day)
-CURRENT_TIME=$(date +%s)
-SHOULD_UPDATE=false
-
-# Create volume if it doesn't exist
+# Create volume if it doesn't exist and do initial cache update
 if ! docker volume inspect "$TLDR_VOLUME" >/dev/null 2>&1; then
-    print_info "First run detected. Creating persistent volume for tldr cache..."
+    print_info "First run detected. Creating persistent volume: $TLDR_VOLUME"
     docker volume create "$TLDR_VOLUME" >/dev/null 2>&1
-    SHOULD_UPDATE=true
-else
-    # Check last update timestamp stored in the volume
-    LAST_UPDATE=$(docker run --rm -v "$TLDR_VOLUME:/root/.tldr" "$FULL_IMAGE" sh -c 'cat /root/.tldr/.last-update 2>/dev/null || echo 0' 2>/dev/null || echo 0)
-    TIME_DIFF=$((CURRENT_TIME - LAST_UPDATE))
-    # Update if more than 24 hours (86400 seconds) have passed
-    if [ $TIME_DIFF -gt 86400 ]; then
-        SHOULD_UPDATE=true
-    fi
-fi
-
-# Update tldr cache if needed
-if [ "$SHOULD_UPDATE" = "true" ]; then
     print_info "Updating tldr cache..."
-    if docker run --rm -v "$TLDR_VOLUME:/root/.tldr" "$FULL_IMAGE" sh -c "tldr --update && echo $CURRENT_TIME > /root/.tldr/.last-update" >/dev/null 2>&1; then
-        print_success "Cache updated successfully!"
+    if docker run --rm --entrypoint sh -v "$TLDR_VOLUME:/root/.tldr" "$FULL_IMAGE" -c "tldr --update" >/dev/null 2>&1; then
+        print_success "Cache initialized successfully!"
     else
-        print_warning "Failed to update tldr cache, using existing cache"
+        print_warning "Failed to initialize cache, will update on first use"
     fi
 fi
 
@@ -206,7 +193,7 @@ if [ ${#EXTRA_ARGS[@]} -gt 0 ]; then
 fi
 
 # Execute Docker command
-eval "$DOCKER_CMD"
+exec $DOCKER_CMD
 EOF
 
 # Set the image name and version as environment defaults in the script
