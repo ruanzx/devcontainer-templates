@@ -234,6 +234,9 @@ mkdir -p "$OUTPUT_DIR"
 # Build Docker command
 DOCKER_CMD="docker run --rm"
 
+# Mount Playwright cache for better performance (named volume)
+DOCKER_CMD="$DOCKER_CMD -v mdc-playwright-cache:/root/.cache/ms-playwright"
+
 # Mount input directory (read-only)
 DOCKER_CMD="$DOCKER_CMD $(get_volume_mount "$INPUT_DIR" "/data/input" "ro")"
 

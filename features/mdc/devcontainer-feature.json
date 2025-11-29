@@ -1,6 +1,6 @@
 {
   "id": "mdc",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "name": "MDC (Markdown to DOCX Converter)",
   "description": "Installs a wrapper for MDC (Markdown to DOCX Converter) that runs in a Docker container",
   "documentationURL": "https://github.com/ruanzx/devcontainer-features/tree/main/features/mdc",

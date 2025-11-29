@@ -69,6 +69,10 @@ This feature requires Docker to be available. It should be installed after the `
 }
 ```
 
+## Performance Optimization
+
+This feature automatically configures a Docker volume (`mdc-playwright-cache`) mounted at `/root/.cache/ms-playwright` to cache Playwright browser binaries. This significantly speeds up startup time by preventing the need to re-download browser binaries on each container rebuild.
+
 ## Commands Available
 
 After installation, the `mdc` command is available to convert Markdown to DOCX:
