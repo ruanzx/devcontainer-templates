@@ -1,0 +1,27 @@
+{
+  "id": "bottom",
+  "version": "0.11.4",
+  "name": "bottom",
+  "description": "A customizable cross-platform graphical process/system monitor for the terminal",
+  "documentationURL": "https://github.com/ClementTsang/bottom",
+  "licenseURL": "https://github.com/ClementTsang/bottom/blob/main/LICENSE",
+  "keywords": [
+    "bottom",
+    "btm",
+    "monitor",
+    "system-monitor",
+    "resource-monitor",
+    "top",
+    "htop"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "description": "Version of bottom to install",
+      "default": "0.11.4"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils"
+  ]
+}

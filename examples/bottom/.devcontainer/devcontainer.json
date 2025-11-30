@@ -1,0 +1,11 @@
+{
+  "name": "bottom Example",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/ruanzx/devcontainer-features/bottom:1": {
+      "version": "0.11.4"
+    }
+  },
+  "postCreateCommand": "btm --version",
+  "remoteUser": "vscode"
+}

@@ -1,6 +1,6 @@
 # DevContainer Features Collection
 
-A collection of 41+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
+A collection of 42+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
 
 ## 📦 Available Features
 
@@ -9,6 +9,7 @@ This repository provides the following DevContainer Features:
 ### 🛠️ Development Tools
 
 - **[APT Package Manager](features/apt/)** - Install packages using APT package manager on Debian-like systems
+- **[bottom](features/bottom/)** - A customizable cross-platform graphical process/system monitor for the terminal
 - **[btop++](features/btop/)** - A resource monitor that shows usage and stats for processor, memory, disks, network and processes
 - **[DevContainers CLI](features/devcontainers-cli/)** - Official CLI for working with Development Containers
 - **[Edit](features/edit/)** - A fast, simple text editor that uses standard command line conventions
@@ -82,6 +83,7 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
     "ghcr.io/ruanzx/features/apt:latest": {
       "packages": "curl,jq,tree"
     },
+    "ghcr.io/ruanzx/features/bottom:latest": {},
     "ghcr.io/ruanzx/features/btop:latest": {},
     "ghcr.io/ruanzx/features/devcontainers-cli:0.80.0": {},
     "ghcr.io/ruanzx/features/kubectl:1.31.1": {},
@@ -599,6 +601,7 @@ Clean up GitHub Container Registry packages:
 │   ├── aztfy/              # Azure to Terraform import tool
 │   ├── azure-bicep/        # Azure Bicep templates
 │   ├── bmad-method/        # Universal AI Agent Framework
+│   ├── bottom/             # Customizable system monitor
 │   ├── btop/               # System resource monitor
 │   ├── bun/                # JavaScript runtime and toolkit
 │   ├── claude-code-cli/    # Claude AI CLI
@@ -635,6 +638,7 @@ Clean up GitHub Container Registry packages:
 │   ├── apt-packages/
 │   ├── basic-all-features/
 │   ├── bmad-method/
+│   ├── bottom/
 │   ├── btop/
 │   ├── dotnet-dev/
 │   ├── infrastructure-import/

@@ -1,10 +1,10 @@
 Reference:
-- https://github.com/aristocratos/btop
+- https://github.com/ClementTsang/bottom
 
-Create the btop feature by following the instructions and the patterns used in features/edit:
+Create the bottom feature by following the instructions and the patterns used in features/edit:
 
 Tasks:
-- Create the features/btop folder with the required files:
+- Create the features/bottom folder with the required files:
   - install.sh: Installation script.
   - devcontainer-feature.json: Metadata and configuration options.
   - README.md: Documentation for the feature.
@@ -18,7 +18,7 @@ Tasks:
   - Verify installation works as expected.
   - Test with different versions and configurations.
 
-- Create a sample in folder examples/btop to let developer test the created feature, with required files:
+- Create a sample in folder examples/bottom to let developer test the created feature, with required files:
   - .devcontainer/devcontainer.json: metadata and configuration options
   - readme.md: Documentation for how to use the feature
 
