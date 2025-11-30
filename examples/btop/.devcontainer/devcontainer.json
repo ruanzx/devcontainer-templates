@@ -1,0 +1,11 @@
+{
+  "name": "btop++ Example",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/ruanzx/devcontainer-features/btop:1": {
+      "version": "1.4.5"
+    }
+  },
+  "postCreateCommand": "btop --version",
+  "remoteUser": "vscode"
+}

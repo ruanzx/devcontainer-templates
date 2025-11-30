@@ -1,0 +1,26 @@
+{
+  "id": "btop",
+  "version": "1.4.5",
+  "name": "btop++",
+  "description": "A resource monitor that shows usage and stats for processor, memory, disks, network and processes",
+  "documentationURL": "https://github.com/aristocratos/btop",
+  "licenseURL": "https://github.com/aristocratos/btop/blob/main/LICENSE",
+  "keywords": [
+    "btop",
+    "monitor",
+    "system-monitor",
+    "resource-monitor",
+    "top",
+    "htop"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "description": "Version of btop++ to install",
+      "default": "1.4.5"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils"
+  ]
+}

@@ -1,6 +1,6 @@
 # DevContainer Features Collection
 
-A collection of 40+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
+A collection of 41+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
 
 ## 📦 Available Features
 
@@ -9,6 +9,7 @@ This repository provides the following DevContainer Features:
 ### 🛠️ Development Tools
 
 - **[APT Package Manager](features/apt/)** - Install packages using APT package manager on Debian-like systems
+- **[btop++](features/btop/)** - A resource monitor that shows usage and stats for processor, memory, disks, network and processes
 - **[DevContainers CLI](features/devcontainers-cli/)** - Official CLI for working with Development Containers
 - **[Edit](features/edit/)** - A fast, simple text editor that uses standard command line conventions
 - **[Lazygit](features/lazygit/)** - A simple terminal UI for git commands that makes git easy
@@ -78,9 +79,10 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
-	"ghcr.io/ruanzx/features/apt:latest": {
+    "ghcr.io/ruanzx/features/apt:latest": {
       "packages": "curl,jq,tree"
     },
+    "ghcr.io/ruanzx/features/btop:latest": {},
     "ghcr.io/ruanzx/features/devcontainers-cli:0.80.0": {},
     "ghcr.io/ruanzx/features/kubectl:1.31.1": {},
     "ghcr.io/ruanzx/features/helm:3.16.1": {},
@@ -592,17 +594,23 @@ Clean up GitHub Container Registry packages:
 │   ├── act/                # GitHub Actions local runner
 │   ├── apt/                # APT package manager
 │   ├── argo/               # Argo Workflows and CD tools
+│   ├── aspire/             # .NET Aspire development
 │   ├── aws-sam-cli/        # AWS Serverless Application Model CLI
 │   ├── aztfy/              # Azure to Terraform import tool
 │   ├── azure-bicep/        # Azure Bicep templates
+│   ├── bmad-method/        # Universal AI Agent Framework
+│   ├── btop/               # System resource monitor
 │   ├── bun/                # JavaScript runtime and toolkit
+│   ├── claude-code-cli/    # Claude AI CLI
 │   ├── cosign/             # Container signing tool
 │   ├── devcontainers-cli/  # DevContainers CLI
 │   ├── dotnet-tools/       # .NET development tools
 │   ├── edit/               # Fast text editor
+│   ├── gemini-cli/         # Google Gemini AI CLI
 │   ├── gitleaks/           # Git secrets scanner
 │   ├── gitsign/            # Keyless Git signing
 │   ├── google-cloud-cli/   # Google Cloud SDK
+│   ├── headlamp/           # Kubernetes web UI
 │   ├── helm/               # Kubernetes package manager
 │   ├── k6/                 # Load testing tool
 │   ├── k9s/                # Kubernetes cluster manager
@@ -613,7 +621,11 @@ Clean up GitHub Container Registry packages:
 │   ├── markitdown/         # File to Markdown converter
 │   ├── mirrord/            # Traffic mirroring tool
 │   ├── ngrok/              # Tunneling service
+│   ├── npm/                # npm package manager
+│   ├── openspec/           # Spec-driven development
+│   ├── pip/                # Python package installer
 │   ├── skaffold/           # Kubernetes development
+│   ├── spec-kit/           # Spec-Driven Development toolkit
 │   ├── terraform-docs/     # Terraform documentation
 │   ├── terraformer/        # Infrastructure to Terraform
 │   ├── tfsec/              # Terraform security scanner
@@ -622,15 +634,19 @@ Clean up GitHub Container Registry packages:
 ├── examples/               # Example configurations
 │   ├── apt-packages/
 │   ├── basic-all-features/
+│   ├── bmad-method/
+│   ├── btop/
 │   ├── dotnet-dev/
 │   ├── infrastructure-import/
 │   ├── kubernetes-dev/
 │   ├── kubernetes-outside-docker/
 │   ├── lazygit-dev/
+│   ├── markitdown/
 │   ├── performance-testing/
 │   ├── security-scanning/
 │   ├── security-tools/
 │   ├── serverless-development/
+│   ├── spec-kit/
 │   ├── terraform-dev/
 │   └── web-development-tunneling/
 └── scripts/                # Build and deployment scripts
