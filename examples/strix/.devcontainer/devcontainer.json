@@ -1,0 +1,19 @@
+{
+  "name": "Strix Security Testing Example",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12"
+    },
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/ruanzx/devcontainer-features/strix:1": {
+      "version": "0.4.0"
+    }
+  },
+  "postCreateCommand": "strix --help",
+  "remoteEnv": {
+    "STRIX_LLM": "openai/gpt-4",
+    "LLM_API_KEY": "${localEnv:LLM_API_KEY}"
+  },
+  "remoteUser": "vscode"
+}

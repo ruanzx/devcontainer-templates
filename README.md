@@ -1,6 +1,6 @@
 # DevContainer Features Collection
 
-A collection of 42+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
+A collection of 43+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
 
 ## 📦 Available Features
 
@@ -52,6 +52,7 @@ This repository provides the following DevContainer Features:
 - **[Gitleaks](features/gitleaks/)** - Detect and prevent secrets in your git repos
 - **[Cosign](features/cosign/)** - Container signing and verification tool
 - **[GitSign](features/gitsign/)** - Keyless Git signing with Sigstore
+- **[Strix](features/strix/)** - Open-source AI agents for penetration testing and security assessments
 
 ### ☁️ Cloud & Infrastructure
 
@@ -107,6 +108,7 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
     "ghcr.io/ruanzx/features/gitsign:latest": {},
     "ghcr.io/ruanzx/features/trivy:latest": {},
     "ghcr.io/ruanzx/features/tfsec:latest": {},
+    "ghcr.io/ruanzx/features/strix:latest": {},
     "ghcr.io/ruanzx/features/aws-sam-cli:latest": {},
     "ghcr.io/ruanzx/features/google-cloud-cli:latest": {},
     "ghcr.io/ruanzx/features/azure-bicep:latest": {},
@@ -629,6 +631,7 @@ Clean up GitHub Container Registry packages:
 │   ├── pip/                # Python package installer
 │   ├── skaffold/           # Kubernetes development
 │   ├── spec-kit/           # Spec-Driven Development toolkit
+│   ├── strix/              # AI penetration testing agents
 │   ├── terraform-docs/     # Terraform documentation
 │   ├── terraformer/        # Infrastructure to Terraform
 │   ├── tfsec/              # Terraform security scanner
@@ -651,6 +654,7 @@ Clean up GitHub Container Registry packages:
 │   ├── security-tools/
 │   ├── serverless-development/
 │   ├── spec-kit/
+│   ├── strix/
 │   ├── terraform-dev/
 │   └── web-development-tunneling/
 └── scripts/                # Build and deployment scripts

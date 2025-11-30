@@ -1,0 +1,28 @@
+{
+  "id": "strix",
+  "version": "0.4.0",
+  "name": "Strix",
+  "description": "Open-source AI agents for penetration testing and security assessments",
+  "documentationURL": "https://github.com/usestrix/strix",
+  "licenseURL": "https://github.com/usestrix/strix/blob/main/LICENSE",
+  "keywords": [
+    "strix",
+    "security",
+    "penetration-testing",
+    "vulnerability-scanner",
+    "ai-agents",
+    "cybersecurity",
+    "pentest"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "description": "Version of Strix to install",
+      "default": "0.4.0"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/python:1",
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1"
+  ]
+}
