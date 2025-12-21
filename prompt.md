@@ -29,9 +29,9 @@ Tasks:
 
 ---
 
-Run command to test the feature apt and fix all issues/errors during tests. Ensure feature will work properly and all tests must be passed.
+Run command to test the feature aspire and fix all issues/errors during tests. Ensure feature will work properly and all tests must be passed.
 
 Command:
 ```
-./devcontainer-features.sh test apt
+./devcontainer-features.sh test aspire
 ```
