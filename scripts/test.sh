@@ -32,8 +32,8 @@ test_feature() {
     
     log_info "Testing feature: $feature_name"
     
-    # Create a temporary test directory
-    local temp_dir=$(mktemp -d)
+    # Create a temporary test directory under the workspace so Docker can access it
+    local temp_dir=$(mktemp -d "$ROOT_DIR/test-temp.XXXXXX")
     local test_container_dir="$temp_dir/test-container"
     
     mkdir -p "$test_container_dir/.devcontainer"
@@ -53,34 +53,39 @@ EOF
     # Copy the built feature to the test directory
     cp -r "$BUILD_DIR/$feature_name" "$test_container_dir/$feature_name"
     
+    # Function to translate container path to host path for dev containers
+    translate_to_host_path() {
+        local container_path="$1"
+        
+        # Check if running in dev container
+        if [ -n "${REMOTE_CONTAINERS:-}" ] && [ "${REMOTE_CONTAINERS}" = "true" ]; then
+            local container_id=$(hostname)
+            if [ -n "$container_id" ]; then
+                # Try to get the bind mount for the workspace
+                local workspace_mount=$(docker inspect --format '{{range .Mounts}}{{if eq .Type "bind"}}{{.Source}}:{{.Destination}}{{printf "\n"}}{{end}}{{end}}' "$container_id" 2>/dev/null | grep "/workspaces/" | head -n1 || echo "")
+                if [ -n "$workspace_mount" ]; then
+                    local host_path=$(echo "$workspace_mount" | cut -d: -f1)
+                    local container_workspace=$(echo "$workspace_mount" | cut -d: -f2)
+                    # Replace container workspace path with host path
+                    echo "${container_path/#$container_workspace/$host_path}"
+                    return
+                fi
+            fi
+        fi
+        
+        # Not in dev container or couldn't determine mapping, return as-is
+        echo "$container_path"
+    }
+    
+    # Get the host path for the feature directory
+    local host_feature_path=$(translate_to_host_path "$test_container_dir/$feature_name")
+    
     # Test the feature installation by running the install script
     log_info "Running install script for $feature_name"
     
-    # Create a test environment
-    local test_script="$temp_dir/test.sh"
-    cat > "$test_script" << EOF
-#!/bin/bash
-set -e
-
-# Simulate feature installation environment
-export _CONTAINER_USER="vscode"
-export _REMOTE_USER="vscode"
-
-# Source and run the install script
-cd "$test_container_dir/$feature_name"
-chmod +x install.sh
-
-# Run the install script in a way that simulates the devcontainer environment
-bash install.sh
-
-echo "Feature $feature_name installation test completed"
-EOF
-    
-    chmod +x "$test_script"
-    
     # Run the test in a container to simulate the devcontainer environment
     if docker run --rm \
-        -v "$test_container_dir/$feature_name:/tmp/feature" \
+        -v "$host_feature_path:/tmp/feature" \
         -w /tmp/feature \
         mcr.microsoft.com/devcontainers/base:ubuntu \
         bash -c "

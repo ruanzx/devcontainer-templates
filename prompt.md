@@ -27,3 +27,11 @@ Tasks:
   - Add the new feature to the list of available features.
   - Ensure the README reflects the current state of the repository.
 
+---
+
+Run command to test the feature apt and fix all issues/errors during tests. Ensure feature will work properly and all tests must be passed.
+
+Command:
+```
+./devcontainer-features.sh test apt
+```
