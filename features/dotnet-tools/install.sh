@@ -19,7 +19,7 @@ else
 fi
 
 # Parse options
-TOOLS="${TOOLS:-"dotnet-ef@latest"}"
+TOOLS="${TOOLS:-"dotnet-format@latest"}"
 PRERELEASE="${PRERELEASE:-"false"}"
 
 log_info "Installing .NET Global Tools"
@@ -72,23 +72,19 @@ install_dotnet_tool() {
     if eval "$install_cmd"; then
         log_success "Successfully installed: $tool_name"
         
-        # Verify installation
+        # Verify installation with generic approach
         if command_exists "$tool_name"; then
-            local installed_version
-            case "$tool_name" in
-                "dotnet-ef")
-                    installed_version=$(dotnet ef --version 2>/dev/null | head -n1 || echo "unknown")
-                    ;;
-                "dotnet-format")
-                    installed_version=$(dotnet format --version 2>/dev/null || echo "unknown")
-                    ;;
-                "dotnet-outdated-tool")
-                    installed_version=$(dotnet outdated --version 2>/dev/null || echo "unknown")
-                    ;;
-                *)
-                    installed_version="installed"
-                    ;;
-            esac
+            local installed_version="installed"
+            
+            # Try common version commands for .NET tools
+            if command -v "$tool_name" --version >/dev/null 2>&1; then
+                installed_version=$("$tool_name" --version 2>/dev/null | head -n1 || echo "unknown")
+            elif command -v "$tool_name" -v >/dev/null 2>&1; then
+                installed_version=$("$tool_name" -v 2>/dev/null | head -n1 || echo "unknown")
+            elif command -v "$tool_name" version >/dev/null 2>&1; then
+                installed_version=$("$tool_name" version 2>/dev/null | head -n1 || echo "unknown")
+            fi
+            
             log_info "Verified installation: $tool_name ($installed_version)"
         fi
     else

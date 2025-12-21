@@ -16,8 +16,8 @@
   "options": {
     "tools": {
       "type": "string",
-      "default": "dotnet-ef@latest",
-      "description": "Comma-separated list of .NET global tools to install. Format: 'tool@version' or 'tool@latest'. Examples: 'dotnet-ef@latest,dotnet-format@5.1.250250,dotnet-outdated-tool@latest'"
+      "default": "dotnet-format@latest",
+      "description": "Comma-separated list of .NET global tools to install. Format: 'tool@version' or 'tool@latest'. Examples: 'dotnet-format@latest,dotnet-ef@8.0.0,dotnet-outdated-tool@latest'"
     },
     "prerelease": {
       "type": "boolean",

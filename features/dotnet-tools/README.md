@@ -14,10 +14,17 @@ Installs custom .NET global tools from the official .NET tool ecosystem.
 
 | Options Id | Description | Type | Default Value |
 |-----|-----|-----|-----|
-| tools | Comma-separated list of .NET global tools to install. Format: 'tool@version' or 'tool@latest' | string | dotnet-ef@latest |
+| tools | Comma-separated list of .NET global tools to install. Format: 'tool@version' or 'tool@latest' | string | dotnet-format@latest |
 | prerelease | Include prerelease versions when installing tools | boolean | false |
 
 ## Supported Tools Examples
+
+### Code Formatting
+```json
+"ghcr.io/ruanzx/features/dotnet-tools:latest": {
+    "tools": "dotnet-format@latest"
+}
+```
 
 ### Entity Framework
 ```json
@@ -29,7 +36,7 @@ Installs custom .NET global tools from the official .NET tool ecosystem.
 ### Multiple Tools
 ```json
 "ghcr.io/ruanzx/features/dotnet-tools:latest": {
-    "tools": "dotnet-ef@latest,dotnet-format@latest,dotnet-outdated-tool@latest"
+    "tools": "dotnet-format@latest,dotnet-ef@latest,dotnet-outdated-tool@latest"
 }
 ```
 
