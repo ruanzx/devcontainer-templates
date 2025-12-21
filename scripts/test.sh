@@ -25,6 +25,62 @@ BUILD_DIR="$ROOT_DIR/build"
 
 log_info "Testing DevContainer Features"
 
+# Function to check if a feature requires .NET SDK
+feature_requires_dotnet() {
+    local feature_name="$1"
+    local feature_path="$BUILD_DIR/$feature_name"
+    
+    # Check if this feature directly depends on dotnet
+    if [[ -f "$feature_path/devcontainer-feature.json" ]]; then
+        local installs_after=$(jq -r '.installsAfter[]?' "$feature_path/devcontainer-feature.json" 2>/dev/null || echo "")
+        if [[ -n "$installs_after" ]]; then
+            while IFS= read -r dep; do
+                if [[ -n "$dep" && "$dep" == *"dotnet"* ]]; then
+                    return 0
+                fi
+            done <<< "$installs_after"
+        fi
+    fi
+    
+    # Check if any dependency features require dotnet (recursive)
+    if [[ -f "$feature_path/devcontainer-feature.json" ]]; then
+        local installs_after=$(jq -r '.installsAfter[]?' "$feature_path/devcontainer-feature.json" 2>/dev/null || echo "")
+        if [[ -n "$installs_after" ]]; then
+            while IFS= read -r dep; do
+                if [[ -n "$dep" ]]; then
+                    # Extract feature name from the full reference
+                    local dep_name=$(echo "$dep" | sed 's|.*/||')
+                    # Check if dependency feature exists in our build directory
+                    if [[ -d "$BUILD_DIR/$dep_name" ]]; then
+                        if feature_requires_dotnet "$dep_name"; then
+                            return 0
+                        fi
+                    elif [[ "$dep" == *"dotnet"* ]]; then
+                        # External dotnet dependency
+                        return 0
+                    fi
+                fi
+            done <<< "$installs_after"
+        fi
+    fi
+    
+    return 1
+}
+
+# Function to install .NET SDK in test container
+install_dotnet_sdk() {
+    cat << 'EOF'
+# Install .NET SDK
+echo 'Installing .NET SDK...'
+wget https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+dpkg -i packages-microsoft-prod.deb
+rm packages-microsoft-prod.deb
+apt-get update
+apt-get install -y dotnet-sdk-8.0
+echo 'Installed .NET SDK'
+EOF
+}
+
 # Function to test a single feature
 test_feature() {
     local feature_path="$1"
@@ -39,12 +95,28 @@ test_feature() {
     mkdir -p "$test_container_dir/.devcontainer"
     
     # Create a minimal devcontainer.json that uses the feature
+    # First, read the feature's devcontainer-feature.json to get dependencies
+    local feature_json="$feature_path/devcontainer-feature.json"
+    local features_block="\"./$feature_name\": {}"
+    
+    if [[ -f "$feature_json" ]]; then
+        # Extract installsAfter dependencies
+        local installs_after=$(jq -r '.installsAfter[]?' "$feature_json" 2>/dev/null || echo "")
+        if [[ -n "$installs_after" ]]; then
+            while IFS= read -r dep; do
+                if [[ -n "$dep" ]]; then
+                    features_block="$features_block,\n        \"$dep\": {}"
+                fi
+            done <<< "$installs_after"
+        fi
+    fi
+    
     cat > "$test_container_dir/.devcontainer/devcontainer.json" << EOF
 {
     "name": "Test $feature_name",
     "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
     "features": {
-        "./$feature_name": {}
+        $features_block
     },
     "postCreateCommand": "echo 'Testing $feature_name feature'"
 }
@@ -52,6 +124,26 @@ EOF
     
     # Copy the built feature to the test directory
     cp -r "$BUILD_DIR/$feature_name" "$test_container_dir/$feature_name"
+    
+    # Also copy dependency features if they exist
+    if [[ -f "$feature_json" ]]; then
+        local installs_after=$(jq -r '.installsAfter[]?' "$feature_json" 2>/dev/null || echo "")
+        if [[ -n "$installs_after" ]]; then
+            while IFS= read -r dep; do
+                if [[ -n "$dep" ]]; then
+                    # Extract feature name from the full reference
+                    # e.g., "ghcr.io/devcontainers/features/dotnet" -> "dotnet"
+                    local dep_name=$(echo "$dep" | sed 's|.*/||')
+                    if [[ -d "$BUILD_DIR/$dep_name" ]]; then
+                        log_info "Including dependency feature: $dep_name"
+                        cp -r "$BUILD_DIR/$dep_name" "$test_container_dir/$dep_name"
+                    else
+                        log_warning "Dependency feature not found in build directory: $dep_name"
+                    fi
+                fi
+            done <<< "$installs_after"
+        fi
+    fi
     
     # Function to translate container path to host path for dev containers
     translate_to_host_path() {
@@ -83,6 +175,12 @@ EOF
     # Test the feature installation by running the install script
     log_info "Running install script for $feature_name"
     
+    # Check if this feature requires .NET SDK
+    local dotnet_install_script=""
+    if feature_requires_dotnet "$feature_name"; then
+        dotnet_install_script=$(install_dotnet_sdk)
+    fi
+    
     # Run the test in a container to simulate the devcontainer environment
     if docker run --rm \
         -v "$host_feature_path:/tmp/feature" \
@@ -93,6 +191,9 @@ EOF
             # Install common dependencies
             apt-get update
             apt-get install -y curl wget jq unzip tar gzip zstd
+            
+            # Install .NET SDK if required
+            $dotnet_install_script
             
             # Set up environment
             export _CONTAINER_USER=vscode
