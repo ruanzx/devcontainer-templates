@@ -12,7 +12,9 @@ ROOT_DIR="$(dirname "$SCRIPT_DIR")"
 # Load .env file if it exists
 if [[ -f "$ROOT_DIR/.env" ]]; then
     source "$ROOT_DIR/.env"
-    echo "Loaded environment variables from .env"
+    if [[ "$QUIET_MODE" == "false" ]]; then
+        echo "Loaded environment variables from .env"
+    fi
 fi
 
 # Source common utilities
@@ -22,8 +24,34 @@ source "$ROOT_DIR/common/utils.sh"
 FEATURES_DIR="$ROOT_DIR/features"
 TEST_DIR="$ROOT_DIR/test"
 BUILD_DIR="$ROOT_DIR/build"
+QUIET_MODE="${QUIET_MODE:-false}"
 
-log_info "Testing DevContainer Features"
+# Logging functions that respect quiet mode
+log_info_quiet() {
+    if [[ "$QUIET_MODE" == "false" ]]; then
+        log_info "$1"
+    fi
+}
+
+log_success_quiet() {
+    if [[ "$QUIET_MODE" == "false" ]]; then
+        log_success "$1"
+    fi
+}
+
+log_warning_quiet() {
+    if [[ "$QUIET_MODE" == "false" ]]; then
+        log_warning "$1"
+    fi
+}
+
+log_error_quiet() {
+    if [[ "$QUIET_MODE" == "false" ]]; then
+        log_error "$1"
+    fi
+}
+
+log_info_quiet "Testing DevContainer Features"
 
 # Function to check if a feature requires .NET SDK
 feature_requires_dotnet() {
@@ -86,7 +114,7 @@ test_feature() {
     local feature_path="$1"
     local feature_name=$(basename "$feature_path")
     
-    log_info "Testing feature: $feature_name"
+    log_info_quiet "Testing feature: $feature_name"
     
     # Create a temporary test directory under the workspace so Docker can access it
     local temp_dir=$(mktemp -d "$ROOT_DIR/test-temp.XXXXXX")
@@ -135,10 +163,10 @@ EOF
                     # e.g., "ghcr.io/devcontainers/features/dotnet" -> "dotnet"
                     local dep_name=$(echo "$dep" | sed 's|.*/||')
                     if [[ -d "$BUILD_DIR/$dep_name" ]]; then
-                        log_info "Including dependency feature: $dep_name"
+                        log_info_quiet "Including dependency feature: $dep_name"
                         cp -r "$BUILD_DIR/$dep_name" "$test_container_dir/$dep_name"
                     else
-                        log_warning "Dependency feature not found in build directory: $dep_name"
+                        log_warning_quiet "Dependency feature not found in build directory: $dep_name"
                     fi
                 fi
             done <<< "$installs_after"
@@ -173,7 +201,7 @@ EOF
     local host_feature_path=$(translate_to_host_path "$test_container_dir/$feature_name")
     
     # Test the feature installation by running the install script
-    log_info "Running install script for $feature_name"
+    log_info_quiet "Running install script for $feature_name"
     
     # Check if this feature requires .NET SDK
     local dotnet_install_script=""
@@ -181,16 +209,20 @@ EOF
         dotnet_install_script=$(install_dotnet_sdk)
     fi
     
+    # Capture output for error reporting in quiet mode
+    local test_output=""
+    local test_exit_code=0
+    
     # Run the test in a container to simulate the devcontainer environment
-    if docker run --rm \
+    if test_output=$(docker run --rm \
         -v "$host_feature_path:/tmp/feature" \
         -w /tmp/feature \
         mcr.microsoft.com/devcontainers/base:ubuntu \
         bash -c "
             set -e
             # Install common dependencies
-            apt-get update
-            apt-get install -y curl wget jq unzip tar gzip zstd
+            apt-get update >/dev/null 2>&1
+            apt-get install -y curl wget jq unzip tar gzip zstd >/dev/null 2>&1
             
             # Install .NET SDK if required
             $dotnet_install_script
@@ -204,12 +236,24 @@ EOF
             bash install.sh
             
             echo 'Feature $feature_name test completed successfully'
-        "; then
-        log_success "Feature $feature_name test passed"
+        " 2>&1); then
+        if [[ "$QUIET_MODE" == "true" ]]; then
+            echo "✓ $feature_name PASSED"
+        else
+            log_success_quiet "Feature $feature_name test passed"
+        fi
         cleanup_temp "$temp_dir"
         return 0
     else
-        log_error "Feature $feature_name test failed"
+        test_exit_code=$?
+        if [[ "$QUIET_MODE" == "true" ]]; then
+            echo "✗ $feature_name FAILED"
+            # Show last few lines of error output
+            echo "$test_output" | tail -10 | sed 's/^/  /'
+        else
+            log_error "Feature $feature_name test failed"
+            echo "$test_output" | tail -20
+        fi
         cleanup_temp "$temp_dir"
         return 1
     fi
@@ -217,7 +261,7 @@ EOF
 
 # Function to run syntax checks
 check_syntax() {
-    log_info "Running syntax checks"
+    log_info_quiet "Running syntax checks"
     
     local failed_checks=()
     
@@ -238,10 +282,10 @@ check_syntax() {
     done
     
     if [[ ${#failed_checks[@]} -eq 0 ]]; then
-        log_success "All syntax checks passed"
+        log_success_quiet "All syntax checks passed"
         return 0
     else
-        log_error "Syntax checks failed for: ${failed_checks[*]}"
+        log_error_quiet "Syntax checks failed for: ${failed_checks[*]}"
         return 1
     fi
 }
@@ -252,7 +296,7 @@ main() {
     shift || true
     local specific_features=("$@")
     
-    log_info "Starting test process: $test_type"
+    log_info_quiet "Starting test process: $test_type"
     
     case "$test_type" in
         "syntax")
@@ -279,7 +323,7 @@ main() {
             local features=()
             if [[ ${#specific_features[@]} -gt 0 ]]; then
                 # Test only specified features
-                log_info "Testing specific features: ${specific_features[*]}"
+                log_info_quiet "Testing specific features: ${specific_features[*]}"
                 for feature_name in "${specific_features[@]}"; do
                     local feature_path="$BUILD_DIR/$feature_name"
                     if [[ -d "$feature_path" ]]; then
@@ -304,32 +348,33 @@ main() {
                 exit 1
             fi
             
-            log_info "Found ${#features[@]} feature(s) to test"
+            log_info_quiet "Found ${#features[@]} feature(s) to test"
             
             # Test each feature
             local failed_features=()
             for feature_path in "${features[@]}"; do
                 local feature_name=$(basename "$feature_path")
                 
-                if test_feature "$feature_path"; then
-                    log_success "Feature $feature_name test passed"
-                else
-                    log_error "Feature $feature_name test failed"
+                if ! test_feature "$feature_path"; then
                     failed_features+=("$feature_name")
                 fi
             done
             
             # Report results
             if [[ ${#failed_features[@]} -eq 0 ]]; then
-                log_success "All feature tests passed!"
+                if [[ "$QUIET_MODE" == "false" ]]; then
+                    log_success "All feature tests passed!"
+                fi
             else
-                log_error "Failed tests for ${#failed_features[@]} features: ${failed_features[*]}"
+                if [[ "$QUIET_MODE" == "false" ]]; then
+                    log_error "Failed tests for ${#failed_features[@]} features: ${failed_features[*]}"
+                fi
                 exit 1
             fi
             ;;
         *)
             # Assume it's a feature name
-            log_info "Testing specific feature: $test_type"
+            log_info_quiet "Testing specific feature: $test_type"
             
             # Run syntax checks first
             if ! check_syntax; then
@@ -355,7 +400,7 @@ main() {
             fi
             
             if test_feature "$feature_path"; then
-                log_success "Feature $test_type test passed"
+                log_success_quiet "Feature $test_type test passed"
             else
                 log_error "Feature $test_type test failed"
                 exit 1
@@ -366,7 +411,7 @@ main() {
 
 # Show usage information
 usage() {
-    echo "Usage: $0 [TEST_TYPE] [FEATURE_NAMES...]"
+    echo "Usage: $0 [OPTIONS] [TEST_TYPE] [FEATURE_NAMES...]"
     echo ""
     echo "Test DevContainer Features"
     echo ""
@@ -376,15 +421,17 @@ usage() {
     echo "  all                 Run all tests (default)"
     echo "  <feature-name>      Test a specific feature"
     echo ""
+    echo "Options:"
+    echo "  -q, --quiet         Quiet mode: only show PASSED/FAILED status"
+    echo "  -h, --help          Show this help message"
+    echo ""
     echo "Examples:"
-    echo "  $0                              # Run all tests"
+    echo "  $0                              # Run all tests (verbose)"
+    echo "  $0 -q                           # Run all tests (quiet mode)"
+    echo "  $0 --quiet features             # Run feature tests in quiet mode"
     echo "  $0 syntax                       # Run syntax checks only"
-    echo "  $0 features                     # Run all feature tests"
     echo "  $0 features kubectl helm        # Test only kubectl and helm"
     echo "  $0 markitdown-in-docker         # Test only markitdown-in-docker"
-    echo ""
-    echo "Options:"
-    echo "  -h, --help          Show this help message"
     echo ""
 }
 
@@ -393,25 +440,32 @@ if [[ $# -eq 0 ]]; then
     # Default to running all tests
     main "all"
 else
-    case $1 in
-        -h|--help)
-            usage
-            exit 0
-            ;;
-        syntax|features|all)
-            main "$@"
-            exit $?
-            ;;
-        *)
-            if [[ $1 =~ ^- ]]; then
-                log_error "Unknown option: $1"
+    # Parse options
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            -h|--help)
                 usage
-                exit 1
-            else
-                # Treat as feature name
+                exit 0
+                ;;
+            -q|--quiet)
+                QUIET_MODE="true"
+                shift
+                ;;
+            syntax|features|all)
                 main "$@"
                 exit $?
-            fi
-            ;;
-    esac
+                ;;
+            *)
+                if [[ $1 =~ ^- ]]; then
+                    log_error "Unknown option: $1"
+                    usage
+                    exit 1
+                else
+                    # Treat as feature name
+                    main "$@"
+                    exit $?
+                fi
+                ;;
+        esac
+    done
 fi
