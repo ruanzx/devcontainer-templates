@@ -1,0 +1,29 @@
+{
+  "id": "pandoc-in-docker",
+  "version": "1.0.0",
+  "name": "Pandoc Document Converter",
+  "description": "Installs a wrapper for Pandoc that runs in a Docker container",
+  "documentationURL": "https://github.com/ruanzx/devcontainer-features/tree/main/features/pandoc",
+  "keywords": [
+    "pandoc",
+    "document",
+    "converter",
+    "markdown",
+    "docker"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Version of the Pandoc Docker image to use"
+    },
+    "imageName": {
+      "type": "string",
+      "default": "pandoc/extra",
+      "description": "Docker image name for Pandoc"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1"
+  ]
+}

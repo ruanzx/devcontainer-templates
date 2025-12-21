@@ -1,16 +1,17 @@
 Reference:
-- https://github.com/usestrix/strix
+- https://github.com/jgm/pandoc
 
-Create the strix feature by following the instructions and the patterns used in features/edit:
+Create the pandoc feature by following the instructions and the patterns used in features/mdc:
 
 Tasks:
-- Create the features/strix folder with the required files:
+- Create the features/pandoc folder with the required files:
   - install.sh: Installation script.
   - devcontainer-feature.json: Metadata and configuration options.
   - README.md: Documentation for the feature.
 
-- Match the scripting pattern used in features/edit:
+- Match the scripting pattern used in features/mdc:
   - Use utils.sh for shared utilities.
+  - Use docker image pandoc/extra for pandoc docker base feature
   - Implement proper logging and error handling.
   - Validate system requirements (e.g., OS, architecture).
 
@@ -18,7 +19,7 @@ Tasks:
   - Verify installation works as expected.
   - Test with different versions and configurations.
 
-- Create a sample in folder examples/strix to let developer test the created feature, with required files:
+- Create a sample in folder examples/pandoc to let developer test the created feature, with required files:
   - .devcontainer/devcontainer.json: metadata and configuration options
   - readme.md: Documentation for how to use the feature
 

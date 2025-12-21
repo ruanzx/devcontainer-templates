@@ -21,6 +21,7 @@ This repository provides the following DevContainer Features:
 - **[Bun](features/bun/)** - Fast all-in-one JavaScript runtime and toolkit
 - **[spec-kit](features/spec-kit/)** - Spec-Driven Development toolkit for building high-quality software with executable specifications
 - **[OpenSpec](features/openspec/)** - Spec-driven development for AI coding assistants with structured change proposals
+- **[Pandoc](features/pandoc/)** - Universal document converter for converting between various markup and word processing formats
 - **[pip](features/pip/)** - Python package installer and dependency management tool
 
 ### 🤖 AI & Development Assistance
@@ -125,6 +126,7 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
     "ghcr.io/ruanzx/features/claude-code-cli:latest": {},
     "ghcr.io/ruanzx/features/gemini-cli:latest": {},
     "ghcr.io/ruanzx/features/headlamp:latest": {},
+    "ghcr.io/ruanzx/features/pandoc:latest": {},
     "ghcr.io/ruanzx/features/pip:latest": {},
     "ghcr.io/ruanzx/features/aspire:latest": {}
   }

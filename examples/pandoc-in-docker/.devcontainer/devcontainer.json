@@ -1,0 +1,16 @@
+{
+  "name": "Pandoc Document Converter",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/ruanzx/devcontainer-features/pandoc-in-docker:1.0.0": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-json",
+        "ms-vscode.vscode-markdown"
+      ]
+    }
+  }
+}
