@@ -14,10 +14,10 @@ Installs a command-line wrapper for [Pandoc](https://github.com/jgm/pandoc), a u
 
 ## Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `version` | string | `latest` | Version tag of the Pandoc Docker image to use |
-| `imageName` | string | `pandoc/extra` | Docker image name for Pandoc |
+| Option      | Type   | Default        | Description                                   |
+| ----------- | ------ | -------------- | --------------------------------------------- |
+| `version`   | string | `latest`       | Version tag of the Pandoc Docker image to use |
+| `imageName` | string | `pandoc/extra` | Docker image name for Pandoc                  |
 
 ## Examples
 
@@ -186,3 +186,7 @@ docker ps
 ## License
 
 This feature installs a wrapper for Pandoc. Check the [Pandoc project](https://github.com/jgm/pandoc) for its licensing information.
+
+## Try
+
+- https://pandoc.org/try/
