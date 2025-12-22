@@ -95,6 +95,137 @@ feature_requires_dotnet() {
     return 1
 }
 
+# Function to check if a feature requires Node.js
+feature_requires_nodejs() {
+    local feature_name="$1"
+    local feature_path="$BUILD_DIR/$feature_name"
+    
+    # Check if this feature directly depends on nodejs
+    if [[ -f "$feature_path/devcontainer-feature.json" ]]; then
+        local installs_after=$(jq -r '.installsAfter[]?' "$feature_path/devcontainer-feature.json" 2>/dev/null || echo "")
+        if [[ -n "$installs_after" ]]; then
+            while IFS= read -r dep; do
+                if [[ -n "$dep" && ("$dep" == *"node"* || "$dep" == *"nodejs"*) ]]; then
+                    return 0
+                fi
+            done <<< "$installs_after"
+        fi
+    fi
+    
+    # Check if any dependency features require nodejs (recursive)
+    if [[ -f "$feature_path/devcontainer-feature.json" ]]; then
+        local installs_after=$(jq -r '.installsAfter[]?' "$feature_path/devcontainer-feature.json" 2>/dev/null || echo "")
+        if [[ -n "$installs_after" ]]; then
+            while IFS= read -r dep; do
+                if [[ -n "$dep" ]]; then
+                    # Extract feature name from the full reference
+                    local dep_name=$(echo "$dep" | sed 's|.*/||')
+                    # Check if dependency feature exists in our build directory
+                    if [[ -d "$BUILD_DIR/$dep_name" ]]; then
+                        if feature_requires_nodejs "$dep_name"; then
+                            return 0
+                        fi
+                    elif [[ "$dep" == *"node"* || "$dep" == *"nodejs"* ]]; then
+                        # External nodejs dependency
+                        return 0
+                    fi
+                fi
+            done <<< "$installs_after"
+        fi
+    fi
+    
+    return 1
+}
+
+# Function to check if a feature requires Python
+feature_requires_python() {
+    local feature_name="$1"
+    local feature_path="$BUILD_DIR/$feature_name"
+    
+    # Check if this feature directly depends on python
+    if [[ -f "$feature_path/devcontainer-feature.json" ]]; then
+        local installs_after=$(jq -r '.installsAfter[]?' "$feature_path/devcontainer-feature.json" 2>/dev/null || echo "")
+        if [[ -n "$installs_after" ]]; then
+            while IFS= read -r dep; do
+                if [[ -n "$dep" && "$dep" == *"python"* ]]; then
+                    return 0
+                fi
+            done <<< "$installs_after"
+        fi
+    fi
+    
+    # Check if any dependency features require python (recursive)
+    if [[ -f "$feature_path/devcontainer-feature.json" ]]; then
+        local installs_after=$(jq -r '.installsAfter[]?' "$feature_path/devcontainer-feature.json" 2>/dev/null || echo "")
+        if [[ -n "$installs_after" ]]; then
+            while IFS= read -r dep; do
+                if [[ -n "$dep" ]]; then
+                    # Extract feature name from the full reference
+                    local dep_name=$(echo "$dep" | sed 's|.*/||')
+                    # Check if dependency feature exists in our build directory
+                    if [[ -d "$BUILD_DIR/$dep_name" ]]; then
+                        if feature_requires_python "$dep_name"; then
+                            return 0
+                        fi
+                    elif [[ "$dep" == *"python"* ]]; then
+                        # External python dependency
+                        return 0
+                    fi
+                fi
+            done <<< "$installs_after"
+        fi
+    fi
+    
+    return 1
+}
+
+# Function to check if a feature requires Docker
+feature_requires_docker() {
+    local feature_name="$1"
+    local feature_path="$BUILD_DIR/$feature_name"
+    
+    # Check if this feature directly depends on docker
+    if [[ -f "$feature_path/devcontainer-feature.json" ]]; then
+        local installs_after=$(jq -r '.installsAfter[]?' "$feature_path/devcontainer-feature.json" 2>/dev/null || echo "")
+        if [[ -n "$installs_after" ]]; then
+            while IFS= read -r dep; do
+                if [[ -n "$dep" && "$dep" == *"docker"* ]]; then
+                    return 0
+                fi
+            done <<< "$installs_after"
+        fi
+    fi
+    
+    # Check if any dependency features require docker (recursive)
+    if [[ -f "$feature_path/devcontainer-feature.json" ]]; then
+        local installs_after=$(jq -r '.installsAfter[]?' "$feature_path/devcontainer-feature.json" 2>/dev/null || echo "")
+        if [[ -n "$installs_after" ]]; then
+            while IFS= read -r dep; do
+                if [[ -n "$dep" ]]; then
+                    # Extract feature name from the full reference
+                    local dep_name=$(echo "$dep" | sed 's|.*/||')
+                    # Check if dependency feature exists in our build directory
+                    if [[ -d "$BUILD_DIR/$dep_name" ]]; then
+                        if feature_requires_docker "$dep_name"; then
+                            return 0
+                        fi
+                    elif [[ "$dep" == *"docker"* ]]; then
+                        # External docker dependency
+                        return 0
+                    fi
+                fi
+            done <<< "$installs_after"
+        fi
+    fi
+    
+    # Also check if the feature name contains "docker" or "in-docker"
+    if [[ "$feature_name" == *"docker"* || "$feature_name" == *"in-docker"* ]]; then
+        return 0
+    fi
+    
+    return 1
+}
+
 # Function to install .NET SDK in test container
 install_dotnet_sdk() {
     cat << 'EOF'
@@ -106,6 +237,40 @@ rm packages-microsoft-prod.deb
 apt-get update
 apt-get install -y dotnet-sdk-8.0
 echo 'Installed .NET SDK'
+EOF
+}
+
+# Function to install Node.js in test container
+install_nodejs() {
+    cat << 'EOF'
+# Install Node.js
+echo 'Installing Node.js...'
+curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+apt-get install -y nodejs
+echo 'Installed Node.js'
+EOF
+}
+
+# Function to install Python in test container
+install_python() {
+    cat << 'EOF'
+# Install Python
+echo 'Installing Python...'
+apt-get install -y python3 python3-pip python3-venv
+echo 'Installed Python'
+EOF
+}
+
+# Function to install Docker CLI in test container
+install_docker_cli() {
+    cat << 'EOF'
+# Install Docker CLI
+echo 'Installing Docker CLI...'
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt-get update
+apt-get install -y docker-ce-cli
+echo 'Installed Docker CLI'
 EOF
 }
 
@@ -203,10 +368,28 @@ EOF
     # Test the feature installation by running the install script
     log_info_quiet "Running install script for $feature_name"
     
-    # Check if this feature requires .NET SDK
+    # Check if this feature requires dependencies
     local dotnet_install_script=""
+    local nodejs_install_script=""
+    local python_install_script=""
+    local docker_cli_install_script=""
+    local docker_volume_mount=""
+    
     if feature_requires_dotnet "$feature_name"; then
         dotnet_install_script=$(install_dotnet_sdk)
+    fi
+    
+    if feature_requires_nodejs "$feature_name"; then
+        nodejs_install_script=$(install_nodejs)
+    fi
+    
+    if feature_requires_python "$feature_name"; then
+        python_install_script=$(install_python)
+    fi
+    
+    if feature_requires_docker "$feature_name"; then
+        docker_cli_install_script=$(install_docker_cli)
+        docker_volume_mount="-v /var/run/docker.sock:/var/run/docker.sock"
     fi
     
     # Capture output for error reporting in quiet mode
@@ -216,16 +399,20 @@ EOF
     # Run the test in a container to simulate the devcontainer environment
     if test_output=$(docker run --rm \
         -v "$host_feature_path:/tmp/feature" \
+        $docker_volume_mount \
         -w /tmp/feature \
         mcr.microsoft.com/devcontainers/base:ubuntu \
         bash -c "
             set -e
             # Install common dependencies
             apt-get update >/dev/null 2>&1
-            apt-get install -y curl wget jq unzip tar gzip zstd >/dev/null 2>&1
+            apt-get install -y curl wget jq unzip tar gzip zstd lsb-release gnupg >/dev/null 2>&1
             
-            # Install .NET SDK if required
+            # Install dependencies if required
             $dotnet_install_script
+            $nodejs_install_script
+            $python_install_script
+            $docker_cli_install_script
             
             # Set up environment
             export _CONTAINER_USER=vscode
@@ -274,7 +461,7 @@ check_syntax() {
     done
     
     # Check all JSON files
-    for json_file in $(find "$ROOT_DIR" -name "*.json" -type f); do
+    for json_file in $(find "$ROOT_DIR" -name "*.json" -type f -not -path "*/test-temp*/*"); do
         if ! jq . "$json_file" >/dev/null 2>&1; then
             log_error "Invalid JSON in: $json_file"
             failed_checks+=("$json_file")
