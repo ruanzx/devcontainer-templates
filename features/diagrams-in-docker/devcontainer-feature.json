@@ -1,0 +1,29 @@
+{
+  "id": "diagrams-in-docker",
+  "version": "1.0.0",
+  "name": "Diagrams (in Docker)",
+  "description": "Installs a wrapper for Diagrams that runs in a Docker container",
+  "documentationURL": "https://github.com/ruanzx/devcontainer-features/tree/main/features/diagrams-in-docker",
+  "keywords": [
+    "diagrams",
+    "architecture",
+    "cloud",
+    "docker",
+    "python"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Version of the Diagrams Docker image to use"
+    },
+    "imageName": {
+      "type": "string",
+      "default": "ruanzx/diagrams",
+      "description": "Docker image name for Diagrams"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1"
+  ]
+}

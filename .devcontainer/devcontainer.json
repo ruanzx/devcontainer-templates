@@ -22,7 +22,8 @@
 			"extensions": [
 				"ms-vscode.vscode-json",
 				"timonwong.shellcheck",
-				"foxundermoon.shell-format"
+				"foxundermoon.shell-format",
+				"yzhang.markdown-all-in-one"
 			]
 		}
 	},

@@ -1,0 +1,9 @@
+{
+  "name": "Diagrams Example",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/ruanzx/devcontainer-features/diagrams-in-docker:1.0.0": {}
+  },
+  "postCreateCommand": "echo 'Diagrams feature installed successfully'"
+}

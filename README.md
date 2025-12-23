@@ -12,6 +12,7 @@ This repository provides the following DevContainer Features:
 - **[bottom](features/bottom/)** - A customizable cross-platform graphical process/system monitor for the terminal
 - **[btop++](features/btop/)** - A resource monitor that shows usage and stats for processor, memory, disks, network and processes
 - **[DevContainers CLI](features/devcontainers-cli/)** - Official CLI for working with Development Containers
+- **[Diagrams (in Docker)](features/diagrams-in-docker/)** - Python library for creating cloud system architecture diagrams programmatically
 - **[Edit](features/edit/)** - A fast, simple text editor that uses standard command line conventions
 - **[Lazygit](features/lazygit/)** - A simple terminal UI for git commands that makes git easy
 - **[ngrok](features/ngrok/)** - Tunneling and reverse proxy for developing and understanding networked, HTTP services
@@ -96,6 +97,7 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
     "ghcr.io/ruanzx/features/mirrord:latest": {},
     "ghcr.io/ruanzx/features/yq:4.44.3": {},
     "ghcr.io/ruanzx/features/lazygit:0.54.2": {},
+    "ghcr.io/ruanzx/features/diagrams-in-docker:1.0.0": {},
     "ghcr.io/ruanzx/features/edit:1.2.0": {},
     "ghcr.io/ruanzx/features/ngrok:latest": {},
     "ghcr.io/ruanzx/features/npm:latest": {
