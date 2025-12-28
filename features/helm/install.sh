@@ -20,6 +20,8 @@ fi
 
 # Parse options
 VERSION="${VERSION:-"3.16.1"}"
+INSTALL_DASHBOARD="${INSTALLDASHBOARD:-"true"}"
+DASHBOARD_VERSION="${DASHBOARD_VERSION:-"2.0.4"}"
 
 log_info "Installing Helm v${VERSION}"
 
@@ -97,4 +99,57 @@ if command_exists helm; then
 else
     log_error "Helm installation failed"
     exit 1
+fi
+
+if [[ "$INSTALL_DASHBOARD" == "true" ]]; then
+    log_info "Installing Helm Dashboard v${DASHBOARD_VERSION}"
+
+    # Map architecture for Helm Dashboard release naming
+    case "$ARCH" in
+        "amd64") DASHBOARD_ARCH="x86_64" ;;
+        "arm64") DASHBOARD_ARCH="arm64" ;;
+        *) 
+            log_error "Unsupported architecture for Helm Dashboard: $ARCH"
+            exit 1
+            ;;
+    esac
+
+    # Create temporary directory for dashboard
+    TEMP_DIR_DASHBOARD=$(mktemp -d)
+    cd "$TEMP_DIR_DASHBOARD"
+
+    # Download Helm Dashboard
+    VERSION_NO_V="${DASHBOARD_VERSION#v}"
+    DASHBOARD_URL="https://github.com/komodorio/helm-dashboard/releases/download/v${DASHBOARD_VERSION}/helm-dashboard_${VERSION_NO_V}_Linux_${DASHBOARD_ARCH}.tar.gz"
+    DASHBOARD_ARCHIVE="helm-dashboard.tar.gz"
+
+    log_info "Downloading Helm Dashboard from $DASHBOARD_URL"
+    download_file "$DASHBOARD_URL" "$DASHBOARD_ARCHIVE"
+
+    # Extract archive
+    log_info "Extracting Helm Dashboard"
+    extract_archive "$DASHBOARD_ARCHIVE"
+
+    # Find the helm-dashboard binary
+    DASHBOARD_BINARY="helm-dashboard"
+    if [[ ! -f "$DASHBOARD_BINARY" ]]; then
+        log_error "Helm Dashboard binary not found in expected location: $DASHBOARD_BINARY"
+        exit 1
+    fi
+
+    # Install binary
+    install_binary "./$DASHBOARD_BINARY" "helm-dashboard"
+
+    # Cleanup
+    cd /
+    cleanup_temp "$TEMP_DIR_DASHBOARD"
+
+    # Verify installation
+    if command_exists helm-dashboard; then
+        INSTALLED_DASHBOARD_VERSION=$(helm-dashboard --version 2>/dev/null | head -n 1 || echo "unknown")
+        log_success "Helm Dashboard installed successfully: $INSTALLED_DASHBOARD_VERSION"
+    else
+        log_error "Helm Dashboard installation failed"
+        exit 1
+    fi
 fi

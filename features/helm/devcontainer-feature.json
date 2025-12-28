@@ -18,6 +18,11 @@
             "type": "string",
             "description": "Version of Helm to install",
             "default": "3.16.1"
+        },
+        "installDashboard": {
+            "type": "boolean",
+            "description": "Install Helm Dashboard UI tool",
+            "default": true
         }
     },
     "installsAfter": [

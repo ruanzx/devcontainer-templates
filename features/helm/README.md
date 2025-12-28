@@ -1,6 +1,6 @@
 # Helm Feature
 
-Installs [Helm](https://helm.sh/), the package manager for Kubernetes that helps you manage Kubernetes applications.
+Installs [Helm](https://helm.sh/), the package manager for Kubernetes that helps you manage Kubernetes applications. Optionally installs [Helm Dashboard](https://github.com/komodorio/helm-dashboard), a UI tool for managing Helm charts.
 
 ## Usage
 
@@ -17,6 +17,7 @@ Installs [Helm](https://helm.sh/), the package manager for Kubernetes that helps
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `version` | string | `3.16.1` | Version of Helm to install |
+| `installDashboard` | boolean | `true` | Install Helm Dashboard UI tool |
 
 ## Example
 
@@ -70,6 +71,16 @@ helm upgrade my-release bitnami/wordpress
 
 # Uninstall a release
 helm uninstall my-release
+```
+
+If Helm Dashboard is installed:
+
+```bash
+# Check Helm Dashboard version
+helm-dashboard --version
+
+# Run Helm Dashboard (requires kubectl access)
+helm-dashboard
 ```
 
 ## Common Workflows
