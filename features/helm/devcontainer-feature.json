@@ -1,6 +1,6 @@
 {
     "id": "helm",
-    "version": "3.16.1",
+    "version": "3.16.2",
     "name": "Helm",
     "description": "The package manager for Kubernetes - helps you manage Kubernetes applications",
     "documentationURL": "https://helm.sh/docs/",
