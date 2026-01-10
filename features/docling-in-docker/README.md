@@ -2,6 +2,11 @@
 
 Installs a command-line wrapper for [Docling](https://github.com/docling-project/docling-serve), a powerful document converter that runs in a Docker container. This feature makes it easy to convert various document formats (PDF, DOCX, PPTX, images, etc.) to markdown directly from your dev container.
 
+## Prerequisites
+
+- **Docker**: Required for running the Docling service container
+- **curl** and **jq**: Automatically installed if not present
+
 ## Usage
 
 ```json

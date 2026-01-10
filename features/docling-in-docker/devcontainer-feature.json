@@ -1,6 +1,6 @@
 {
   "id": "docling-in-docker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "Docling (Document Converter)",
   "description": "Installs a wrapper for Docling that runs in a Docker container to convert various document formats to markdown",
   "documentationURL": "https://github.com/ruanzx/devcontainer-features/tree/main/features/docling-in-docker",

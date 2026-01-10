@@ -32,6 +32,34 @@ if ! command_exists docker; then
     exit 1
 fi
 
+# Ensure curl and jq are installed
+log_info "Checking dependencies (curl, jq)..."
+MISSING_PACKAGES=""
+
+if ! command_exists curl; then
+    MISSING_PACKAGES="${MISSING_PACKAGES}curl "
+fi
+
+if ! command_exists jq; then
+    MISSING_PACKAGES="${MISSING_PACKAGES}jq "
+fi
+
+if [ -n "$MISSING_PACKAGES" ]; then
+    log_info "Installing missing packages: $MISSING_PACKAGES"
+    if command_exists apt-get; then
+        run_with_privileges apt-get update -y
+        run_with_privileges apt-get install -y $MISSING_PACKAGES
+    elif command_exists apk; then
+        run_with_privileges apk add --no-cache $MISSING_PACKAGES
+    elif command_exists yum; then
+        run_with_privileges yum install -y $MISSING_PACKAGES
+    else
+        log_error "Could not install dependencies. Please install curl and jq manually."
+        exit 1
+    fi
+    log_success "Dependencies installed successfully"
+fi
+
 # Create the docling wrapper script
 DOCLING_WRAPPER="/usr/local/bin/docling"
 
@@ -151,7 +179,8 @@ get_filename() {
 
 # Find an available port
 find_available_port() {
-    python3 -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()'
+    # Use a random port in the ephemeral range
+    echo $((30000 + RANDOM % 20000))
 }
 
 # Start Docling service container in background
@@ -284,18 +313,18 @@ convert_file() {
     response=$(cat "$temp_response")
     rm -f "$temp_response"
     
-    # Extract markdown content from JSON response
+    # Extract markdown content from JSON response using jq
     local md_content
-    md_content=$(echo "$response" | python3 -c "import sys, json; data=json.load(sys.stdin); print(data.get('document', {}).get('md_content', '') or '')" 2>/dev/null) || {
-        print_error "Failed to parse response"
-        echo "$response" >&2
+    md_content=$(echo "$response" | jq -r '.document.md_content // empty' 2>/dev/null) || {
+        print_error "Failed to parse JSON response"
+        echo "$response" | head -20 >&2
         return 1
     }
     
-    if [ -z "$md_content" ] || [ "$md_content" = "None" ]; then
+    if [ -z "$md_content" ]; then
         print_error "No markdown content in response"
         echo "Response preview:" >&2
-        echo "$response" | python3 -c "import sys, json; print(json.dumps(json.load(sys.stdin), indent=2)[:500])" 2>&1 || echo "$response" | head -20 >&2
+        echo "$response" | jq '.' 2>/dev/null || echo "$response" | head -20 >&2
         return 1
     fi
     
