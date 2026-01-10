@@ -1,6 +1,6 @@
 # DevContainer Features Collection
 
-A collection of 43+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
+A collection of 44+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
 
 ## 📦 Available Features
 
@@ -19,6 +19,7 @@ This repository provides the following DevContainer Features:
 - **[npm](features/npm/)** - Install global npm packages for Node.js development environments
 - **[yq](features/yq/)** - A lightweight and portable command-line YAML, JSON and XML processor
 - **[MarkItDown](features/markitdown/)** - Utility for converting various files to Markdown format
+- **[Docling (in Docker)](features/docling-in-docker/)** - AI-powered document converter for PDFs, Office files, and more to Markdown
 - **[Bun](features/bun/)** - Fast all-in-one JavaScript runtime and toolkit
 - **[spec-kit](features/spec-kit/)** - Spec-Driven Development toolkit for building high-quality software with executable specifications
 - **[OpenSpec](features/openspec/)** - Spec-driven development for AI coding assistants with structured change proposals
@@ -122,6 +123,7 @@ Add any of these features to your `.devcontainer/devcontainer.json`:
     "ghcr.io/ruanzx/features/aztfy:latest": {},
     "ghcr.io/ruanzx/features/bun:latest": {},
     "ghcr.io/ruanzx/features/markitdown:latest": {},
+    "ghcr.io/ruanzx/features/docling-in-docker:latest": {},
     "ghcr.io/ruanzx/features/argo:latest": {},
     "ghcr.io/ruanzx/features/bmad-method:latest": {},
     "ghcr.io/ruanzx/features/spec-kit:latest": {},

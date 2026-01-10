@@ -1,0 +1,36 @@
+{
+  "id": "docling-in-docker",
+  "version": "1.0.0",
+  "name": "Docling (Document Converter)",
+  "description": "Installs a wrapper for Docling that runs in a Docker container to convert various document formats to markdown",
+  "documentationURL": "https://github.com/ruanzx/devcontainer-features/tree/main/features/docling-in-docker",
+  "keywords": [
+    "docling",
+    "markdown",
+    "pdf",
+    "docx",
+    "converter",
+    "docker",
+    "document"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Version of the Docling Docker image to use"
+    },
+    "imageName": {
+      "type": "string",
+      "default": "ghcr.io/docling-project/docling-serve",
+      "description": "Docker image name for Docling"
+    },
+    "port": {
+      "type": "string",
+      "default": "5001",
+      "description": "Port for the Docling service"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1"
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "Docling Example",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/ruanzx/devcontainer-features/docling-in-docker:1": {
+      "version": "latest"
+    }
+  },
+  "postCreateCommand": "docling --help",
+  "remoteUser": "vscode"
+}
