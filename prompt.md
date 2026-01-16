@@ -44,67 +44,109 @@ Tasks:
 ---
 
 
-Create a new DevContainer feature called `docling-in-docker` that provides a command-line tool for converting various file formats to Markdown using the Docling service API via Docker.
+Create a new DevContainer feature called `skills-ref-in-docker` that provides a Docker-based command-line tool for validating and managing agent skills following the established patterns in this repository.
 
-**Reference Documentation:**
-- https://github.com/docling-project/docling-serve
+## Context
 
-**Implementation Requirements:**
+You are working in a DevContainer Features collection repository with a standardized structure. Reference the existing `mdc` feature (features/mdc/) and `diagrams-in-docker` feature as architectural templates. The Docker image `ruanzx/skills-ref` already exists and contains the skills-ref tool installed from https://github.com/agentskills/agentskills/tree/main/skills-ref.
 
-1. **Feature Structure** (features/docling-in-docker/):
-   - `install.sh`: Bash script that creates a CLI wrapper command
-   - `devcontainer-feature.json`: Feature metadata with version, description, and configurable options
-   - README.md: User-facing documentation with usage examples and configuration options
+## Required Deliverables
 
-2. **Technical Specifications:**
-   - Base Docker image: `ghcr.io/docling-project/docling-serve` (port 5001)
-   - CLI wrapper behavior:
-     - Starts Docker container with random available port
-     - Detects dev container environment and uses Docker gateway IP when needed
-     - Uploads input file via API endpoint from openapi.json
-     - Receives converted markdown response
-     - Writes output to specified file path
-     - Stops Docker container after conversion
-     - Implements health checks with 2-minute timeout
-   - Default conversion settings:
-     - Output format: markdown
-     - Image export mode: embedded
-     - Pipeline type: standard
-     - OCR mode: enabled (engine: AUTO)
-     - PDF backend: dlparse_v4
-     - Table mode: ACCURATE
-     - Response type: FILE
-     - Continue on error: enabled
+### 1. Feature Implementation (features/skills-ref-in-docker/)
 
-3. **Code Patterns** (reference: features/mdc/):
-   - Source utils.sh at script start: `source "${SCRIPT_DIR}/utils.sh"`
-   - Use logging functions: `log_info()`, `log_success()`, `log_warning()`, `log_error()`
-   - Implement architecture detection and validation
-   - Use `set -e` for error handling
-   - Map JSON options to uppercase environment variables
-   - Use `download_file()` from utils.sh if downloading external binaries
+Create three required files following the repository's established patterns:
 
-4. **Testing and Examples:**
-   - Create docling-in-docker with:
-     - devcontainer.json: Feature configuration demonstrating usage
-     - README.md: Step-by-step usage instructions and test commands
-     - Sample input file (PDF) for testing conversions
-   - Verify installation in isolated container
-   - Test with different file formats and configurations
+**install.sh:**
+- Must start with `#!/bin/sh` and `set -e`
+- Source common utilities: `SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)" && source "${SCRIPT_DIR}/../../common/utils.sh"`
+- Use logging functions: `log_info()`, `log_success()`, `log_warning()`, `log_error()`
+- Create a wrapper script in `/usr/local/bin/skills-ref` that:
+  - Executes: `docker run --rm -v "$(pwd)":/output ruanzx/skills-ref "$@"`
+  - Handles dev container environment detection for Docker gateway IP if needed
+  - Preserves all command-line arguments passed to skills-ref
+- Make the wrapper executable: `chmod +x /usr/local/bin/skills-ref`
+- Log successful installation with version information
 
-5. **Documentation Updates:**
-   - Add feature entry to root README.md features list
-   - Include description: "Converts documents to Markdown using Docling API via Docker"
-   - Maintain alphabetical ordering in feature list
+**devcontainer-feature.json:**
+- Follow the JSON schema from existing features
+- Required fields:
+  - `id`: "skills-ref-in-docker"
+  - `version`: "1.0.0"
+  - `name`: "Skills-Ref (in Docker)"
+  - `description`: "Validates and manages agent skills using Docker-based skills-ref tool"
+  - `documentationURL`: Link to the feature's README
+  - `options`: Include at least one option (e.g., `cleanCache` or `version` with appropriate defaults)
+  - `installsAfter`: Empty array or dependencies if needed
+- Include optional customizations for common use cases
 
-**Expected Deliverables:**
-- Three feature files in docling-in-docker
-- Example configuration in docling-in-docker
-- Updated root README.md
-- All scripts pass `bash -n` syntax validation
-- Feature successfully converts sample document
+**README.md:**
+- Structure following existing feature READMEs
+- Sections:
+  - Brief description of what skills-ref does
+  - Installation example in devcontainer.json
+  - Usage examples showing all three skills-ref commands:
+    - `skills-ref validate path/to/skill`
+    - `skills-ref read-properties path/to/skill`
+    - `skills-ref to-prompt path/to/skill-a path/to/skill-b`
+  - Configuration options from devcontainer-feature.json
+  - Reference links to upstream documentation
 
-**Output Format for CLI Tool:**
-```bash
-docling <input-file> <output-file.md>
-```
+### 2. Example Configuration (examples/skills-ref-in-docker/)
+
+Create a working example demonstrating feature usage:
+
+**devcontainer.json:**
+- Use a base image like `mcr.microsoft.com/devcontainers/base:debian`
+- Reference the feature: `"ghcr.io/ruanzx/features/skills-ref-in-docker:1"`
+- Include any feature options being demonstrated
+
+**README.md:**
+- Explain the example setup
+- Provide step-by-step testing instructions
+- Include expected output for verification
+
+**Sample skill structure for testing:**
+- Create a minimal valid skill directory with SKILL.md that skills-ref can validate
+- Include test commands users can run to verify installation
+
+### 3. Documentation Updates
+
+**Root README.md:**
+- Add entry to the features list: `| [skills-ref-in-docker](./features/skills-ref-in-docker) | Validates agent skills via Docker | ghcr.io/ruanzx/features/skills-ref-in-docker |`
+- Maintain alphabetical ordering in the features table
+- Ensure consistent formatting with existing entries
+
+### 4. Build Integration
+
+**build/ directory:**
+- Run the build script to generate build artifacts: `./devcontainer-features.sh build`
+- Ensure build/skills-ref-in-docker/ contains copied files from features/
+
+## Technical Constraints
+
+- All bash scripts must pass `bash -n` syntax validation
+- Follow the wrapper pattern from features/diagrams-in-docker/ or features/mdc/
+- Docker image reference: `ruanzx/skills-ref` (already built and available)
+- Volume mount pattern: Map current directory to `/output` in container
+- Error handling: Use `set -e` and validate command existence
+- Architecture: Support amd64/arm64 (Docker handles this via image)
+
+## Validation Checklist
+
+Before considering the task complete, verify:
+- [ ] `bash -n features/skills-ref-in-docker/install.sh` passes without errors
+- [ ] Feature builds successfully: `./devcontainer-features.sh build`
+- [ ] Example can be tested: Navigate to examples/skills-ref-in-docker/ and rebuild devcontainer
+- [ ] All three skills-ref commands work: validate, read-properties, to-prompt
+- [ ] Root README.md updated with alphabetically ordered entry
+- [ ] Feature follows the exact pattern of existing "-in-docker" features
+
+## Output Format
+
+Provide a summary of completed tasks in this structure:
+1. Files created/modified (with full paths)
+2. Key implementation details
+3. Test commands for user verification
+4. Any deviations from patterns (if unavoidable)
+
+Do not simulate file contents unless showing brief examples for clarification. Focus on implementation completion.

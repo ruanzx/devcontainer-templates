@@ -1,6 +1,6 @@
 # DevContainer Features Collection
 
-A collection of 44+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
+A collection of 47+ high-quality DevContainer Features for enhancing development environments with popular tools and utilities. All features follow consistent patterns with robust error handling, architecture detection, and comprehensive documentation.
 
 ## 📦 Available Features
 
@@ -31,6 +31,7 @@ This repository provides the following DevContainer Features:
 - **[BMAD-METHOD](features/bmad-method/)** - Universal AI Agent Framework for Agentic Agile Driven Development
 - **[Claude Code CLI](features/claude-code-cli/)** - Command-line interface for interacting with Claude AI
 - **[Gemini CLI](features/gemini-cli/)** - Google Gemini AI command-line interface
+- **[Skills-Ref (in Docker)](features/skills-ref-in-docker/)** - Validates and manages agent skills using Docker-based skills-ref tool
 
 ### ☸️ Kubernetes & DevOps
 

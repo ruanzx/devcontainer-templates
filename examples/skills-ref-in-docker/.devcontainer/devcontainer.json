@@ -1,0 +1,10 @@
+{
+  "name": "Skills-Ref Example",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/ruanzx/features/skills-ref-in-docker:1": {}
+  },
+  "postCreateCommand": "skills-ref --version",
+  "remoteUser": "root"
+}

@@ -1,0 +1,29 @@
+{
+  "id": "skills-ref-in-docker",
+  "version": "1.0.0",
+  "name": "Skills-Ref (in Docker)",
+  "description": "Validates and manages agent skills using Docker-based skills-ref tool",
+  "documentationURL": "https://github.com/ruanzx/devcontainer-features/tree/main/features/skills-ref-in-docker",
+  "keywords": [
+    "skills",
+    "agent",
+    "validation",
+    "docker",
+    "agentskills"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Version of the Skills-Ref Docker image to use"
+    },
+    "imageName": {
+      "type": "string",
+      "default": "ruanzx/skills-ref",
+      "description": "Docker image name for Skills-Ref"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1"
+  ]
+}
