@@ -19,6 +19,7 @@ This repository provides the following DevContainer Features:
 - **[npm](features/npm/)** - Install global npm packages for Node.js development environments
 - **[yq](features/yq/)** - A lightweight and portable command-line YAML, JSON and XML processor
 - **[MarkItDown](features/markitdown/)** - Utility for converting various files to Markdown format
+- **[Markify (in Docker)](features/markify-in-docker/)** - Converts HTML files, URLs, and raw HTML to Markdown using the `ruanzx/markify` Docker image (`ghcr.io/ruanzx/features/markify-in-docker`)
 - **[Docling (in Docker)](features/docling-in-docker/)** - AI-powered document converter for PDFs, Office files, and more to Markdown
 - **[Bun](features/bun/)** - Fast all-in-one JavaScript runtime and toolkit
 - **[spec-kit](features/spec-kit/)** - Spec-Driven Development toolkit for building high-quality software with executable specifications
