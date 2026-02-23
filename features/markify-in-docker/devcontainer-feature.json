@@ -1,0 +1,32 @@
+{
+  "id": "markify-in-docker",
+  "version": "1.0.0",
+  "name": "Markify (in Docker)",
+  "description": "Installs a wrapper for Markify that converts HTML files, URLs, and raw HTML to Markdown using the Docker image ruanzx/markify",
+  "documentationURL": "https://github.com/ruanzx/devcontainer-features/tree/main/features/markify-in-docker",
+  "keywords": [
+    "markdown",
+    "html",
+    "converter",
+    "markify",
+    "docker",
+    "url",
+    "scraping"
+  ],
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Version tag of the Markify Docker image to use"
+    },
+    "cleanCache": {
+      "type": "boolean",
+      "default": true,
+      "description": "Clean Docker layer cache after pulling the image"
+    }
+  },
+  "installsAfter": [
+    "ghcr.io/devcontainers/features/common-utils",
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1"
+  ]
+}

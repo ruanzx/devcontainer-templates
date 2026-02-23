@@ -1,0 +1,21 @@
+{
+  "name": "Markify (in Docker) Example",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/ruanzx/features/markify-in-docker:latest": {
+      "version": "latest",
+      "cleanCache": true
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "yzhang.markdown-all-in-one",
+        "DavidAnson.vscode-markdownlint"
+      ]
+    }
+  },
+  "postCreateCommand": "echo 'Markify is ready! Run: markify --help'",
+  "remoteUser": "root"
+}
