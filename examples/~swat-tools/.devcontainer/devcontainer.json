@@ -1,5 +1,5 @@
 {
-  "name": ".NET Development Environment",
+  "name": "SWAT Tools",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
     "ghcr.io/devcontainers/features/common-utils:2": {
@@ -9,31 +9,23 @@
       "upgradePackages": false
     },
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
-    "ghcr.io/devcontainers/features/azure-cli:1": {},
     "ghcr.io/devcontainers/features/dotnet:latest": {
-      "version": "9.0",
+      "version": "10.0",
       "dotnetRuntimeVersions": "lts",
       "aspnetCoreRuntimeVersions": "lts"
     },
-    "ghcr.io/ruanzx/features/dotnet-tools:latest": {
-      "tools": "dotnet-ef@latest,dotnet-format@latest,dotnet-outdated-tool@latest,dotnet-sonarscanner@latest,Microsoft.OpenApi.Kiota@latest"
-    },
-    "ghcr.io/ruanzx/features/aspire:latest": {
-      "version": "9.4.0"
-    },
-    "ghcr.io/ruanzx/features/azure-bicep:latest": {},
     "ghcr.io/ruanzx/features/spec-kit-in-docker:latest": {},
     "ghcr.io/ruanzx/features/markitdown-in-docker:latest": {},
-    "ghcr.io/ruanzx/features/edit:latest": {
-      "version": "1.2.0"
-    },
-    "ghcr.io/ruanzx/features/mdc:latest": {}
+    "ghcr.io/ruanzx/features/docling-in-docker:latest": {},
+    "ghcr.io/ruanzx/features/markify-in-docker:latest": {}
   },
   "customizations": {
     "vscode": {
-      "extensions": []
+      "extensions": [
+        "yzhang.markdown-all-in-one"
+      ]
     }
   },
-  "postCreateCommand": "dotnet --version && dotnet tool list --global",
+  "postCreateCommand": "",
   "remoteUser": "root"
 }
