@@ -76,6 +76,7 @@ IMAGE_NAME="${DOCLING_IMAGE_NAME:-ghcr.io/docling-project/docling-serve}"
 IMAGE_TAG="${DOCLING_IMAGE_TAG:-latest}"
 FULL_IMAGE="${IMAGE_NAME}:${IMAGE_TAG}"
 CONTAINER_NAME="docling-serve-$$"
+CACHE_VOLUME_NAME="docling-models-cache"
 DOCLING_PORT=""
 
 # Detect Docker host for API calls
@@ -201,9 +202,16 @@ start_service() {
     
     print_info "Using port: $DOCLING_PORT"
     
+    # Create cache volume if it doesn't exist (persists models across runs)
+    if ! docker volume inspect "$CACHE_VOLUME_NAME" >/dev/null 2>&1; then
+        print_info "Creating cache volume '$CACHE_VOLUME_NAME' for model persistence..."
+        docker volume create "$CACHE_VOLUME_NAME" >/dev/null 2>&1
+    fi
+    
     docker run -d --rm \
         --name "$CONTAINER_NAME" \
         -p "${DOCLING_PORT}:5001" \
+        -v "${CACHE_VOLUME_NAME}:/opt/app-root/src/.cache" \
         "$FULL_IMAGE" >/dev/null 2>&1 || {
         print_error "Failed to start Docling service"
         return 1
@@ -255,7 +263,140 @@ stop_service() {
     fi
 }
 
-# Convert files using Docling API
+# Submit async conversion task
+submit_async_task() {
+    local input_file="$1"
+    local temp_response
+    temp_response=$(mktemp)
+    
+    local http_code
+    http_code=$(curl -s -w "%{http_code}" --max-time 60 -X POST \
+        "http://${DOCKER_HOST_IP}:${DOCLING_PORT}/v1/convert/file/async" \
+        -F "files=@${input_file}" \
+        -F "to_formats=md" \
+        -F "image_export_mode=embedded" \
+        -F "do_ocr=true" \
+        -F "ocr_engine=auto" \
+        -F "pdf_backend=dlparse_v4" \
+        -F "table_mode=accurate" \
+        -o "$temp_response" \
+        2>&1) || {
+        print_error "Failed to submit async conversion task"
+        [ -f "$temp_response" ] && cat "$temp_response" >&2
+        rm -f "$temp_response"
+        return 1
+    }
+    
+    if [ "$http_code" != "200" ]; then
+        print_error "Async submit returned HTTP $http_code"
+        [ -f "$temp_response" ] && cat "$temp_response" >&2
+        rm -f "$temp_response"
+        return 1
+    fi
+    
+    local task_id
+    task_id=$(cat "$temp_response" | jq -r '.task_id // empty' 2>/dev/null)
+    rm -f "$temp_response"
+    
+    if [ -z "$task_id" ]; then
+        print_error "No task_id returned from async submit"
+        return 1
+    fi
+    
+    echo "$task_id"
+}
+
+# Poll task status until completion
+poll_task_status() {
+    local task_id="$1"
+    local max_poll_time=${2:-600}  # Default 10 minutes max
+    local elapsed=0
+    local poll_wait=5  # seconds for long-polling wait parameter
+    
+    while [ $elapsed -lt $max_poll_time ]; do
+        local temp_response
+        temp_response=$(mktemp)
+        
+        local http_code
+        http_code=$(curl -s -w "%{http_code}" --max-time 30 \
+            "http://${DOCKER_HOST_IP}:${DOCLING_PORT}/v1/status/poll/${task_id}?wait=${poll_wait}" \
+            -o "$temp_response" \
+            2>&1) || {
+            rm -f "$temp_response"
+            sleep 2
+            elapsed=$((elapsed + 2))
+            continue
+        }
+        
+        if [ "$http_code" != "200" ]; then
+            rm -f "$temp_response"
+            sleep 2
+            elapsed=$((elapsed + 2))
+            continue
+        fi
+        
+        local task_status
+        task_status=$(cat "$temp_response" | jq -r '.task_status // empty' 2>/dev/null)
+        rm -f "$temp_response"
+        
+        case "$task_status" in
+            success|SUCCESS)
+                print_success "Task completed successfully"
+                return 0
+                ;;
+            failure|FAILURE)
+                print_error "Task failed on server"
+                return 1
+                ;;
+            "")
+                print_error "Could not determine task status"
+                return 1
+                ;;
+            *)
+                # Still processing (e.g., pending, running)
+                elapsed=$((elapsed + poll_wait + 1))
+                
+                # Show progress every 30 seconds
+                if [ $((elapsed % 30)) -lt $((poll_wait + 1)) ]; then
+                    print_info "Still converting... (${elapsed}s elapsed)"
+                fi
+                ;;
+        esac
+    done
+    
+    print_error "Conversion timed out after ${max_poll_time}s"
+    return 1
+}
+
+# Retrieve task result
+fetch_task_result() {
+    local task_id="$1"
+    local temp_response
+    temp_response=$(mktemp)
+    
+    local http_code
+    http_code=$(curl -s -w "%{http_code}" --max-time 120 \
+        "http://${DOCKER_HOST_IP}:${DOCLING_PORT}/v1/result/${task_id}" \
+        -o "$temp_response" \
+        2>&1) || {
+        print_error "Failed to fetch task result"
+        [ -f "$temp_response" ] && cat "$temp_response" >&2
+        rm -f "$temp_response"
+        return 1
+    }
+    
+    if [ "$http_code" != "200" ]; then
+        print_error "Result fetch returned HTTP $http_code"
+        [ -f "$temp_response" ] && cat "$temp_response" >&2
+        rm -f "$temp_response"
+        return 1
+    fi
+    
+    cat "$temp_response"
+    rm -f "$temp_response"
+}
+
+# Convert files using Docling async API
 convert_file() {
     local input_file="$1"
     local output_file="$2"
@@ -279,39 +420,20 @@ convert_file() {
     
     print_info "Converting: $(basename "$input_file") → $(basename "$output_file")"
     
-    # Call Docling API
+    # Step 1: Submit async conversion task
+    print_info "Submitting conversion task..."
+    local task_id
+    task_id=$(submit_async_task "$input_file") || return 1
+    print_info "Task submitted (id: ${task_id:0:8}...)"
+    
+    # Step 2: Poll for completion
+    print_info "Waiting for conversion to complete..."
+    poll_task_status "$task_id" || return 1
+    
+    # Step 3: Fetch result
+    print_info "Retrieving result..."
     local response
-    local http_code
-    local temp_response=$(mktemp)
-    
-    http_code=$(curl -sf -w "%{http_code}" -X POST \
-        "http://${DOCKER_HOST_IP}:${DOCLING_PORT}/v1/convert/file" \
-        -F "files=@${input_file}" \
-        -F "to_formats=md" \
-        -F "image_export_mode=embedded" \
-        -F "do_ocr=true" \
-        -F "ocr_engine=auto" \
-        -F "pdf_backend=dlparse_v4" \
-        -F "table_mode=accurate" \
-        -F "target_type=inbody" \
-        -o "$temp_response" \
-        2>&1) || {
-        print_error "API request failed"
-        [ -f "$temp_response" ] && cat "$temp_response" >&2
-        rm -f "$temp_response"
-        return 1
-    }
-    
-    # Check HTTP status code
-    if [ "$http_code" != "200" ]; then
-        print_error "API returned HTTP $http_code"
-        [ -f "$temp_response" ] && cat "$temp_response" >&2
-        rm -f "$temp_response"
-        return 1
-    fi
-    
-    response=$(cat "$temp_response")
-    rm -f "$temp_response"
+    response=$(fetch_task_result "$task_id") || return 1
     
     # Extract markdown content from JSON response using jq
     local md_content
@@ -373,6 +495,11 @@ Supported Input Formats:
 Environment Variables:
   DOCLING_IMAGE_NAME    Docker image name (default: ghcr.io/docling-project/docling-serve)
   DOCLING_IMAGE_TAG     Docker image tag (default: latest)
+
+Notes:
+  Model cache is persisted in Docker volume 'docling-models-cache' to avoid
+  re-downloading models on every run. Use 'docker volume rm docling-models-cache'
+  to clear the cache if needed.
 
 Examples:
   docling document.pdf

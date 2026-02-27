@@ -142,10 +142,11 @@ The wrapper is configured with these optimal defaults:
 ## How It Works
 
 1. The `docling` command starts a temporary Docling service container
-2. The service runs on localhost at the configured port (default: 5001)
-3. Files are sent to the service via REST API for conversion
-4. The converted markdown is saved to the specified output file
-5. The service container is automatically stopped when done
+2. A persistent Docker volume (`docling-models-cache`) is mounted to cache OCR and AI models
+3. Files are submitted via the async REST API to avoid server-side timeouts
+4. The wrapper polls for completion, then retrieves the converted result
+5. The converted markdown is saved to the specified output file
+6. The service container is automatically stopped when done
 
 ## Environment Variables
 
@@ -197,8 +198,11 @@ docker run -d --rm --name docling-serve \
 
 - The Docker image will be pulled automatically on first use if not already present
 - The service starts fresh for each conversion to ensure clean state
+- **Model cache is persisted** in Docker volume `docling-models-cache` across runs, so OCR/AI models are only downloaded once
+- Uses the **async API** (`/v1/convert/file/async`) with polling to avoid 504 Gateway Timeout on large documents
 - Conversion quality is excellent for most document types
 - Processing time varies based on document complexity and length
+- To clear the model cache: `docker volume rm docling-models-cache`
 
 ## Resources
 
