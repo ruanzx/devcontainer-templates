@@ -23,10 +23,12 @@ make build
 ## Step 2: Verify Installation
 
 ```bash
-docker run --rm spec-kit:latest specify check
+docker run --rm \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest specify check
 ```
 
-You should see a list of available tools and their status.
+On the first run the entrypoint installs spec-kit into the `speckit-uv-tools` volume. Subsequent runs reuse the cached install.
 
 ## Step 3: Initialize Your First Project
 
@@ -45,6 +47,7 @@ cd my-project
 
 docker run -it --rm \
   -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
   spec-kit:latest \
   specify init --here --ai copilot
 ```
@@ -102,6 +105,7 @@ Once inside your AI coding agent, you can use:
 # Start a shell in the container
 docker run -it --rm \
   -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
   spec-kit:latest bash
 
 # Inside the container:
@@ -111,11 +115,22 @@ cd my-project
 ls -la .specify/
 ```
 
+### Version Pinning
+
+```bash
+# Use a specific spec-kit release
+docker run --rm \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  -e SPECKIT_VERSION=v0.5.0 \
+  spec-kit:latest specify check
+```
+
 ### With Git Configuration
 
 ```bash
 docker run -it --rm \
   -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
   -v ~/.gitconfig:/root/.gitconfig:ro \
   spec-kit:latest bash
 ```
@@ -140,30 +155,42 @@ docker-compose down
 ```bash
 # Project 1
 mkdir web-app && cd web-app
-docker run -it --rm -v $(pwd):/workspace spec-kit:latest \
+docker run -it --rm \
+  -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest \
   specify init --here --ai copilot
 
 # Project 2
 cd ..
 mkdir mobile-app && cd mobile-app
-docker run -it --rm -v $(pwd):/workspace spec-kit:latest \
+docker run -it --rm \
+  -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest \
   specify init --here --ai claude
 ```
 
 ### Checking System Requirements
 
 ```bash
-docker run --rm spec-kit:latest specify check
+docker run --rm \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest specify check
 ```
 
 ### Getting Help
 
 ```bash
 # General help
-docker run --rm spec-kit:latest specify --help
+docker run --rm \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest specify --help
 
 # Command-specific help
-docker run --rm spec-kit:latest specify init --help
+docker run --rm \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest specify init --help
 ```
 
 ## Troubleshooting
@@ -173,7 +200,9 @@ docker run --rm spec-kit:latest specify init --help
 If the container exits right after starting:
 ```bash
 # Make sure to use -it flags for interactive mode
-docker run -it --rm spec-kit:latest bash
+docker run -it --rm \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest bash
 ```
 
 ### Permission Issues
@@ -184,6 +213,7 @@ If you encounter permission issues with mounted volumes:
 docker run -it --rm \
   --user $(id -u):$(id -g) \
   -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
   spec-kit:latest bash
 ```
 
@@ -192,7 +222,10 @@ docker run -it --rm \
 Make sure the volume is mounted correctly:
 ```bash
 # Verify mount
-docker run --rm -v $(pwd):/workspace spec-kit:latest ls -la /workspace
+docker run --rm \
+  -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest ls -la /workspace
 ```
 
 ## Next Steps

@@ -68,7 +68,7 @@ Provides the `specify` command wrapper that runs spec-kit in Docker:
 ```json
 {
   "ghcr.io/ruanzx/features/spec-kit-in-docker:1": {
-    "version": "latest",
+    "speckitVersion": "latest",
     "imageName": "ruanzx/spec-kit"
   }
 }
@@ -111,12 +111,15 @@ specify --help
 
 ## Environment Variables
 
-Customize the Docker image used:
+Customize the Docker image and spec-kit version:
 
 ```bash
 # Use custom image
 export SPECKIT_IMAGE_NAME="my-custom/spec-kit"
 export SPECKIT_IMAGE_TAG="v1.0.0"
+
+# Pin to a specific spec-kit version
+export SPECKIT_VERSION="v0.5.0"
 
 specify check
 ```

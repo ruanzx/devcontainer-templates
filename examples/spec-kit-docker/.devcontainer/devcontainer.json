@@ -4,7 +4,7 @@
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
     "../../features/spec-kit-in-docker": {
-      "version": "latest",
+      "speckitVersion": "latest",
       "imageName": "ruanzx/spec-kit"
     }
   },

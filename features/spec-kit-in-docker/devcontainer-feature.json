@@ -1,6 +1,6 @@
 {
   "id": "spec-kit-in-docker",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Spec-Kit (Docker-based)",
   "description": "Install spec-kit wrapper that runs in Docker. Build high-quality software faster with executable specifications using AI coding agents.",
   "documentationURL": "https://github.com/github/spec-kit",
@@ -17,18 +17,26 @@
     "development-toolkit"
   ],
   "options": {
-    "version": {
+    "imageTag": {
       "type": "string",
       "proposals": [
         "latest"
       ],
       "default": "latest",
-      "description": "Docker image tag for spec-kit. Use 'latest' for the most recent version."
+      "description": "Docker image tag for the spec-kit runtime base image."
     },
     "imageName": {
       "type": "string",
       "default": "ruanzx/spec-kit",
-      "description": "Docker image name for spec-kit."
+      "description": "Docker image name for the spec-kit runtime base image."
+    },
+    "speckitVersion": {
+      "type": "string",
+      "proposals": [
+        "latest"
+      ],
+      "default": "latest",
+      "description": "Spec-kit CLI version to install at runtime. Use 'latest' for newest or a git tag/ref (e.g. 'v0.5.0') to pin."
     }
   },
   "installsAfter": [

@@ -2,97 +2,99 @@
 
 ## Overview
 
-Successfully created a DevContainer feature that provides a Docker-based wrapper for **spec-kit**, making it easy to use spec-driven development with AI coding agents without requiring Python or other dependencies on the host system.
+A DevContainer feature that provides a Docker-based wrapper for **spec-kit**, making it easy to use spec-driven development with AI coding agents without requiring Python or other dependencies on the host system.
+
+## Architecture
+
+The Docker image is a **runtime base** that contains only Python 3.12, uv, and system dependencies. Spec-kit is installed at container start by an entrypoint script, which:
+
+1. Reads `SPECKIT_VERSION` (default: `latest`)
+2. Checks the persistent tool volume for a matching cached install
+3. Installs from the spec-kit git repository only when the version changes or is missing
+4. Records the installed version to skip installation on subsequent runs
+
+This design ensures that new spec-kit releases with breaking CLI changes do not require rebuilding the Docker image.
 
 ## What Was Created
 
 ### 1. Core Feature Files
 
-#### `install.sh` ✅
+#### `install.sh`
 - Docker wrapper installation script
 - Creates `/usr/local/bin/specify` wrapper
 - Handles Docker image pulling
-- Environment variable configuration
-- Based on the mdc feature pattern
+- Environment variable configuration (image name, tag, spec-kit version)
 
-#### `devcontainer-feature.json` ✅
+#### `devcontainer-feature.json`
 - Feature metadata and configuration
-- Options for Docker image name and version
+- Options: `imageName`, `imageTag`, `speckitVersion`
 - Dependency on docker-outside-of-docker feature
 
-### 2. Wrapper Script Features
+### 2. Docker Image
+
+Location: `features/spec-kit-in-docker/docker/`
+
+- **Dockerfile**: Python 3.12-slim base with uv and system deps (no spec-kit baked in)
+- **entrypoint.sh**: Installs spec-kit at container start based on `SPECKIT_VERSION`
+- **Size**: Optimized with slim base image; spec-kit installed via persistent volume
+- **Working directory**: `/workspace`
+
+### 3. Wrapper Script Features
 
 The `specify` wrapper provides:
 
 - **`--wrapper-help`**: Display wrapper-specific help
 - **`--wrapper-upgrade`**: Force pull latest Docker image
+- **Version pinning**: `SPECKIT_VERSION` env var controls which spec-kit release to install
 - **Automatic path translation**: Works in DevContainer environments
 - **Volume mounting**: Mounts current directory as `/workspace`
+- **Persistent cache**: Named volume `speckit-uv-tools` avoids reinstalling on every run
 - **Git integration**: Mounts `.gitconfig` (read-only)
 - **Token pass-through**: Forwards `GITHUB_TOKEN` and `GH_TOKEN`
 - **Interactive support**: Handles `-it` flags for Docker
 
-### 3. Documentation
+### 4. Documentation
 
 - **README.md**: Comprehensive feature documentation
 - **examples/spec-kit-docker/**: Complete example with devcontainer.json
 - **docker/README.md**: Docker image usage guide
 - **docker/QUICKSTART.md**: 5-minute quick start
-- **docker/SUMMARY.md**: Technical implementation details
-
-### 4. Docker Image
-
-Location: `features/spec-kit-in-docker/docker/`
-
-- **Dockerfile**: Python 3.12-slim based image
-- **Includes**: Python, uv, spec-kit CLI, Git
-- **Size**: Optimized with slim base image
-- **Health check**: Verifies spec-kit installation
-- **Working directory**: `/workspace`
 
 ### 5. Testing Infrastructure
 
-- **test/test.sh**: Automated test suite (10 tests)
-- **test/manual-test.sh**: Quick manual verification
-- **test/.devcontainer/**: DevContainer test configuration
+- **docker/test.sh**: Automated test suite (10 tests)
+- **sample/manual-test.sh**: Quick manual verification
+- **sample/.devcontainer/**: DevContainer test configuration
 
 ## Key Design Decisions
 
-### 1. Docker-Based Approach
+### 1. Runtime Installation (No Baked-In Version)
 
-**Why**: Eliminates Python/uv installation requirements, provides isolation, easier updates
+**Why**: Eliminates stale CLI versions when spec-kit releases breaking changes.
 
 **Trade-offs**:
-- ✅ No host dependencies
-- ✅ Consistent environment
-- ✅ Easy updates with `--wrapper-upgrade`
-- ⚠️ Slightly slower than native
-- ⚠️ Requires Docker daemon access
+- First run is slower (installs spec-kit)
+- Persistent volume caches the install for subsequent runs
+- Users can pin to any version without rebuilding the image
 
-### 2. Wrapper Pattern (from mdc feature)
+### 2. Entrypoint-Based Installation
 
-**Why**: Provides seamless user experience, handles path translation automatically
+**Why**: Cleanly separates the base image (Python + uv) from the tool version.
+
+**Benefits**:
+- `SPECKIT_VERSION=latest` always gets the newest release
+- `SPECKIT_VERSION=v0.5.0` pins to a specific release
+- Version marker in the volume prevents unnecessary reinstalls
+
+### 3. Wrapper Pattern
+
+**Why**: Provides seamless user experience, handles path translation automatically.
 
 **Benefits**:
 - Users don't need to know Docker commands
 - Automatic DevContainer detection and path translation
 - Git config mounting for repository operations
 - Token pass-through for GitHub API
-
-### 3. Force Upgrade Option
-
-**Implementation**: `specify --wrapper-upgrade`
-
-**Why**: Makes it easy to get latest spec-kit version without rebuilding DevContainer
-
-**Usage**:
-```bash
-# Pull latest image
-specify --wrapper-upgrade
-
-# Then use updated version
-specify check
-```
 
 ## Usage Examples
 
@@ -108,18 +110,20 @@ specify --help
 # Check requirements
 specify check
 
-# Upgrade Docker image
+# Force pull latest base image
 specify --wrapper-upgrade
 ```
 
-### Initialize Project
+### Version Pinning
 
 ```bash
-# In current directory
-specify init --here --ai copilot
+# Use latest spec-kit
+specify check
 
-# In new directory
-specify init my-project --ai claude
+# Pin to a specific version
+SPECKIT_VERSION=v0.5.0 specify check
+
+# Set version in devcontainer.json options
 ```
 
 ### DevContainer Configuration
@@ -129,41 +133,12 @@ specify init my-project --ai claude
   "features": {
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
     "ghcr.io/ruanzx/features/spec-kit-in-docker:1": {
-      "version": "latest",
+      "speckitVersion": "latest",
       "imageName": "ruanzx/spec-kit"
     }
   }
 }
 ```
-
-## Testing Results
-
-### Installation Test ✅
-
-```bash
-cd /workspaces/devcontainer-templates/build/spec-kit-in-docker
-bash install.sh
-# Result: Successfully installed wrapper
-```
-
-### Wrapper Commands ✅
-
-- `specify --wrapper-help` ✅ Works
-- `specify --help` ✅ Shows spec-kit help
-- `specify check` ✅ Checks requirements
-- `specify --wrapper-upgrade` ⚠️ Requires published image
-
-### Volume Mounting ✅
-
-- Current directory mounted as `/workspace` ✅
-- Git config mounted (read-only) ✅
-- Files persist on host ✅
-
-### DevContainer Integration ✅
-
-- Path translation works ✅
-- Docker-outside-of-docker compatibility ✅
-- Interactive mode works ✅
 
 ## Environment Variables
 
@@ -172,6 +147,7 @@ bash install.sh
 ```bash
 export SPECKIT_IMAGE_NAME="ruanzx/spec-kit"  # Image name
 export SPECKIT_IMAGE_TAG="latest"             # Image tag
+export SPECKIT_VERSION="latest"               # Spec-kit version (git tag/ref or 'latest')
 ```
 
 ### Pass-Through Variables
@@ -188,19 +164,20 @@ features/spec-kit-in-docker/
 ├── devcontainer-feature.json    # Feature metadata
 ├── install.sh                   # Installation script
 ├── README.md                    # Feature documentation
+├── IMPLEMENTATION.md            # This file
 ├── docker/                      # Docker image
-│   ├── Dockerfile
+│   ├── Dockerfile               # Runtime base (Python + uv only)
+│   ├── entrypoint.sh            # Installs spec-kit at start
 │   ├── docker-compose.yml
 │   ├── Makefile
 │   ├── .dockerignore
 │   ├── README.md
 │   ├── QUICKSTART.md
-│   ├── SUMMARY.md
 │   ├── examples.sh
 │   └── test.sh
-├── test/                        # Testing
-│   ├── test.sh                  # Automated tests
-│   ├── manual-test.sh           # Manual verification
+├── sample/                      # Testing
+│   ├── test.sh
+│   ├── manual-test.sh
 │   └── .devcontainer/
 │       └── devcontainer.json
 └── examples/                    # (in ../examples/spec-kit-docker/)
@@ -213,14 +190,13 @@ features/spec-kit-in-docker/
 
 | Feature | spec-kit | spec-kit-in-docker |
 |---------|----------|-------------------|
-| Python Required | ✅ 3.11+ | ❌ No |
-| UV Required | ✅ Yes | ❌ No |
-| Docker Required | ❌ No | ✅ Yes |
-| Isolation | ❌ No | ✅ Yes |
-| Update Method | `uv tool upgrade` | `--wrapper-upgrade` |
+| Python Required | 3.11+ | No |
+| UV Required | Yes | No |
+| Docker Required | No | Yes |
+| Isolation | No | Yes |
+| Version Pinning | Manual | `SPECKIT_VERSION` env var |
 | Performance | Faster | Slightly slower |
 | Portability | OS-dependent | Cross-platform |
-| Setup Time | ~30s | ~10s |
 
 ## Next Steps
 
@@ -239,14 +215,6 @@ docker push ruanzx/spec-kit:latest
 cd examples/spec-kit-docker
 # Rebuild container
 # Test workflow
-```
-
-### 3. Add Version Tags
-
-```bash
-# Tag with version
-docker tag ruanzx/spec-kit:latest ruanzx/spec-kit:v1.0.0
-docker push ruanzx/spec-kit:v1.0.0
 ```
 
 ### 4. Documentation Updates

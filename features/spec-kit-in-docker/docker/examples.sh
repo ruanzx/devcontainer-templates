@@ -12,19 +12,19 @@ NC='\033[0m' # No Color
 
 # Helper functions
 info() {
-    echo -e "${BLUE}ℹ️  $1${NC}"
+    echo -e "${BLUE}$1${NC}"
 }
 
 success() {
-    echo -e "${GREEN}✅ $1${NC}"
+    echo -e "${GREEN}$1${NC}"
 }
 
 warning() {
-    echo -e "${YELLOW}⚠️  $1${NC}"
+    echo -e "${YELLOW}$1${NC}"
 }
 
 error() {
-    echo -e "${RED}❌ $1${NC}"
+    echo -e "${RED}$1${NC}"
 }
 
 # Check if Docker is installed
@@ -33,10 +33,14 @@ if ! command -v docker &> /dev/null; then
     exit 1
 fi
 
+SPECKIT_VERSION="${SPECKIT_VERSION:-latest}"
+
 # Display menu
 echo "================================"
 echo "  Spec-Kit Docker Examples"
 echo "================================"
+echo ""
+echo "  SPECKIT_VERSION=${SPECKIT_VERSION}"
 echo ""
 echo "1. Build the Docker image"
 echo "2. Check installed tools"
@@ -44,7 +48,7 @@ echo "3. Initialize a new project"
 echo "4. Run interactive shell"
 echo "5. Show spec-kit version"
 echo "6. Run with docker-compose"
-echo "7. Clean up images"
+echo "7. Clean up images and volumes"
 echo "0. Exit"
 echo ""
 read -p "Select an option: " choice
@@ -58,7 +62,10 @@ case $choice in
     
     2)
         info "Checking installed tools..."
-        docker run --rm spec-kit:latest specify check
+        docker run --rm \
+            -v speckit-uv-tools:/root/.local/share/uv/tools \
+            -e SPECKIT_VERSION="$SPECKIT_VERSION" \
+            spec-kit:latest specify check
         ;;
     
     3)
@@ -74,6 +81,8 @@ case $choice in
         # Run initialization
         docker run -it --rm \
             -v "$(pwd):/workspace" \
+            -v speckit-uv-tools:/root/.local/share/uv/tools \
+            -e SPECKIT_VERSION="$SPECKIT_VERSION" \
             -w /workspace \
             spec-kit:latest \
             specify init --here --ai "$ai_agent"
@@ -91,6 +100,8 @@ case $choice in
         
         docker run -it --rm \
             -v "$(pwd):/workspace" \
+            -v speckit-uv-tools:/root/.local/share/uv/tools \
+            -e SPECKIT_VERSION="$SPECKIT_VERSION" \
             -w /workspace \
             spec-kit:latest \
             bash
@@ -98,7 +109,10 @@ case $choice in
     
     5)
         info "Checking spec-kit version..."
-        docker run --rm spec-kit:latest specify --version 2>/dev/null || \
+        docker run --rm \
+            -v speckit-uv-tools:/root/.local/share/uv/tools \
+            -e SPECKIT_VERSION="$SPECKIT_VERSION" \
+            spec-kit:latest specify --version 2>/dev/null || \
             warning "Build the image first with option 1"
         ;;
     
@@ -117,8 +131,9 @@ case $choice in
         ;;
     
     7)
-        warning "Cleaning up spec-kit Docker images..."
+        warning "Cleaning up spec-kit Docker images and volumes..."
         docker rmi spec-kit:latest 2>/dev/null || info "No images to remove"
+        docker volume rm speckit-uv-tools 2>/dev/null || info "No volumes to remove"
         success "Cleanup complete!"
         ;;
     

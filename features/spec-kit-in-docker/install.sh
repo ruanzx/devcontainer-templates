@@ -19,10 +19,11 @@ else
 fi
 
 # Parse options
-VERSION="${VERSION:-"latest"}"
+IMAGE_TAG="${IMAGETAG:-"latest"}"
 IMAGE_NAME="${IMAGENAME:-"ruanzx/spec-kit"}"
+SPECKIT_VERSION="${SPECKITVERSION:-"latest"}"
 
-log_info "Installing spec-kit wrapper for Docker image ${IMAGE_NAME}:${VERSION}"
+log_info "Installing spec-kit wrapper (image=${IMAGE_NAME}:${IMAGE_TAG}, spec-kit version=${SPECKIT_VERSION})"
 
 # Check if Docker is available
 if ! command_exists docker; then
@@ -45,6 +46,7 @@ set -euo pipefail
 
 IMAGE_NAME="${SPECKIT_IMAGE_NAME:-ruanzx/spec-kit}"
 IMAGE_TAG="${SPECKIT_IMAGE_TAG:-latest}"
+SPECKIT_VERSION="${SPECKIT_VERSION:-latest}"
 FULL_IMAGE="${IMAGE_NAME}:${IMAGE_TAG}"
 
 # Colors for output
@@ -134,12 +136,17 @@ translate_path_for_host() {
 
 # Parse wrapper-specific flags
 WRAPPER_HELP=false
+FORCE_PULL=false
 ARGS=()
 
 while [[ $# -gt 0 ]]; do
     case $1 in
         --wrapper-help)
             WRAPPER_HELP=true
+            shift
+            ;;
+        --wrapper-upgrade)
+            FORCE_PULL=true
             shift
             ;;
         *)
@@ -154,15 +161,19 @@ if [ "$WRAPPER_HELP" = "true" ]; then
     cat << 'HELP'
 Spec-Kit Docker Wrapper
 
-This wrapper runs spec-kit commands inside a Docker container for easy, isolated usage.
-Spec-kit is automatically updated to the latest version once per day.
+This wrapper runs spec-kit commands inside a Docker container.
+Spec-kit is installed at container start based on SPECKIT_VERSION.
 
 WRAPPER FLAGS (must come before spec-kit commands):
   --wrapper-help       Show this wrapper help message
+  --wrapper-upgrade    Force pull the latest base Docker image
 
 ENVIRONMENT VARIABLES:
   SPECKIT_IMAGE_NAME   Docker image name (default: ruanzx/spec-kit)
   SPECKIT_IMAGE_TAG    Docker image tag (default: latest)
+  SPECKIT_VERSION      Spec-kit version/git ref to install (default: latest)
+                       Use 'latest' for the newest version, or a git tag/ref
+                       (e.g. 'v0.5.0') to pin to a specific release.
 
 SPEC-KIT COMMANDS:
   init                 Initialize a new spec-kit project
@@ -181,8 +192,11 @@ EXAMPLES:
   # Get spec-kit help
   specify --help
 
-  # Force update to latest version (remove volume)
-  docker volume rm speckit-uv-tools
+  # Pin to a specific spec-kit version
+  SPECKIT_VERSION=v0.5.0 specify check
+
+  # Force update the base Docker image
+  specify --wrapper-upgrade
 
 For more information: https://github.com/github/spec-kit
 HELP
@@ -192,43 +206,17 @@ fi
 # Check Docker
 check_docker
 
-# Ensure image exists
-ensure_image false
+# Ensure image exists (force pull if --wrapper-upgrade was passed)
+ensure_image "$FORCE_PULL"
 
 # Get current directory (absolute)
 CURRENT_DIR="$(pwd)"
 HOST_CURRENT_DIR="$(translate_path_for_host "$CURRENT_DIR")"
 
-# Create or use a named volume for spec-kit tool cache to persist updates
+# Create or use a named volume for spec-kit tool cache to persist installs
 SPECKIT_VOLUME="speckit-uv-tools"
-
-# Check if this is the first run or if we should update (once per day)
-LAST_UPDATE_FILE="/tmp/speckit-last-update-check"
-CURRENT_TIME=$(date +%s)
-SHOULD_UPDATE=false
-
 if ! docker volume inspect "$SPECKIT_VOLUME" >/dev/null 2>&1; then
-    print_info "First run detected. Creating persistent volume and updating spec-kit..."
     docker volume create "$SPECKIT_VOLUME" >/dev/null 2>&1
-    SHOULD_UPDATE=true
-else
-    if [ -f "$LAST_UPDATE_FILE" ]; then
-        LAST_UPDATE=$(cat "$LAST_UPDATE_FILE")
-        TIME_DIFF=$((CURRENT_TIME - LAST_UPDATE))
-        # Update if more than 24 hours (86400 seconds) have passed
-        if [ $TIME_DIFF -gt 86400 ]; then
-            SHOULD_UPDATE=true
-        fi
-    else
-        SHOULD_UPDATE=true
-    fi
-fi
-
-# Update spec-kit if needed
-if [ "$SHOULD_UPDATE" = "true" ]; then
-    print_info "Updating spec-kit to the latest version..."
-    docker run --rm -v "$SPECKIT_VOLUME:/root/.local/share/uv/tools" "$FULL_IMAGE" bash -c "uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git >/dev/null 2>&1 && echo 'Spec-kit updated successfully'" || print_warning "Failed to update spec-kit, using existing version"
-    echo "$CURRENT_TIME" > "$LAST_UPDATE_FILE"
 fi
 
 # Build Docker command
@@ -242,6 +230,9 @@ DOCKER_CMD="$DOCKER_CMD -v \"$HOST_CURRENT_DIR:/workspace\""
 
 # Set working directory
 DOCKER_CMD="$DOCKER_CMD -w /workspace"
+
+# Pass the requested spec-kit version
+DOCKER_CMD="$DOCKER_CMD -e SPECKIT_VERSION=\"$SPECKIT_VERSION\""
 
 # Mount git config if available (read-only)
 if [ -f "$HOME/.gitconfig" ]; then
@@ -272,9 +263,10 @@ fi
 eval "$DOCKER_CMD"
 EOF
 
-# Set the image name and version as environment defaults in the script
+# Set the configured defaults into the wrapper
 sed -i "s|IMAGE_NAME=\"\${SPECKIT_IMAGE_NAME:-ruanzx/spec-kit}\"|IMAGE_NAME=\"\${SPECKIT_IMAGE_NAME:-${IMAGE_NAME}}\"|" "$SPECIFY_WRAPPER"
-sed -i "s|IMAGE_TAG=\"\${SPECKIT_IMAGE_TAG:-latest}\"|IMAGE_TAG=\"\${SPECKIT_IMAGE_TAG:-${VERSION}}\"|" "$SPECIFY_WRAPPER"
+sed -i "s|IMAGE_TAG=\"\${SPECKIT_IMAGE_TAG:-latest}\"|IMAGE_TAG=\"\${SPECKIT_IMAGE_TAG:-${IMAGE_TAG}}\"|" "$SPECIFY_WRAPPER"
+sed -i "s|SPECKIT_VERSION=\"\${SPECKIT_VERSION:-latest}\"|SPECKIT_VERSION=\"\${SPECKIT_VERSION:-${SPECKIT_VERSION}}\"|" "$SPECIFY_WRAPPER"
 
 # Make the wrapper executable
 run_with_privileges chmod +x "$SPECIFY_WRAPPER"
@@ -282,8 +274,8 @@ run_with_privileges chmod +x "$SPECIFY_WRAPPER"
 log_success "Spec-kit wrapper installed successfully at $SPECIFY_WRAPPER"
 
 # Pull the Docker image
-log_info "Pulling Docker image: ${IMAGE_NAME}:${VERSION}"
-if docker pull "${IMAGE_NAME}:${VERSION}" >/dev/null 2>&1; then
+log_info "Pulling Docker image: ${IMAGE_NAME}:${IMAGE_TAG}"
+if docker pull "${IMAGE_NAME}:${IMAGE_TAG}" >/dev/null 2>&1; then
     log_success "Docker image pulled successfully"
 else
     log_warning "Failed to pull Docker image. It will be pulled on first use."
@@ -292,15 +284,16 @@ fi
 # Verify installation
 if command_exists specify; then
     log_success "Spec-kit command is now available: specify --help"
-    log_info "Docker image: ${IMAGE_NAME}:${VERSION}"
+    log_info "Docker image: ${IMAGE_NAME}:${IMAGE_TAG}"
+    log_info "Spec-kit version: ${SPECKIT_VERSION}"
     log_info ""
     log_info "Quick start:"
     log_info "  specify init my-project --ai copilot    # Initialize new project"
     log_info "  specify check                            # Check requirements"
     log_info "  specify --wrapper-help                   # Wrapper help"
     log_info ""
-    log_info "Note: Spec-kit is automatically updated once per day"
-    log_info "To force update: docker volume rm speckit-uv-tools"
+    log_info "Pin a version:  SPECKIT_VERSION=v0.5.0 specify check"
+    log_info "Force upgrade:  specify --wrapper-upgrade"
 else
     log_error "Spec-kit wrapper installation failed"
     exit 1

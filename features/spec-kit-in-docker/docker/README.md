@@ -1,13 +1,15 @@
 # Spec-Kit Docker Image
 
-A containerized version of [spec-kit](https://github.com/github/spec-kit) for spec-driven development with AI coding agents.
+A runtime base image for [spec-kit](https://github.com/github/spec-kit). The image provides Python 3.12, uv, and system dependencies. Spec-kit itself is installed at container start via the entrypoint, allowing you to pin or update the CLI version without rebuilding the image.
 
 ## What's Included
 
-- **Python 3.12** - Latest Python runtime
+- **Python 3.12** - Python runtime
 - **uv** - Fast Python package manager
-- **spec-kit CLI** - The specify command-line tool
 - **Git** - For repository management
+- **entrypoint.sh** - Installs spec-kit on container start
+
+Spec-kit is **not** baked into the image. It is installed at runtime based on the `SPECKIT_VERSION` environment variable (default: `latest`).
 
 ## Usage
 
@@ -20,8 +22,11 @@ docker build -t spec-kit:latest -f Dockerfile .
 ### Run Interactively
 
 ```bash
-# Run with current directory mounted
-docker run -it --rm -v $(pwd):/workspace spec-kit:latest bash
+# Run with current directory mounted (installs latest spec-kit on start)
+docker run -it --rm \
+  -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest bash
 
 # Inside container, use specify commands:
 specify check
@@ -32,13 +37,21 @@ specify init my-project
 
 ```bash
 # Check installed tools
-docker run --rm spec-kit:latest specify check
+docker run --rm \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest specify check
 
 # Initialize a new project (mount volume to persist)
-docker run --rm -v $(pwd):/workspace spec-kit:latest specify init my-project
+docker run --rm \
+  -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest specify init my-project
 
-# Show version
-docker run --rm spec-kit:latest specify --version
+# Pin to a specific spec-kit version
+docker run --rm \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  -e SPECKIT_VERSION=v0.5.0 \
+  spec-kit:latest specify check
 ```
 
 ### Docker Compose Example
@@ -52,18 +65,38 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/workspace
+      - speckit-uv-tools:/root/.local/share/uv/tools
     working_dir: /workspace
+    environment:
+      - SPECKIT_VERSION=${SPECKIT_VERSION:-latest}
     stdin_open: true
     tty: true
+
+volumes:
+  speckit-uv-tools:
 ```
 
 ## Environment Variables
 
-The following environment variables are pre-configured:
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SPECKIT_VERSION` | `latest` | Spec-kit version to install. Use `latest` or a git tag/ref (e.g. `v0.5.0`). |
+| `PYTHONUNBUFFERED` | `1` | Ensures Python output is not buffered |
+| `PYTHONDONTWRITEBYTECODE` | `1` | Prevents .pyc file creation |
 
-- `PYTHONUNBUFFERED=1` - Ensures Python output is not buffered
-- `PYTHONDONTWRITEBYTECODE=1` - Prevents .pyc file creation
-- `PATH` - Includes uv and specify CLI tools
+## Persistent Tool Cache
+
+Mount a named volume at `/root/.local/share/uv/tools` to avoid reinstalling spec-kit on every container run:
+
+```bash
+docker volume create speckit-uv-tools
+
+docker run --rm \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest specify check
+```
+
+The entrypoint records which version is installed in the volume. It only reinstalls when the requested `SPECKIT_VERSION` differs from the cached version.
 
 ## Persistent Configuration
 
@@ -71,6 +104,7 @@ To persist configuration across container runs:
 
 ```bash
 docker run --rm -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
   -v ~/.gitconfig:/root/.gitconfig:ro \
   spec-kit:latest bash
 ```
@@ -95,7 +129,10 @@ See the [full list of supported agents](https://github.com/github/spec-kit#-supp
 mkdir my-project && cd my-project
 
 # Run spec-kit container
-docker run -it --rm -v $(pwd):/workspace spec-kit:latest bash
+docker run -it --rm \
+  -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest bash
 
 # Inside container:
 specify init --here --ai copilot
@@ -108,7 +145,10 @@ specify init --here --ai copilot
 cd my-existing-project
 
 # Run container with project mounted
-docker run -it --rm -v $(pwd):/workspace spec-kit:latest bash
+docker run -it --rm \
+  -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
+  spec-kit:latest bash
 
 # Use spec-kit commands through AI agent
 # /speckit.constitution
@@ -127,6 +167,7 @@ If you encounter permission issues with mounted volumes:
 ```bash
 # Run with current user
 docker run -it --rm -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
   --user $(id -u):$(id -g) \
   spec-kit:latest bash
 ```
@@ -136,6 +177,7 @@ docker run -it --rm -v $(pwd):/workspace \
 ```bash
 # Mount git config for commit operations
 docker run -it --rm -v $(pwd):/workspace \
+  -v speckit-uv-tools:/root/.local/share/uv/tools \
   -v ~/.gitconfig:/root/.gitconfig:ro \
   -v ~/.ssh:/root/.ssh:ro \
   spec-kit:latest bash
